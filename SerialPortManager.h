@@ -177,6 +177,7 @@ public:
                     }
                     if(count_index_ % DRAW_ADD_SIZE == 0)
                     {
+//                        qDebug()<<"data_size="<<data.size()<<"  src_size="<<data_src_list_.size()<<" count_index="<<count_index_;
                         setDrawData(count_index_);
                     }
                 }
@@ -247,15 +248,23 @@ public:
         }
     }
 
+    void clearSerialPort()
+    {
+        if(m_serialPort->isOpen())
+        {
+            m_serialPort->clear();
+        }
+    }
     void clearSrcListData()
     {
         //if(mutex_.tryLock(100))
         {
-            QVector<ChinnelData> list;
+            clearSerialPort();
+//            QVector<ChinnelData> list;
             data_src_list_.clear();
             data_add_list_.clear();
-            data_src_list_ = list;
-            data_add_list_ = list;
+//            data_src_list_ = list;
+//            data_add_list_ = list;
             count_index_ = 0;
             qDebug()<<"clear serial src data"<<"\n";
            // mutex_.unlock();

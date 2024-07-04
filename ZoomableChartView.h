@@ -156,10 +156,23 @@ public:
             layout_->addWidget(chart_view_);
         }
     }
+    void resetSerials()
+    {
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            if(seriess_[i])
+            {
+                seriess_[i]->clear();
+            }
+            ymin_[i] = 1000000;
+            ymax_[i] = -1000000;
+        }
+        count_source_points_ = 0;
+    }
 protected:
     QColor serial_color_list[CH_NUM] = {
-                                QColor(Qt::red),QColor(Qt::blue),QColor(Qt::black),
-                                QColor(Qt::green),QColor(Qt::darkCyan),QColor(Qt::darkMagenta)};
+                                QColor(255,0,0),QColor(0,100,0),QColor(0,0,100),
+                                QColor(139,0,139),QColor(140,10,10),QColor(255,100,10)};
     QtCharts::QLineSeries* seriess_[CH_NUM] = {nullptr};
     bool ch_is_on_[CH_NUM] = {false};
     double ymin_[CH_NUM];
@@ -170,6 +183,7 @@ protected:
     QChart* chart_ = {nullptr};
     QVBoxLayout* layout_ = {nullptr};
     QWidget* parent_view_ptr_ {nullptr};
+    int count_source_points_ = 0;
 };
 
 #endif // ZOOMABLECHARTVIEW_H

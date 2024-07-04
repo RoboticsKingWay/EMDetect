@@ -5,8 +5,6 @@
 #include "ZoomableChartView.h"
 #include "UnitData.h"
 
-static int count_source_points_ = 0;
-
 //class SourceView : public BaseView
 class SourceView : public BaseView
 {
@@ -147,10 +145,6 @@ public:
             ymin_[i] = 1000000;
             ymax_[i] = -1000000;
         }
-        count_source_points_ = 0;
-    }
-    void resetCountSize()
-    {
         count_source_points_ = 0;
     }
 };

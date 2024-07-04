@@ -173,7 +173,7 @@ void MainWindow::updateData()
 
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
     {
-        chartview_ptr_->setCurrentPointCount(draw_list[0].index);
+//        chartview_ptr_->setCurrentPointCount(draw_list[0].index);
         for(int i = 0; i < CH_NUM; i++)
         {
             chartview_ptr_->updateChinnelView(draw_list,i,is_chinnel_on_[i]);
@@ -224,6 +224,7 @@ void MainWindow::on_pushButton_clicked()
         action_state_ = E_ACTION_ST;
         list_draw_src_data_.clear();
         manager_ptr_->clearSrcListData();
+        chartview_ptr_->resetSerials();
 //        source_view_ptr_->resetSerials();
         manager_ptr_->setSerialPause(false);
         ui->pushButton->setText("停止");

@@ -51,6 +51,9 @@ public:
             seriess_[i] = new QtCharts::QLineSeries();
             seriess_[i]->setName(QString("ch%1").arg(i+1));
             seriess_[i]->setColor(serial_color_list[i]);
+            QPen pen(serial_color_list[i]);
+            pen.setWidth(2);
+            seriess_[i]->setPen(pen);
 
             chart_->addSeries(seriess_[i]);
             chart_->setAxisX(axisX_,seriess_[i]);//为序列添加坐标轴
