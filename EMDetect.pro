@@ -16,8 +16,10 @@ SOURCES += \
     setupwindow.cpp
 
 HEADERS += \
+    Chasing.h \
     DataManager.h \
     ExcelHelper.h \
+    ImageViewNew.h \
     QXlsxExcelHelper.h \
     RealTimeChartView.h \
     SafeQueue.h \
@@ -25,6 +27,9 @@ HEADERS += \
     UnitCalc.h \
     UnitData.h \
     ZoomableChartView.h \
+    calc/CFunction.h \
+    calc/Chasing.h \
+    calc/SPLine.h \
     chinnelview.h \
     gradientview.h \
     imageview.h \

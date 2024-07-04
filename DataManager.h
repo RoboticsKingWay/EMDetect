@@ -18,16 +18,14 @@ public:
     DataManager(QObject *parent = nullptr)
         : QThread(parent)
     {
-        data_src_list_.resize(SRC_MAX_SIZE);
         is_runing_  = false;
         is_pause_   = false;
         saveas_dir_ = QDir::currentPath() + "//data//";
-        //qRegisterMetaType<QAxObject>();
-//        HRESULT hr = CoInitialize(NULL);
-//        if (FAILED(hr))
-//        {
-//            qCritical() << "DataManager Failed to initialize COM environment";
-//        }
+        QDir d(saveas_dir_);
+        if(!d.exists())
+        {
+            QDir().mkdir(saveas_dir_); // 创建绝对路径
+        }
         this->start();
     }
 
@@ -41,7 +39,23 @@ public:
         }
 //        CoUninitialize();
     }
+    void setLabel(QString label)
+    {
+        file_label_ = label;
+    }
 
+    bool saveDataToFile(QString lable,QVector<ChinnelData>& list)
+    {
+        QString file_dir = saveas_dir_;
+        QString file_name = generateTimeBasedFileName(lable,".xlsx");
+        file_dir += file_name;
+        return QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
+    }
+
+    QString getDir()
+    {
+        return saveas_dir_;
+    }
 public slots:
     void DataHandle(QVector<ChinnelData> list)
     {
@@ -81,6 +95,7 @@ private:
             QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
         }
     }
+
     void run() override
     {
         is_runing_ = true;
@@ -102,9 +117,9 @@ private:
 private:
     bool is_runing_ {false};
     bool is_pause_ {false};
-    QVector<ChinnelData> data_src_list_;
     SafeQueue<QVector<ChinnelData>> safe_queue_;
     QString saveas_dir_;
+    QString file_label_ {""};
 };
 
 

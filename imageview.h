@@ -45,6 +45,7 @@ public:
         {
             qDebug() << "Yellow gradient color: RGB(" << color.red() << color.green() << color.blue() << ")";
         }
+        draw_source_data_.clear();
     }
 
     virtual ~ImageView()
@@ -66,7 +67,7 @@ public:
     }
 
     // 输入一个可变长度的二维数组，表示差分数据的距离，缺陷不在范围内设置距离为0，距离越大颜色越深，最大距离到最小距离对颜色梯度比
-    void drawImage(std::vector<std::vector<int>>& distance_tab)
+    void drawImage(std::vector<std::vector<int>>& distance_tab,bool is_update = false)
     {
         width_ = parent_->width();
         height_ = parent_->height();
@@ -78,21 +79,30 @@ public:
         bit_map_ = QImage(width_, height_, QImage::Format_ARGB32);
         bit_map_.fill(Qt::blue); // Fill the bitmap with blue color
 
-        // Draw a rectangle with different colors
+        if(distance_tab.size() <= 0)
+        {
+            return;
+        }
+        if(!is_update)
+        {
+            draw_source_data_.clear();
+            draw_source_data_ = distance_tab;
+        }
         QPainter painter(&bit_map_);
         // image底部 real_imgage_height_ 位置用来绘制刻度
         QPen pen = QColor(255,0,0);
         pen.setWidth(2);
         painter.setPen(pen);
         drawSpliteLine(painter);
-        drawDetectionArea(painter,distance_tab);
+        drawDetectionArea(painter,draw_source_data_);
         painter.fillRect(0, real_imgage_height_, width_, 15, Qt::white); //
         drawScale(painter);
         drawText(painter);
     }
     void updateImage(int width,int height)
     {
-       bit_map_ = bit_map_.scaled(width, height, Qt::KeepAspectRatio);
+       drawImage(draw_source_data_,true);
+//       bit_map_ = bit_map_.scaled(width, height, Qt::KeepAspectRatio);
     }
 
 protected:
@@ -165,16 +175,19 @@ private:
             return;
         }
 
+        int h = real_imgage_height_/distance_tab.size();
         // 从CH1,CH2,CH3 开始绘制，共3组通道
         for(int i = 0; i < distance_tab.size()/2; i++)
         {
+
             int y = i * real_imgage_height_/distance_tab.size()*2;
             qDebug()<<"image_he_y:"<<y;
             // 每个通道绘制的点数对应像素
             for(int j = 0; j < distance_tab[i].size();j++)
             {
                 QBrush brush = getGenerateYellowTone(distance_tab[i][j]);
-                painter.fillRect(j/pixel_to_point, y+20, j/pixel_to_point + 2,y+22,brush); // 画2个像素宽度，2个像素的高度
+                int x = j/pixel_to_point;
+                painter.fillRect(x, y+h, 1, 3, brush); // 画2个像素宽度，2个像素的高度
             }
         }
 #endif
@@ -194,7 +207,7 @@ private:
         {
             int x1 = i * tickSpacing;
             int x2 = x1;
-            int y1 = height_ - 8;
+            int y1 = real_imgage_height_ + 2;
             int y2 = real_imgage_height_;
             painter.drawLine(x1, y1, x2, y2); // 水平刻度线
         }
@@ -203,16 +216,17 @@ private:
     void drawText(QPainter& painter)
     {
         int numTicks = 10; // 刻度数量
-        int tickSpacing = width_ / (numTicks - 1); // 计算刻度间隔
-        for (int i = 1; i < numTicks; ++i)
+        int tickSpacing = width_ / numTicks; // 计算刻度间隔
+        int y = real_imgage_height_ + 8;
+        painter.drawText(3, y, QString::number(0));
+        for (int i = 1; i <= numTicks; ++i)
         {
             // 计算标签位置
-            int textWidth = painter.fontMetrics().width(QString::number(i));
-            int x = i * tickSpacing - textWidth / 2;
-            int y = height_ - 7;
-
+//            int textWidth = painter.fontMetrics().width(QString::number(i));
+//            int x = i * tickSpacing - textWidth / 2;
+            int x = i * tickSpacing - 5;
             // 绘制标签
-            painter.drawText(x-3, y, QString::number(i * scan_length_/10));
+            painter.drawText(x, y, QString::number(i * scan_length_/numTicks));
         }
     }
 
@@ -238,7 +252,7 @@ private:
     double max_data_ {0};
     double min_data_ {0};
     double space_distance_ {0};
-//    std::vector<std::vector<int>> draw_source_data_;    // 差分计算得到的结果数据,距离数据
+    std::vector<std::vector<int>> draw_source_data_;    // 差分计算得到的结果数据,距离数据
 //    ScanThreshold_Q array_thresh_[CH_NUM/2];            // 阈值线
 };
 #endif // IMAGEVIEW_H

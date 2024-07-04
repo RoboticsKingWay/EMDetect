@@ -82,7 +82,7 @@ public:
                 QMessageBox::critical(nullptr, "Error", "work Sheet1 not exist!");
                 return false;
             }
-            for(int i = 0; i < count; i++)
+            for(int i = 0; i < count -1; i++)
             {
                 ChinnelData item;
                 item.index = ++index;

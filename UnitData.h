@@ -4,15 +4,15 @@
 #include <QDebug>
 #include <QVector>
 
-#define DRAW_ADD_SIZE 10    // 实时图绘制增量10个数据
-#define DRAW_MAX_SIZE 300   // 实时图绘制最多200个点数据
+#define DRAW_ADD_SIZE 20    // 实时图绘制增量20个数据
+#define DRAW_MAX_SIZE 300   // 实时图绘制最多300个点数据
 #define SRC_MAX_SIZE 30000   // 最大存储源数据个数
 #define CH_NUM 6
 #define ZOOM_NUM 1.15
 
-#define LENGTH_TO_POINT   100 // 1mm扫查长度对应点数，扫查平均速率
-#define SENSOR_TO_WIDTH   30 // 一组通道的传感器扫查宽度
-#define SCALE_SIZE 1
+#define LENGTH_TO_POINT   40 // 1mm扫查长度对应点数，扫查平均速率
+#define SENSOR_TO_WIDTH   40 // 一组通道的传感器扫查宽度
+#define SCALE_SIZE         1 // 处理检测数据缩放比例
 #define YELLOW_GRADIENT_SIZE  10 // 设置黄色10个梯度，缺陷梯度颜色变化，距离阈值线远缺陷越大，颜色越深
 
 enum E_ACTION_UI
@@ -21,6 +21,14 @@ enum E_ACTION_UI
     E_ACTION_ST  = 0,
     E_ACTION_STOP,
     E_ACTION_DEAL_DATA,
+};
+
+struct SerialParam
+{
+    QString port;
+    int borate;
+    int databit;
+    int stopbit;
 };
 
 struct ScanThreshold
