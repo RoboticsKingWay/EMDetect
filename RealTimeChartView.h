@@ -20,12 +20,15 @@ public:
     virtual void createChartView() override
     {
         chart_ = new QChart();
-        chart_->setTitle(QStringLiteral("实时曲线"));
+//        chart_->setTitle(QStringLiteral("实时曲线"));
         //创建图表
         chart_view_ = new ZoomableChartView(chart_);
         chart_view_->setChart(chart_);//将chart添加到chartview中
+        chart_view_->setRenderHint(QPainter::Antialiasing);
+        chart_view_->setRubberBand(QChartView::RectangleRubberBand); // 用于选择图表区域
+        chart_view_->setResizeAnchor(QGraphicsView::AnchorUnderMouse); // 设置缩放锚点
         // 鼠标滚轮缩放
-        chart_view_->setRubberBand(QChartView::VerticalRubberBand);
+//        chart_view_->setRubberBand(QChartView::VerticalRubberBand);
 
 //        layout_ = new QVBoxLayout(parent_view_ptr_);
 //        // 将ChartView添加到布局中，并设置填充和居中
@@ -103,11 +106,11 @@ public:
             if(count_points_ > 10000)
             {
 //                axisX_->setTitleText("点数计数10^3");
-                axisX_->setRange((count_points_ - DRAW_MAX_SIZE - DRAW_ADD_SIZE), (count_points_ + DRAW_ADD_SIZE));
+                axisX_->setRange((count_points_ - DRAW_MAX_SIZE - draw_add_size_), (count_points_ + draw_add_size_));
             }
             else
             {
-              axisX_->setRange(count_points_ - DRAW_MAX_SIZE - DRAW_ADD_SIZE, count_points_ + DRAW_ADD_SIZE);
+              axisX_->setRange(count_points_ - DRAW_MAX_SIZE - draw_add_size_, count_points_ + draw_add_size_);
             }
             axisY_->setRange(ymin, ymax);
 //            axisX_->setTitleText("磁场强度nT");
@@ -116,7 +119,7 @@ public:
 
     void updateChinnelView(QVector<ChinnelData>& draw_list,int ch_num, bool is_on)
     {
-        if(DRAW_ADD_SIZE != draw_list.size())
+        if(draw_add_size_ != draw_list.size())
         {
             return;
         }
@@ -126,7 +129,7 @@ public:
         {
             ch_is_on_[ch_num] = is_on;
 
-            if (seriess_[ch_num]->count() > DRAW_MAX_SIZE)// || seriess_[1]->count() >DRAW_MAX_SIZE)
+            if (seriess_[ch_num]->count() > DRAW_MAX_SIZE)
             {
                 seriess_[ch_num]->removePoints(0,draw_list.size());
             }

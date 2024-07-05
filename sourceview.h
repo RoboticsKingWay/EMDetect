@@ -13,7 +13,7 @@ public:
     explicit SourceView(QWidget* parent)
         : BaseView(parent)
     {
-        qDebug()<<"SourceView:"<<QThread::currentThreadId();
+
     }
     virtual ~SourceView()
     {
@@ -25,8 +25,8 @@ public:
         BaseView::createChartView();
 //        chart_->setTheme(QChart::ChartThemeLight);
 //        chart_->legend()->setFont(QFont("Arial", 5));
-        chart_->setTitleFont(QFont("Arial", 5));
-        chart_->setTitle("磁场强度nT");
+//        chart_->setTitleFont(QFont("Arial", 5));
+//        chart_->setTitle("磁场强度nT");
         chart_->setMargins(QMargins(10,0,10,0));
 
         axisX_->setRange(0,30000);

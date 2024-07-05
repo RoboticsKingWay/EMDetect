@@ -3,10 +3,11 @@
 
 #include <QDebug>
 #include <QVector>
+#include "DetectSettings.h"
 
-#define DRAW_ADD_SIZE 20    // 实时图绘制增量20个数据
+//#define DRAW_ADD_SIZE 20    // 实时图绘制增量20个数据
 #define DRAW_MAX_SIZE 300   // 实时图绘制最多300个点数据
-#define SRC_MAX_SIZE 30000   // 最大存储源数据个数
+//#define SRC_MAX_SIZE 12000   // 最大存储源数据个数
 #define CH_NUM 6
 #define ZOOM_NUM 1.15
 

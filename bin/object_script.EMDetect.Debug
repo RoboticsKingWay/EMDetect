@@ -40,7 +40,6 @@ debug/moc_QXlsxExcelHelper.o
 debug/moc_RealTimeChartView.o
 debug/moc_SerialPortManager.o
 debug/moc_ZoomableChartView.o
-debug/moc_gradientview.o
 debug/moc_mainwindow.o
 debug/moc_setupwindow.o
 debug/moc_sourceview.o

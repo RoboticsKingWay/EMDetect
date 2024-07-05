@@ -10,7 +10,6 @@
 #include "imageview.h"
 #include "ImageViewNew.h"
 #include "sourceview.h"
-#include "gradientview.h"
 #include "QXlsxExcelHelper.h"
 #include "DataManager.h"
 
@@ -67,6 +66,8 @@ private slots:
 
     void on_lineEdit_textChanged(const QString &arg1);
 
+    void on_pushButton_SerialSetup_clicked();
+
 private:
     void getImageColor();
     void drawImage(bool is_update);
@@ -82,23 +83,25 @@ private:
     Ui::MainWindow *ui {nullptr};
     RealTimeChartView* chartview_ptr_ {nullptr};
     SourceView* source_view_ptr_ {nullptr};
-//    GradientView* gradient_view_ptr_ {nullptr};
-    ImageView* image_view_ptr_ {nullptr};
-    ImageViewNew* image_view_new_ptr_ {nullptr};
+//    ImageView* image_view_ptr_ {nullptr}; // 暂时不用在主页绘制图像
+//    ImageViewNew* image_view_new_ptr_ {nullptr}; // 暂时不用在主页绘制图像
     SetupWindow* setup_win_ptr_ {nullptr};
 
     QTimer timer_;
     QTimer timer_draw_total_;
     int count_size_blk_;
-    SerialPortManager* manager_ptr_ {nullptr};
+    SerialPortManager* manager_ptr_ {nullptr};//串口操作类指针
     DataManager* data_manager_ptr_ {nullptr};
     bool is_chinnel_on_ [CH_NUM] = {false};
     QVector<ChinnelData> list_draw_src_data_;
     QVector<ChinnelData> list_draw_file_data_;
-    int action_state_ {E_ACTION_STOP};//{E_ACTION_INVAL};
+    int action_state_ {E_ACTION_STOP};//操作初始状态
 
-    bool is_image_view_resize_ {false};
+    std::shared_ptr<std::thread> thread_calc_ptr_ {nullptr}; // 检测结果计算线程
+    bool is_calc_thread_start_ {true};
+    bool is_calc_start_ {false};
 
+    // 绘制云图需要的参数
     QImage bit_map_;
     int width_;
     int height_;
@@ -109,5 +112,6 @@ private:
     QVector<QColor> yellowGradient_;
     std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据
     QMutex mutex_image_;
+
 };
 #endif // MAINWINDOW_H

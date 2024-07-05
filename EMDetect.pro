@@ -18,6 +18,7 @@ SOURCES += \
 HEADERS += \
     Chasing.h \
     DataManager.h \
+    DetectSettings.h \
     ExcelHelper.h \
     ImageViewNew.h \
     QXlsxExcelHelper.h \
@@ -31,7 +32,6 @@ HEADERS += \
     calc/Chasing.h \
     calc/SPLine.h \
     chinnelview.h \
-    gradientview.h \
     imageview.h \
     mainwindow.h\
     setupwindow.h \

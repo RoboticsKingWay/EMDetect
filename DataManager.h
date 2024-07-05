@@ -111,7 +111,7 @@ private:
                 qDebug()<<"save to "<<file_dir<<"\n";
                 QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
             }
-            QThread::msleep(10);
+            QThread::msleep(100);
         }
     }
 private:

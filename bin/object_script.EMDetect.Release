@@ -40,7 +40,6 @@ release/moc_QXlsxExcelHelper.o
 release/moc_RealTimeChartView.o
 release/moc_SerialPortManager.o
 release/moc_ZoomableChartView.o
-release/moc_gradientview.o
 release/moc_mainwindow.o
 release/moc_setupwindow.o
 release/moc_sourceview.o

@@ -56,6 +56,7 @@ public:
         : QObject( parent)
     {
         parent_view_ptr_ = parent;
+        draw_add_size_ = DetectSettings::instance().add_point_count();
     }
     virtual ~BaseView()
     {
@@ -118,8 +119,11 @@ public:
         //chart_->setTitle(QStringLiteral("实时曲线"));
         //创建图表
         chart_view_ = new ZoomableChartView(chart_);
+//        chart_view_ = new QChartView(chart_);
         chart_view_->setChart(chart_);//将chart添加到chartview中
-        chart_view_->setRubberBand(QChartView::VerticalRubberBand);
+        chart_view_->setRenderHint(QPainter::Antialiasing);
+        chart_view_->setRubberBand(QChartView::RectangleRubberBand); // 用于选择图表区域
+        chart_view_->setResizeAnchor(QGraphicsView::AnchorUnderMouse); // 设置缩放锚点
 
         layout_ = new QVBoxLayout(parent_view_ptr_);
         // 将ChartView添加到布局中，并设置填充和居中
@@ -179,11 +183,13 @@ protected:
     double ymax_[CH_NUM];
     QValueAxis *axisX_ = {nullptr};
     QValueAxis *axisY_ = {nullptr};
-    ZoomableChartView *chart_view_ = {nullptr};
+//    ZoomableChartView *chart_view_ = {nullptr};
+    QChartView *chart_view_ = {nullptr};
     QChart* chart_ = {nullptr};
     QVBoxLayout* layout_ = {nullptr};
     QWidget* parent_view_ptr_ {nullptr};
     int count_source_points_ = 0;
+    int draw_add_size_ = {20};
 };
 
 #endif // ZOOMABLECHARTVIEW_H

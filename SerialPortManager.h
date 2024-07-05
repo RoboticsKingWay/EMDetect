@@ -12,6 +12,7 @@
 #include <QMutex>
 #include <QVector2D>
 #include "UnitData.h"
+#include "DetectSettings.h"
 #include "SafeQueue.h"
 
 //QT_BEGIN_NAMESPACE
@@ -27,11 +28,12 @@ public:
         is_pause_ = true;
         is_runing_ = false;
         m_serialPort = nullptr;
+        draw_add_size_ = DetectSettings::instance().add_point_count();
+        src_max_size_ = DetectSettings::instance().max_points_count();
     }
 
     ~SerialPortManager()
     {
-        //stopReconnectTimer();
         stopThread();
         if(m_serialPort)
         {
@@ -67,7 +69,7 @@ public:
         {
             if(is_opened_ && is_pause_ == false)
             {
-                QMessageBox::critical(nullptr, "Error", "serial is opened,please stop collect action first!");
+                QMessageBox::critical(nullptr, "Error", "重连失败,请先停止采集再重连!");
                 return false;
             }
             closePort();
@@ -78,19 +80,13 @@ public:
         m_serialPort = new QSerialPort(serial_param_.port, this);
         port_name_ = portName;
         // 配置串口参数
-//        m_serialPort->setBaudRate(QSerialPort::Baud115200);
-//        m_serialPort->setDataBits(QSerialPort::Data8);
-//        m_serialPort->setParity(QSerialPort::NoParity);
-//        m_serialPort->setStopBits(QSerialPort::OneStop);
         m_serialPort->setBaudRate(serial_param_.borate);
         m_serialPort->setDataBits((QSerialPort::DataBits)serial_param_.databit);
         m_serialPort->setParity(QSerialPort::NoParity);
         m_serialPort->setStopBits((QSerialPort::StopBits)serial_param_.stopbit);
         m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-
-        qDebug()<<"buf_size_1="<<m_serialPort->readBufferSize()<<"\r\n";
         m_serialPort->setReadBufferSize(128);
-        qDebug()<<"buf_size_2="<<m_serialPort->readBufferSize()<<"\r\n";
+        qDebug()<<"serial buf_size="<<m_serialPort->readBufferSize()<<"\r\n";
         // 连接信号和槽
         //connect(m_serialPort, &QSerialPort::readyRead, this, &SerialPortManager::readData);
         connect(m_serialPort, &QSerialPort::errorOccurred, this, &SerialPortManager::handleError,Qt::QueuedConnection);
@@ -98,14 +94,10 @@ public:
 
         // 尝试打开串口
         openPort();
-//        qDebug()<<"main thread:"<<QThread::currentThreadId();
         if(!is_runing_)
         {
             startThread();
         }
-
-        //data_add_list_.resize(DRAW_ADD_SIZE);
-        //data_src_list_.resize(SRC_MAX_SIZE);
         data_add_list_.clear();
         data_src_list_.clear();
         return is_opened_;
@@ -119,22 +111,17 @@ public:
         }
         else
         {
-            qDebug() << "port opened failed,retry...";
+            QMessageBox::critical(nullptr, "Error", "开发串口失败");
             is_opened_ = false;
         }
     }
 
     void readData(const QByteArray &data)
     {
-        // 读取串口数据的槽函数
-        //qDebug()<<"son thread:"<<QThread::currentThreadId();
-        //QString str_debug = QString::fromUtf8(data);
-        //qDebug()<<"\n\nstr_debug:"<<str_debug<<"\n\n";
+        // 读取串口数据
         if(m_serialPort->isOpen())
         {
-//            static int count_index = 0;
             static QByteArray last_str = "";
-
             last_str += data;
             QRegularExpression regex("\\[(.*?)\\]"); // 匹配以 '[' 开头，以 ']' 结尾的字符串
             QRegularExpressionMatchIterator iter = regex.globalMatch(last_str);
@@ -156,10 +143,6 @@ public:
                         ch_data.data[3] = list.at(3).toInt()/SCALE_SIZE;
                         ch_data.data[4] = list.at(4).toInt()/SCALE_SIZE;
                         ch_data.data[5] = list.at(5).toInt()/SCALE_SIZE;
-
-//                        QDateTime currentTime = QDateTime::currentDateTime();
-//                        qDebug()<<currentTime<<"-ch_data:"<<ch_data.ch1<<" "<<ch_data.ch2<<" "<<ch_data.ch3<<" "<<ch_data.ch4<<" "<<ch_data.ch5<<" "<<ch_data.ch6;
-//                        lastPosition = match.capturedEnd(); // 更新最后一个字符串 A 出现的位置
                         data_src_list_.push_back(ChinnelData(++count_index_,ch_data));
                     }
                     else
@@ -168,14 +151,14 @@ public:
                         qDebug()<<"err_str:"<<stringA;
                     }
                     lastPosition = match.capturedEnd(); // 更新最后一个字符串 A 出现的位置
-                    if(data_src_list_.size() >= SRC_MAX_SIZE)
+                    if(data_src_list_.size() >= src_max_size_)
                     {
-                        qDebug()<<"size >= "<<SRC_MAX_SIZE;
-                        emit SendData(data_src_list_);
-//                        count_index_ = 0;
+                        qDebug()<<"size >= "<<src_max_size_;
+                        saveDataToExcelFile();
+                        count_index_ = 0;
                         data_src_list_.clear();
                     }
-                    if(count_index_ % DRAW_ADD_SIZE == 0)
+                    if(count_index_ % draw_add_size_ == 0)
                     {
 //                        qDebug()<<"data_size="<<data.size()<<"  src_size="<<data_src_list_.size()<<" count_index="<<count_index_;
                         setDrawData(count_index_);
@@ -189,12 +172,11 @@ public:
     {
         if(mutex_.try_lock())
         {
-            if(data_src_list_.size() >= DRAW_ADD_SIZE && data_src_list_.size()%DRAW_ADD_SIZE == 0)
+            if(data_src_list_.size() >= draw_add_size_ && data_src_list_.size()%draw_add_size_ == 0)
             {
-                int start = (count % SRC_MAX_SIZE) - DRAW_ADD_SIZE;
-                for(int i = 0; i < DRAW_ADD_SIZE; i++)
+                int start = (count % src_max_size_) - draw_add_size_;
+                for(int i = 0; i < draw_add_size_; i++)
                 {
-                    //qDebug()<<"i="<<i<<" count="<<count<<"\n";
                     ChinnelData data;
                     data.index = data_src_list_[start + i].index;
                     data.mag_data.data[0] = data_src_list_[start + i].mag_data.data[0];
@@ -248,6 +230,15 @@ public:
         }
     }
 
+    void saveDataToExcelFile()
+    {
+        if(DetectSettings::instance().auto_save_source())
+        {
+            // 保存每次采集的原始数据
+            emit SendData(data_src_list_);
+        }
+    }
+
     void clearSerialPort()
     {
         if(m_serialPort->isOpen())
@@ -260,13 +251,9 @@ public:
         //if(mutex_.tryLock(100))
         {
             clearSerialPort();
-//            QVector<ChinnelData> list;
             data_src_list_.clear();
             data_add_list_.clear();
-//            data_src_list_ = list;
-//            data_add_list_ = list;
             count_index_ = 0;
-            qDebug()<<"clear serial src data"<<"\n";
            // mutex_.unlock();
         }
         //else
@@ -334,8 +321,6 @@ public slots:
         connectSerial(serial_param_.port);
     }
 signals:
-    //void dataReady(const QByteArray &data);
-    //void portReconect();
     void SendData(QVector<ChinnelData> list);
 private:
     void startThread()
@@ -360,7 +345,6 @@ private:
             }
             if(!is_opened_)
             {
-                //emit portReconect();
                 openPort();
                 QThread::msleep(100); // 100ms
                 continue;
@@ -375,7 +359,6 @@ private:
                 }
                 else
                 {
-                    //QThread::msleep(10);
                     qDebug()<<"recv:empty\r\n";
                 }
             }
@@ -395,7 +378,8 @@ private:
     QString str_data_;
     QVector<ChinnelData> data_src_list_;
     QVector<ChinnelData> data_add_list_;
-//    SafeQueue<QVector<ChinnelData>> safe_queue_;
+    int draw_add_size_ {20};
+    int src_max_size_ {12000};
 };
 
 // 在你的应用程序中创建SerialPortManager实例并使用

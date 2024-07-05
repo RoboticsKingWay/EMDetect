@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timer_.start(100); // 每100m秒更新一次
+    timer_.start(1000/DetectSettings::instance().real_time_rate()); // 每100m秒更新一次
     connect(&timer_, &QTimer::timeout, this, &MainWindow::updateData);
     connect(&timer_draw_total_, &QTimer::timeout, this, &MainWindow::drawFileView);
     manager_ptr_ = new SerialPortManager(this);
@@ -45,19 +45,24 @@ MainWindow::MainWindow(QWidget *parent)
         ui->label_image->setPixmap(QPixmap::fromImage(bit_map_).scaled(ui->widget_image_view->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 //        bit_map_.fill(Qt::blue);
         getImageColor();
-        //image_view_ptr_ = new ImageView(ui->widget_image_view);
       ui->label_image->installEventFilter(this);
         //ui->widget_image_view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     }
-    if(image_view_new_ptr_ == nullptr)
+    for(auto& sensitive : DetectSettings::instance().sensitivity_list())
     {
-        //image_view_new_ptr_ = new ImageViewNew(ui->label_image);
+      ui->comboBox->addItem(QString::number(sensitive));
     }
     list_draw_src_data_.clear();
 }
 
 MainWindow::~MainWindow()
 {
+    if(thread_calc_ptr_ && thread_calc_ptr_->joinable())
+    {
+      is_calc_start_ = false;
+      is_calc_thread_start_ = false;
+      thread_calc_ptr_->join();
+    }
     if(manager_ptr_)
     {
         delete manager_ptr_;
@@ -74,18 +79,10 @@ MainWindow::~MainWindow()
     {
         delete source_view_ptr_;
     }
-    if(image_view_new_ptr_)
-    {
-        delete image_view_new_ptr_;
-    }
     if(setup_win_ptr_)
     {
         delete setup_win_ptr_;
     }
-//    if(gradient_view_ptr_)
-//    {
-//        delete gradient_view_ptr_;
-//    }
     delete ui;
 }
 
@@ -98,13 +95,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     //QSize newSize = event->size();
     //    int top = ui->widget_down->geometry().top();
     //    int width = ui->widget_down->geometry().width();
-    // 调整组件大小以适应新的窗口大小
-    //    ui->widget_up->setGeometry()
-    //ui->tabWidget->setGeometry(0, 0, newSize.width()-20, newSize.height()-200);
     ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
     ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
     ui->label_image->setGeometry(0, 0, ui->widget_image_view->width(), ui->widget_image_view->height());
-    is_image_view_resize_ = true;
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -119,16 +112,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter thePainter(this);
-    //draw_Depth_Image();
-    //image_view_ptr_->draw_Depth_Image();
     ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
     ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
-    if(image_view_new_ptr_ && is_image_view_resize_)
-    {
-//        image_view_ptr_->updateImage();
-//        image_view_new_ptr_->updateImage(ui->label_image->width(),ui->label_image->height());
-//        is_image_view_resize_ = false;
-    }
     event->accept();
 }
 
@@ -168,12 +153,10 @@ void MainWindow::draw_Depth_Image()
 void MainWindow::updateData()
 {
 //    qDebug()<<QDateTime::currentDateTime();
-
     QVector<ChinnelData> draw_list = manager_ptr_->getDrawData();
 
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
     {
-//        chartview_ptr_->setCurrentPointCount(draw_list[0].index);
         for(int i = 0; i < CH_NUM; i++)
         {
             chartview_ptr_->updateChinnelView(draw_list,i,is_chinnel_on_[i]);
@@ -214,13 +197,16 @@ void MainWindow::on_pushButton_clicked()
     }
     if(action_state_ == E_ACTION_ST)
     {
+        // 停止采集数据
         action_state_ = E_ACTION_STOP;
+        manager_ptr_->saveDataToExcelFile();
         manager_ptr_->setSerialPause(true);
         manager_ptr_->getSrcListData(list_draw_src_data_);
         ui->pushButton->setText("开始");
     }
     else
     {
+        // 开始采集
         action_state_ = E_ACTION_ST;
         list_draw_src_data_.clear();
         manager_ptr_->clearSrcListData();
@@ -267,9 +253,9 @@ void MainWindow::on_pushButton_2_clicked()
 // 数据处理
 void MainWindow::on_pushButton_3_clicked()
 {
-    sensitivity_ = QString(ui->lineEdit_3->text()).toDouble();
+    sensitivity_ = QString(ui->comboBox->currentText()).toDouble();
     scan_length_ = QString(ui->lineEdit_2->text()).toDouble();
-    if(QString(ui->lineEdit_2->text()) == "" || QString(ui->lineEdit_3->text()) == "")
+    if(QString(ui->lineEdit_2->text()) == "" || QString(ui->comboBox->currentText()) == "")
     {
         QMessageBox::warning(this, "Error", "Scan length or sensitivity is empty!");
         return;
@@ -289,20 +275,39 @@ void MainWindow::on_pushButton_3_clicked()
             timer_draw_total_.start(200);
             // source_view_ptr_->darwChinnelView(list_draw_src_data_);
         }
-        qDebug()<<"new drawImageViewThread ";
-        std::thread* calc_thread_ptr = new std::thread(&MainWindow::drawImageViewThread,this);
-        calc_thread_ptr->detach();
+        if(!thread_calc_ptr_)
+        {
+            thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
+        }
+        if(thread_calc_ptr_)
+        {
+            is_calc_start_ = true;
+        }
+        // calc_thread_ptr->detach();
     }
 
 }
 
+// 后台线程计算结果
 void MainWindow::drawImageViewThread()
 {
-    calcDetectData();
-    drawImage(true);
-    qDebug()<<"new drawImageViewThread finished.";
+    is_calc_thread_start_ = true;
+    while(is_calc_thread_start_)
+    {
+        if(is_calc_start_)
+        {
+            qDebug()<<"start drawImageViewThread "<<QDateTime::currentDateTime();
+            calcDetectData();
+            drawImage(true);
+            is_calc_start_ = false;
+            qDebug()<<"new drawImageViewThread finished."<<QDateTime::currentDateTime();
+        }
+        QThread::msleep(100);
+    }
+    qDebug()<<"calc thread exit.";
 }
 
+// 设置绘图颜色列表
 void MainWindow::getImageColor()
 {
     double MY_IMG_BLUE[64]  =  { 0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9375, 0.875, 0.8125, 0.75, 0.6875, 0.625, 0.5625, 0.5, 0.4375, 0.375, 0.3125, 0.25, 0.1875, 0.125, 0.0625, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -320,6 +325,7 @@ void MainWindow::getImageColor()
     }
 }
 
+// 点云绘制
 void MainWindow::drawImage(bool is_update)
 {
     width_ = ui->label_image->width();
@@ -343,14 +349,15 @@ void MainWindow::drawImage(bool is_update)
             mutex_image_.unlock();
             QImageWriter imageWriter("saved_src_image.png");
             imageWriter.setFormat("png");  // 设置图像格式
-
             // 写入图像
             bool success = imageWriter.write(bit_map);
-
             // 检查是否有错误
-            if (!success) {
+            if (!success)
+            {
                 qDebug() << "Failed to save image:" << imageWriter.errorString();
-            } else {
+            }
+            else
+            {
                 qDebug() << "Image saved successfully!";
             }
         }
@@ -476,6 +483,7 @@ void MainWindow::Contourf(long intM, long intN, double Xmax, double Ymax,QPainte
     }
 }
 
+// 检测结果计算
 void MainWindow::calcDetectData()
 {
     CFunction calc_fun;
@@ -508,133 +516,6 @@ void MainWindow::calcDetectData()
     calc_fun.calcMaxAndMin(result,min_data_,min_data_);
     draw_image_data_.clear();
     draw_image_data_ = result;
-}
-
-void MainWindow::drawImageViewNew()
-{
-    calcDetectData();
-    image_view_new_ptr_->setGradientToDistance(max_data_,min_data_);
-    image_view_new_ptr_->setScanLength(scan_length_);
-    image_view_new_ptr_->picContour(draw_image_data_,false);
-    image_view_new_ptr_->showNormal();
-}
-
-void MainWindow::drawImageView()
-{
-    list_draw_src_data_.clear();
-    manager_ptr_->getSrcListData(list_draw_src_data_);
-    if(list_draw_src_data_.size() && action_state_ == E_ACTION_STOP)
-    {
-
-        const double sensitivity = QString(ui->lineEdit_3->text()).toDouble();
-        const double scan_length = QString(ui->lineEdit_2->text()).toDouble();
-        if(QString(ui->lineEdit_3->text()) == "" || QString(ui->lineEdit_2->text()) == "")
-        {
-            QMessageBox::warning(this, "Error", "Scan length or sensitivity is empty!");
-            return;
-        }
-        action_state_ = E_ACTION_DEAL_DATA;
-        std::vector<std::vector<int>> lists_src  = std::vector<std::vector<int>>(CH_NUM,std::vector<int>(list_draw_src_data_.size(),0));
-        std::vector<std::vector<int>> lists_diff = std::vector<std::vector<int>>(CH_NUM,std::vector<int>(list_draw_src_data_.size(),0));;
-
-        double array_avrage[CH_NUM];
-        double array_standar[CH_NUM];
-        ScanThreshold array_thresh[CH_NUM];
-
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            for(int j = 0; j < list_draw_src_data_.size(); j++)
-            {
-                lists_src[i][j] = list_draw_src_data_[j].mag_data.data[i];
-            }
-        }
-        // 自差分处理
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            centralDifference(lists_src[i],lists_diff[i]);
-        }
-        // 求均值
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            array_avrage[i] = calAverage(lists_diff[i]);
-        }
-        // 求标准差
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            array_standar[i] = calculateStandardDeviation(lists_diff[i]);
-        }
-        // 求阈值线
-
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            array_thresh[i].ch_num = i+1;
-            calcThreshold(array_avrage[i], array_standar[i], sensitivity, array_thresh[i].upline, array_thresh[i].downline);
-            qDebug()<<"CH_"<<array_thresh[i].ch_num<<" :"<<array_thresh[i].upline<<" ~ "<<array_thresh[i].downline<<"\n";
-
-            //            calcThreshold(array_avrage[3+i], array_standar[3+i], sensitivity, array_thresh[i].Q3, array_thresh[i].Q4);
-            //            qDebug()<<"calcThreshold_"<<array_thresh[3+1].ch_num_2<<" :"<<array_thresh[i].Q3<<" ~ "<<array_thresh[i].Q4<<"\n";
-        }
-        //todo 判断差分数据在阈值线内
-
-        // 求差分数据的极大极小值
-        int max,min;
-        calcMaxAndMin(lists_diff,max,min);
-        image_view_ptr_->setGradientToDistance(max,min);
-        image_view_ptr_->setScanLength(scan_length);
-        image_view_ptr_->drawImage(lists_diff);
-        image_view_ptr_->showNormal();
-        action_state_ = E_ACTION_STOP;
-    }
-}
-
-//数据预览
-void MainWindow::onOpenExcelClicked()
-{
-    if(action_state_ == E_ACTION_STOP)
-    {
-        QString filePath = QFileDialog::getOpenFileName(this, "Open Excel File", "", "Excel Files (*.xlsx)");
-        if (!filePath.isEmpty())
-        {
-            qDebug()<<"execl "<< filePath <<" opened \n";
-//            return;
-//            thread_ptr_ = std::make_shared<std::thread>(std::thread([=,this](){
-//            qDebug() << "Thread started";
-
-            this->ui->pushButton->setEnabled(false);
-
-            QVector<ChinnelData> draw_list;
-            QXlsxExcelHelper::getInstance().readDataFromExcel(draw_list,filePath);
-//            source_view_ptr_->darwChinnelView(draw_list);
-
-            this->ui->pushButton->setEnabled(true);
-
-//            qDebug() << "Thread finished";
-//            }));
-//            std::shared_ptr<QThread> thread = std::make_shared<QThread>(QThread());
-//            this->moveToThread(thread);
-//            QObject::connect(thread, &QThread::started, [=,this]() {
-//                qDebug() << "Thread started";
-
-//                this->ui->pushButton->setEnabled(false);
-
-//                QVector<ChinnelData> draw_list;
-//                QXlsxExcelHelper::getInstance().readDataFromExcel(draw_list,filePath);
-//                source_view_ptr_->darwChinnelView(draw_list);
-
-//                this->ui->pushButton->setEnabled(true);
-
-//                qDebug() << "Thread finished";
-//            });
-//            thread->start();
-//            QObject::connect(thread, &QThread::finished, [=,this]() {
-//                qDebug() << "Thread finished signal received";
-//            });
-        }
-        else
-        {
-            QMessageBox::warning(this, "Error", "No file selected.");
-        }
-    }
 }
 
 // 数据预览
@@ -683,15 +564,15 @@ void MainWindow::drawFileView()
     count_size_blk_++;
 }
 
-void MainWindow::on_action_save_triggered()
+void MainWindow::on_pushButton_SerialSetup_clicked()
 {
-
-}
-
-
-void MainWindow::on_action_saveas_triggered()
-{
-
+    if(manager_ptr_)
+    {
+        QVector<QString> list;
+        manager_ptr_->listPorts(list);
+        setup_win_ptr_->setPortList(list);
+        setup_win_ptr_->show();
+    }
 }
 
 void MainWindow::on_action_serial_triggered()
@@ -709,17 +590,19 @@ void MainWindow::on_action_serial_triggered()
 //        }
     }
 }
-
-void MainWindow::on_action_setup_other_triggered()
+// 保存文件的标签值变化触发读标签
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
 {
-
+    if(data_manager_ptr_)
+    {
+        qDebug()<<"save as label:"<<ui->lineEdit->text();
+        data_manager_ptr_->setLabel(ui->lineEdit->text());
+    }
 }
-
 
 void MainWindow::on_tabWidget_tabBarClicked(int index)
 {
     qDebug()<<"page index="<<index;
-
 
 }
 
@@ -805,12 +688,150 @@ void MainWindow::on_checkBox_6_stateChanged(int arg1)
     }
 }
 
-void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+void MainWindow::on_action_save_triggered()
 {
-    if(data_manager_ptr_)
-    {
-        qDebug()<<"save as label:"<<ui->lineEdit->text();
-        data_manager_ptr_->setLabel(ui->lineEdit->text());
-    }
+
 }
 
+
+void MainWindow::on_action_saveas_triggered()
+{
+
+}
+
+void MainWindow::on_action_setup_other_triggered()
+{
+
+}
+
+void MainWindow::onOpenExcelClicked()
+{
+#if 0
+    if(action_state_ == E_ACTION_STOP)
+    {
+        QString filePath = QFileDialog::getOpenFileName(this, "Open Excel File", "", "Excel Files (*.xlsx)");
+        if (!filePath.isEmpty())
+        {
+            qDebug()<<"execl "<< filePath <<" opened \n";
+            //            return;
+            //            thread_ptr_ = std::make_shared<std::thread>(std::thread([=,this](){
+            //            qDebug() << "Thread started";
+
+            this->ui->pushButton->setEnabled(false);
+
+            QVector<ChinnelData> draw_list;
+            QXlsxExcelHelper::getInstance().readDataFromExcel(draw_list,filePath);
+            //            source_view_ptr_->darwChinnelView(draw_list);
+
+            this->ui->pushButton->setEnabled(true);
+
+            //            qDebug() << "Thread finished";
+            //            }));
+            //            std::shared_ptr<QThread> thread = std::make_shared<QThread>(QThread());
+            //            this->moveToThread(thread);
+            //            QObject::connect(thread, &QThread::started, [=,this]() {
+            //                qDebug() << "Thread started";
+
+            //                this->ui->pushButton->setEnabled(false);
+
+            //                QVector<ChinnelData> draw_list;
+            //                QXlsxExcelHelper::getInstance().readDataFromExcel(draw_list,filePath);
+            //                source_view_ptr_->darwChinnelView(draw_list);
+
+            //                this->ui->pushButton->setEnabled(true);
+
+            //                qDebug() << "Thread finished";
+            //            });
+            //            thread->start();
+            //            QObject::connect(thread, &QThread::finished, [=,this]() {
+            //                qDebug() << "Thread finished signal received";
+            //            });
+        }
+        else
+        {
+            QMessageBox::warning(this, "Error", "No file selected.");
+        }
+    }
+#endif
+}
+
+void MainWindow::drawImageViewNew()
+{
+#if 0
+    calcDetectData();
+    image_view_new_ptr_->setGradientToDistance(max_data_,min_data_);
+    image_view_new_ptr_->setScanLength(scan_length_);
+    image_view_new_ptr_->picContour(draw_image_data_,false);
+    image_view_new_ptr_->showNormal();
+#endif
+}
+
+void MainWindow::drawImageView()
+{
+#if 0
+    list_draw_src_data_.clear();
+    manager_ptr_->getSrcListData(list_draw_src_data_);
+    if(list_draw_src_data_.size() && action_state_ == E_ACTION_STOP)
+    {
+
+        const double sensitivity = QString(ui->comboBox->currentText()).toDouble();
+        const double scan_length = QString(ui->lineEdit_2->text()).toDouble();
+        if(QString(ui->comboBox->currentText()) == "" || QString(ui->lineEdit_2->text()) == "")
+        {
+            QMessageBox::warning(this, "Error", "Scan length or sensitivity is empty!");
+            return;
+        }
+        action_state_ = E_ACTION_DEAL_DATA;
+        std::vector<std::vector<int>> lists_src  = std::vector<std::vector<int>>(CH_NUM,std::vector<int>(list_draw_src_data_.size(),0));
+        std::vector<std::vector<int>> lists_diff = std::vector<std::vector<int>>(CH_NUM,std::vector<int>(list_draw_src_data_.size(),0));;
+
+        double array_avrage[CH_NUM];
+        double array_standar[CH_NUM];
+        ScanThreshold array_thresh[CH_NUM];
+
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            for(int j = 0; j < list_draw_src_data_.size(); j++)
+            {
+                lists_src[i][j] = list_draw_src_data_[j].mag_data.data[i];
+            }
+        }
+        // 自差分处理
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            centralDifference(lists_src[i],lists_diff[i]);
+        }
+        // 求均值
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            array_avrage[i] = calAverage(lists_diff[i]);
+        }
+        // 求标准差
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            array_standar[i] = calculateStandardDeviation(lists_diff[i]);
+        }
+        // 求阈值线
+
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            array_thresh[i].ch_num = i+1;
+            calcThreshold(array_avrage[i], array_standar[i], sensitivity, array_thresh[i].upline, array_thresh[i].downline);
+            qDebug()<<"CH_"<<array_thresh[i].ch_num<<" :"<<array_thresh[i].upline<<" ~ "<<array_thresh[i].downline<<"\n";
+
+            //            calcThreshold(array_avrage[3+i], array_standar[3+i], sensitivity, array_thresh[i].Q3, array_thresh[i].Q4);
+            //            qDebug()<<"calcThreshold_"<<array_thresh[3+1].ch_num_2<<" :"<<array_thresh[i].Q3<<" ~ "<<array_thresh[i].Q4<<"\n";
+        }
+        //todo 判断差分数据在阈值线内
+
+        // 求差分数据的极大极小值
+        int max,min;
+        calcMaxAndMin(lists_diff,max,min);
+        image_view_ptr_->setGradientToDistance(max,min);
+        image_view_ptr_->setScanLength(scan_length);
+        image_view_ptr_->drawImage(lists_diff);
+        image_view_ptr_->showNormal();
+        action_state_ = E_ACTION_STOP;
+    }
+#endif
+}

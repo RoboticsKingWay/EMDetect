@@ -5,7 +5,7 @@
 #include "SPLine.h"
 #include "UnitData.h"
 
-#define CALC_COUNT_MAX SRC_MAX_SIZE
+#define CALC_COUNT_MAX DetectSettings::instance().max_points_count()
 
 class CFunction
 {

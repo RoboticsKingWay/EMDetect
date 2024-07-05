@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[21];
-    char stringdata0[458];
+    QByteArrayData data[22];
+    char stringdata0[492];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -52,7 +52,8 @@ QT_MOC_LITERAL(16, 343, 23), // "on_pushButton_3_clicked"
 QT_MOC_LITERAL(17, 367, 23), // "on_pushButton_4_clicked"
 QT_MOC_LITERAL(18, 391, 18), // "onOpenExcelClicked"
 QT_MOC_LITERAL(19, 410, 23), // "on_pushButton_2_clicked"
-QT_MOC_LITERAL(20, 434, 23) // "on_lineEdit_textChanged"
+QT_MOC_LITERAL(20, 434, 23), // "on_lineEdit_textChanged"
+QT_MOC_LITERAL(21, 458, 33) // "on_pushButton_SerialSetup_cli..."
 
     },
     "MainWindow\0on_action_serial_triggered\0"
@@ -68,7 +69,8 @@ QT_MOC_LITERAL(20, 434, 23) // "on_lineEdit_textChanged"
     "on_checkBox_5_stateChanged\0"
     "on_pushButton_clicked\0on_pushButton_3_clicked\0"
     "on_pushButton_4_clicked\0onOpenExcelClicked\0"
-    "on_pushButton_2_clicked\0on_lineEdit_textChanged"
+    "on_pushButton_2_clicked\0on_lineEdit_textChanged\0"
+    "on_pushButton_SerialSetup_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -78,7 +80,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -86,23 +88,24 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   99,    2, 0x08 /* Private */,
-       3,    0,  100,    2, 0x08 /* Private */,
-       4,    0,  101,    2, 0x08 /* Private */,
-       5,    0,  102,    2, 0x08 /* Private */,
-       6,    1,  103,    2, 0x08 /* Private */,
-       8,    1,  106,    2, 0x08 /* Private */,
-      10,    1,  109,    2, 0x08 /* Private */,
-      11,    1,  112,    2, 0x08 /* Private */,
-      12,    1,  115,    2, 0x08 /* Private */,
-      13,    1,  118,    2, 0x08 /* Private */,
-      14,    1,  121,    2, 0x08 /* Private */,
-      15,    0,  124,    2, 0x08 /* Private */,
-      16,    0,  125,    2, 0x08 /* Private */,
-      17,    0,  126,    2, 0x08 /* Private */,
-      18,    0,  127,    2, 0x08 /* Private */,
-      19,    0,  128,    2, 0x08 /* Private */,
-      20,    1,  129,    2, 0x08 /* Private */,
+       1,    0,  104,    2, 0x08 /* Private */,
+       3,    0,  105,    2, 0x08 /* Private */,
+       4,    0,  106,    2, 0x08 /* Private */,
+       5,    0,  107,    2, 0x08 /* Private */,
+       6,    1,  108,    2, 0x08 /* Private */,
+       8,    1,  111,    2, 0x08 /* Private */,
+      10,    1,  114,    2, 0x08 /* Private */,
+      11,    1,  117,    2, 0x08 /* Private */,
+      12,    1,  120,    2, 0x08 /* Private */,
+      13,    1,  123,    2, 0x08 /* Private */,
+      14,    1,  126,    2, 0x08 /* Private */,
+      15,    0,  129,    2, 0x08 /* Private */,
+      16,    0,  130,    2, 0x08 /* Private */,
+      17,    0,  131,    2, 0x08 /* Private */,
+      18,    0,  132,    2, 0x08 /* Private */,
+      19,    0,  133,    2, 0x08 /* Private */,
+      20,    1,  134,    2, 0x08 /* Private */,
+      21,    0,  137,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -122,6 +125,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    9,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -149,6 +153,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 14: _t->onOpenExcelClicked(); break;
         case 15: _t->on_pushButton_2_clicked(); break;
         case 16: _t->on_lineEdit_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 17: _t->on_pushButton_SerialSetup_clicked(); break;
         default: ;
         }
     }
@@ -183,13 +188,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 18;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 18)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 17;
+        _id -= 18;
     }
     return _id;
 }
