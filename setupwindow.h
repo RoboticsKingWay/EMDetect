@@ -16,11 +16,14 @@ public:
     explicit SetupWindow(QWidget *parent = nullptr);
     ~SetupWindow();
 public slots:
-    void setPortList(QVector<QString>& list);
+    void setPortList(QVector<QString>& list, int action);
 signals:
     void setSerialParam(SerialParam& param);
 private slots:
-    void on_pushButton_clicked();
+
+    void on_pushButton_sure_clicked();
+
+    void on_pushButton_cancel_clicked();
 
 private:
     Ui::SetupWindow *ui;

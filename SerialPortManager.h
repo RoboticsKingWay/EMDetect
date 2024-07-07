@@ -56,14 +56,14 @@ public:
             qDebug() << "Vendor Identifier:" << port.vendorIdentifier();
             qDebug() << "Product Identifier:" << port.productIdentifier();
             qDebug() << "Busy:" << port.isBusy();
-            if(!port.isBusy())
+//            if(!port.isBusy())
             {
                 port_list.append(port.portName());
             }
         }
     }
 
-    bool connectSerial(const QString portName = "COM3")
+    bool closeConnectSerial()
     {
         if(m_serialPort)
         {
@@ -77,6 +77,10 @@ public:
             m_serialPort = nullptr;
             delete m_serialPort;
         }
+        return true;
+    }
+    bool connectSerial(const QString portName = "COM3")
+    {
         m_serialPort = new QSerialPort(serial_param_.port, this);
         port_name_ = portName;
         // 配置串口参数
@@ -155,6 +159,7 @@ public:
                     {
                         qDebug()<<"size >= "<<src_max_size_;
                         saveDataToExcelFile();
+                        emit clearRealTimeSerial();
                         count_index_ = 0;
                         data_src_list_.clear();
                     }
@@ -201,6 +206,11 @@ public:
         QVector<ChinnelData> temp;
         if(mutex_.tryLock(100))
         {
+            if(data_add_list_.size() <= 0)
+            {
+                mutex_.unlock();
+                return temp;
+            }
             temp.resize(data_add_list_.size());
             temp = data_add_list_;
             data_add_list_.clear();
@@ -232,10 +242,16 @@ public:
 
     void saveDataToExcelFile()
     {
-        if(DetectSettings::instance().auto_save_source())
+        //if(mutex_.try_lock())
         {
-            // 保存每次采集的原始数据
-            emit SendData(data_src_list_);
+            qDebug()<<"saveDataToExcelFile send:"<<QDateTime::currentDateTime();
+            if(DetectSettings::instance().auto_save_source())
+            {
+                // 保存每次采集的原始数据
+                emit SendData(data_src_list_);
+            }
+            qDebug()<<"saveDataToExcelFile sendok:"<<QDateTime::currentDateTime();
+            //mutex_.unlock();
         }
     }
 
@@ -302,7 +318,10 @@ public:
     {
         is_pause_ = action;
     }
-
+    int getHeartbeatState()
+    {
+        return heart_beat_state_;
+    }
 public slots:
     void handleError(QSerialPort::SerialPortError error)
     {
@@ -318,10 +337,19 @@ public slots:
     void getSerialParam(SerialParam& param)
     {
         serial_param_ = param;
-        connectSerial(serial_param_.port);
+        if(param.action == E_SERIAL_CONNECT)
+        {
+            connectSerial(serial_param_.port);
+        }
+        else
+        {
+            closeConnectSerial();
+        }
+        heart_beat_state_ = (isPortOpened()== true ? E_SERIAL_CONNECT:E_SERIAL_CLOSE);
     }
 signals:
     void SendData(QVector<ChinnelData> list);
+    void clearRealTimeSerial();
 private:
     void startThread()
     {
@@ -336,6 +364,7 @@ private:
     }
     void run() override
     {
+        int heart_beat_count = 0;
         while (!isInterruptionRequested() && is_runing_)
         {
             if(is_pause_)
@@ -355,11 +384,21 @@ private:
                 if(QString(data) != "")
                 {
                     readData(data);
+                    heart_beat_state_ = E_SERIAL_CONNECT;
                     continue;
                 }
                 else
                 {
                     qDebug()<<"recv:empty\r\n";
+                }
+            }
+            else
+            {
+                heart_beat_count++;
+                if(heart_beat_count > 10)
+                {
+                    heart_beat_count = 0;
+                    heart_beat_state_ = E_SERIAL_CLOSE;
                 }
             }
         }
@@ -370,6 +409,7 @@ private:
     long long count_index_ {0};
     bool is_runing_ {false};
     bool is_pause_ {false};
+    int heart_beat_state_ {E_SERIAL_CLOSE}; //串口在线 与 离线状态
     QSerialPort *m_serialPort {nullptr};
     QTimer m_reconnectTimer;
     bool is_opened_ {false};

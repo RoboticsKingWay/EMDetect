@@ -1,6 +1,7 @@
 <RCC>
-    <qresource prefix="/res">
-        <file>source/res/title.icon</file>
+    <qresource prefix="/">
+        <file>source/title.png</file>
+        <file>source/serial_close.png</file>
+        <file>source/serial_connect.png</file>
     </qresource>
-    <qresource prefix="/file"/>
 </RCC>

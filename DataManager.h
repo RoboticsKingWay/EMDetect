@@ -60,7 +60,7 @@ public slots:
     void DataHandle(QVector<ChinnelData> list)
     {
         safe_queue_.enqueue(list);
-        qDebug()<<"DataHandle\n";
+        qDebug()<<"DataHandle:"<<QDateTime::currentDateTime();
     }
 
 private:
@@ -108,7 +108,7 @@ private:
                 QString file_dir = saveas_dir_;
                 QString file_name = generateTimeBasedFileName("src",".xlsx");
                 file_dir += file_name;
-                qDebug()<<"save to "<<file_dir<<"\n";
+                qDebug()<<"save to "<<file_dir<<" "<<QDateTime::currentDateTime()<<"\n";
                 QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
             }
             QThread::msleep(100);

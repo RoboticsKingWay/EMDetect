@@ -10,6 +10,7 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
@@ -78,7 +79,7 @@ public:
     QPushButton *pushButton_4;
     QPushButton *pushButton;
     QPushButton *pushButton_SerialSetup;
-    QPushButton *pushButton_6;
+    QPushButton *pushButton_connect_state;
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer;
     QGroupBox *groupBox_3;
@@ -93,6 +94,9 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(1009, 749);
         MainWindow->setMinimumSize(QSize(850, 700));
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/source/title.png"), QSize(), QIcon::Normal, QIcon::Off);
+        MainWindow->setWindowIcon(icon);
         MainWindow->setStyleSheet(QString::fromUtf8("/*QMainWindow\n"
 "{\n"
 "    background-color: #D7D7D7;\n"
@@ -125,7 +129,7 @@ public:
         font.setPointSize(12);
         font.setBold(true);
         tabWidget->setFont(font);
-        tabWidget->setIconSize(QSize(30, 8));
+        tabWidget->setIconSize(QSize(30, 15));
         tab_1 = new QWidget();
         tab_1->setObjectName(QString::fromUtf8("tab_1"));
         tab_1->setMinimumSize(QSize(670, 500));
@@ -342,11 +346,14 @@ public:
 
         gridLayout_2->addWidget(pushButton_SerialSetup, 0, 1, 1, 1);
 
-        pushButton_6 = new QPushButton(groupBox_2);
-        pushButton_6->setObjectName(QString::fromUtf8("pushButton_6"));
-        pushButton_6->setFlat(true);
+        pushButton_connect_state = new QPushButton(groupBox_2);
+        pushButton_connect_state->setObjectName(QString::fromUtf8("pushButton_connect_state"));
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/source/serial_close.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pushButton_connect_state->setIcon(icon1);
+        pushButton_connect_state->setFlat(true);
 
-        gridLayout_2->addWidget(pushButton_6, 0, 0, 1, 1);
+        gridLayout_2->addWidget(pushButton_connect_state, 0, 0, 1, 1);
 
 
         gridLayout_3->addWidget(groupBox_2, 0, 1, 2, 1);
@@ -401,7 +408,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "EMDetect", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "6\351\200\232\351\201\223\346\243\200\346\265\213\350\275\257\344\273\266", nullptr));
         action_save->setText(QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230", nullptr));
         action_saveas->setText(QCoreApplication::translate("MainWindow", "\346\243\200\346\265\213\346\225\260\346\215\256\345\217\246\345\255\230", nullptr));
         action_serial->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\350\256\276\347\275\256", nullptr));
@@ -426,7 +433,7 @@ public:
         pushButton_4->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\351\242\204\350\247\210", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213", nullptr));
         pushButton_SerialSetup->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243", nullptr));
-        pushButton_6->setText(QCoreApplication::translate("MainWindow", "\350\277\236\346\216\245\347\212\266\346\200\201", nullptr));
+        pushButton_connect_state->setText(QString());
         groupBox_3->setTitle(QString());
         label_4->setText(QCoreApplication::translate("MainWindow", "\346\243\200\346\265\213\346\227\266\351\227\264", nullptr));
         label_5->setText(QCoreApplication::translate("MainWindow", "2024.5.26 18:00:00", nullptr));

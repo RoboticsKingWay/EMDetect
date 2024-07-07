@@ -16,12 +16,22 @@
 #define SCALE_SIZE         1 // 处理检测数据缩放比例
 #define YELLOW_GRADIENT_SIZE  10 // 设置黄色10个梯度，缺陷梯度颜色变化，距离阈值线远缺陷越大，颜色越深
 
+enum E_SERIAL_ACTION:int
+{
+    E_SERIAL_INVAL = -1,
+    E_SERIAL_CONNECT = 0,
+    E_SERIAL_CLOSE
+};
+
 enum E_ACTION_UI
 {
     E_ACTION_INVAL = -1,
-    E_ACTION_ST  = 0,
-    E_ACTION_STOP,
-    E_ACTION_DEAL_DATA,
+    E_ACTION_ST  = 0, // 开始采集
+    E_ACTION_STOP,  // 停止采集
+    E_ACTION_DEAL_DATA,// 数据处理
+    E_ACTION_REVIEW, // 预览数据
+    E_ACTION_SAVEAS, // 数据保存
+    E_ACTION_CTRL_SERIAL // 串口操作
 };
 
 struct SerialParam
@@ -30,6 +40,7 @@ struct SerialParam
     int borate;
     int databit;
     int stopbit;
+    int action;
 };
 
 struct ScanThreshold

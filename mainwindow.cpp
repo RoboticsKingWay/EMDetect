@@ -23,14 +23,17 @@ MainWindow::MainWindow(QWidget *parent)
     {
         connect(manager_ptr_,&SerialPortManager::SendData,data_manager_ptr_,&DataManager::DataHandle,Qt::QueuedConnection);
     }
-//    QWidget* page = ui->tabWidget->widget(0);
+
     if(ui->widget_real_chat_view)
     {
         chartview_ptr_ = new RealTimeChartView(ui->widget_real_chat_view);
         chartview_ptr_->createChartView();
         chartview_ptr_->setParentLayout(ui->widget_real_chat_view);
     }
-
+    if(chartview_ptr_ && manager_ptr_)
+    {
+       connect(manager_ptr_,&SerialPortManager::clearRealTimeSerial,chartview_ptr_,&RealTimeChartView::resetSerials,Qt::QueuedConnection);
+    }
     if(ui->widget_real_total_view)
     {
         source_view_ptr_ = new SourceView(ui->widget_real_total_view);
@@ -38,15 +41,14 @@ MainWindow::MainWindow(QWidget *parent)
     }
     if(ui->widget_image_view && ui->label_image)
     {
-        ui->label_image->resize(ui->widget_image_view->size());
+//        ui->label_image->setGeometry(0, 0, ui->widget_image_view->width(), ui->widget_image_view->height());
+//        ui->label_image->resize(ui->widget_image_view->size());
 //        ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-        ui->label_image->setAlignment(Qt::AlignCenter);
-        bit_map_ = QImage(ui->label_image->width(), ui->label_image->height(), QImage::Format_ARGB32);
-        ui->label_image->setPixmap(QPixmap::fromImage(bit_map_).scaled(ui->widget_image_view->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-//        bit_map_.fill(Qt::blue);
+//        ui->label_image->setAlignment(Qt::AlignCenter);
+//        bit_map_ = QImage(ui->label_image->width(), ui->label_image->height(), QImage::Format_ARGB32);
+//        ui->label_image->installEventFilter(this);
+//        ui->widget_image_view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         getImageColor();
-      ui->label_image->installEventFilter(this);
-        //ui->widget_image_view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     }
     for(auto& sensitive : DetectSettings::instance().sensitivity_list())
     {
@@ -104,7 +106,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == ui->label_image && event->type() == QEvent::Paint)
     {
-        draw_Depth_Image();
+//        draw_Depth_Image();
     }
     return QWidget::eventFilter(watched, event);
 }
@@ -112,6 +114,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter thePainter(this);
+    draw_Depth_Image();
     ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
     ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
     event->accept();
@@ -129,29 +132,19 @@ void MainWindow::draw_Depth_Image()
     }
 //    image.scaledToHeight(height);
 //    image.scaledToWidth(width);
-    ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(ui->label_image->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-//    QImageWriter imageWriter("saved_XXX_image.png");
-//    imageWriter.setFormat("png");  // 设置图像格式
-
-//    // 写入图像
-//    bool success = imageWriter.write(image);
-
-//    // 检查是否有错误
-//    if (!success) {
-//        qDebug() << "Failed to save image:" << imageWriter.errorString();
-//    } else {
-//        qDebug() << "Image saved successfully!";
+//    ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(ui->label_image->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->label_image->setPixmap(QPixmap::fromImage(image));
+//    QPainter painter(ui->label_image);
+//    if(painter.isActive())
+//    {
+//       painter.drawImage(0, 0, image);
 //    }
-    QPainter painter(ui->label_image);
-    if(painter.isActive())
-    {
-       painter.drawImage(0, 0, image);
-    }
 
 }
 
 void MainWindow::updateData()
 {
+    static int serial_state = E_SERIAL_CLOSE;
 //    qDebug()<<QDateTime::currentDateTime();
     QVector<ChinnelData> draw_list = manager_ptr_->getDrawData();
 
@@ -162,6 +155,11 @@ void MainWindow::updateData()
             chartview_ptr_->updateChinnelView(draw_list,i,is_chinnel_on_[i]);
         }
         chartview_ptr_->setChinnelRange();
+    }
+    if(manager_ptr_ && serial_state != manager_ptr_->getHeartbeatState())
+    {
+        serial_state = manager_ptr_->getHeartbeatState();
+        onSerialState(serial_state);
     }
     // update time
     // 获取当前日期和时间
@@ -179,6 +177,63 @@ void MainWindow::updateData()
     ui->label_5->setText(datetime);
 }
 
+void MainWindow::setPushButtonEnable()
+{
+    ui->pushButton->setEnabled(true);
+    ui->pushButton_2->setEnabled(true);
+    ui->pushButton_3->setEnabled(true);
+    ui->pushButton_4->setEnabled(true);
+    ui->pushButton_SerialSetup->setEnabled(true);
+    switch (action_state_)
+    {
+    case E_ACTION_ST: // 开始采集
+    {
+        ui->pushButton_2->setEnabled(false);
+        ui->pushButton_3->setEnabled(false);
+        ui->pushButton_4->setEnabled(false);
+        ui->pushButton_SerialSetup->setEnabled(false);
+//        ui->pushButton->setStyleSheet("QPushButton {"
+//                              "  background-color: #eee;"
+//                              "}");
+        break;
+    }
+    case E_ACTION_STOP:  // 停止采集
+    {
+        ui->pushButton_2->setEnabled(true);
+        ui->pushButton_3->setEnabled(true);
+        ui->pushButton_4->setEnabled(true);
+        ui->pushButton_SerialSetup->setEnabled(true);
+        break;
+    }
+    case E_ACTION_DEAL_DATA:// 数据处理
+    {
+        ui->pushButton->setEnabled(false);
+        ui->pushButton_2->setEnabled(false);
+        ui->pushButton_3->setEnabled(false);
+        ui->pushButton_4->setEnabled(false);
+        ui->pushButton_SerialSetup->setEnabled(false);
+    }
+    case E_ACTION_REVIEW: // 预览数据
+    {
+        ui->pushButton->setEnabled(false);
+        ui->pushButton_2->setEnabled(false);
+        ui->pushButton_3->setEnabled(false);
+        ui->pushButton_4->setEnabled(false);
+        ui->pushButton_SerialSetup->setEnabled(false);
+        break;
+    }
+    case E_ACTION_SAVEAS: // 数据保存
+    {
+        break;
+    }
+    case E_ACTION_CTRL_SERIAL: // 串口操作
+    {
+        break;
+    }
+    default:
+        break;
+    }
+}
 // 开始采集 和 结束采集
 void MainWindow::on_pushButton_clicked()
 {
@@ -186,7 +241,7 @@ void MainWindow::on_pushButton_clicked()
     {
         if(!manager_ptr_->isPortOpened())
         {
-            QMessageBox::warning(this, "Error", "serial port is not opened!");
+            QMessageBox::warning(this, "Error", "串口未连接");
             return;
         }
     }
@@ -203,6 +258,7 @@ void MainWindow::on_pushButton_clicked()
         manager_ptr_->setSerialPause(true);
         manager_ptr_->getSrcListData(list_draw_src_data_);
         ui->pushButton->setText("开始");
+        setPushButtonEnable();
     }
     else
     {
@@ -214,6 +270,7 @@ void MainWindow::on_pushButton_clicked()
 //        source_view_ptr_->resetSerials();
         manager_ptr_->setSerialPause(false);
         ui->pushButton->setText("停止");
+        setPushButtonEnable();
     }
 }
 
@@ -257,7 +314,7 @@ void MainWindow::on_pushButton_3_clicked()
     scan_length_ = QString(ui->lineEdit_2->text()).toDouble();
     if(QString(ui->lineEdit_2->text()) == "" || QString(ui->comboBox->currentText()) == "")
     {
-        QMessageBox::warning(this, "Error", "Scan length or sensitivity is empty!");
+        QMessageBox::warning(this, "Error", "扫查长度和灵敏度未设置!");
         return;
     }
     if(action_state_ == E_ACTION_ST)
@@ -281,6 +338,8 @@ void MainWindow::on_pushButton_3_clicked()
         }
         if(thread_calc_ptr_)
         {
+            action_state_ = E_ACTION_DEAL_DATA;
+            setPushButtonEnable();
             is_calc_start_ = true;
         }
         // calc_thread_ptr->detach();
@@ -299,6 +358,8 @@ void MainWindow::drawImageViewThread()
             qDebug()<<"start drawImageViewThread "<<QDateTime::currentDateTime();
             calcDetectData();
             drawImage(true);
+            action_state_ = E_ACTION_STOP;
+            setPushButtonEnable();
             is_calc_start_ = false;
             qDebug()<<"new drawImageViewThread finished."<<QDateTime::currentDateTime();
         }
@@ -316,9 +377,8 @@ void MainWindow::getImageColor()
     yellowGradient_.clear();
     for(int i = 0; i < 64; i++)
     {
-        yellowGradient_.append(QColor(MY_IMG_BLUE[i]*255, MY_IMG_GREEN[i]*255, MY_IMG_RED[i]*255));
+        yellowGradient_.append(QColor::fromRgb(MY_IMG_BLUE[i]*255, MY_IMG_GREEN[i]*255, MY_IMG_RED[i]*255));
     }
-
     for (const QColor &color : yellowGradient_)
     {
         qDebug() << "main_image_view: Yellow gradient color: RGB(" << color.red() << color.green() << color.blue() << ")";
@@ -332,7 +392,7 @@ void MainWindow::drawImage(bool is_update)
     height_ = ui->label_image->height();
 
     QImage bit_map = QImage(width_, height_, QImage::Format_ARGB32);
-    bit_map.fill(Qt::blue); // Fill the bitmap with blue color
+//    bit_map.fill(Qt::white); // Fill the bitmap with blue color
 
     if(draw_image_data_.size() <= 0 || draw_image_data_[0].size() <= 0)
     {
@@ -381,6 +441,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 
     QPen pen = QColor(0,0,0);
     pen.setWidth(1);
+    painter.setFont(QFont("Arial", 6));
     painter.setPen(pen);
     //        g.DrawRectangle(blackPen, x, y, width, height);
     float x1, x2, y1, y2;
@@ -403,7 +464,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 
         x1 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
         y1 = (float)(this->height_ * (y0 + H + 0.02)) - 3;
-        painter.drawText(x1, y1, QString::number(k * scan_length_ / 10));
+        painter.drawText(x1 + 1, y1, QString::number(k * scan_length_ / 10));
     }
     //画Y方向刻度
     int b;
@@ -423,7 +484,8 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
         painter.drawLine(x1, y1, x2, y2);
 
         x1 = (float)(this->width_ * (x0 - 0.02)) - 7;
-        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
+//        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
+        y1 = (float)(this->height_ * (1 - (y0 + k * H / 3) - 0.05));
         //g.DrawString((k * widthOfPiece / 5).ToString("0"), font, brush, x1, y1);
         painter.drawText(x1, y1,QString("CH")+QString::number(k));
     }
@@ -449,13 +511,13 @@ void MainWindow::Contourf(long intM, long intN, double Xmax, double Ymax,QPainte
     picDY = H / Ymax;
     if(DDX < 1)
     {
-        DDX = 1;
+        DDX = 2;
     }
     if(DDY < 1)
     {
-        DDY = 1;
+        DDY = 2;
     }
-    QBrush brush;
+
     for (long i = 0; i < intM; i++)
     {
         for (long j = 0; j < intN; j++)
@@ -477,9 +539,11 @@ void MainWindow::Contourf(long intM, long intN, double Xmax, double Ymax,QPainte
                 p = 0;
             }
 
-            brush.setColor(yellowGradient_[p]);
+            QBrush brush = QBrush(yellowGradient_[p]);
             painter.fillRect(CurrentX, CurrentY, DDX, DDY,brush);
         }
+//        qDebug()<<" color index p: "<<p<<yellowGradient_[p]<<" color:"\
+//                 <<yellowGradient_[p].red() << yellowGradient_[p].green() << yellowGradient_[p].blue()<<yellowGradient_[p].alpha();
     }
 }
 
@@ -521,6 +585,18 @@ void MainWindow::calcDetectData()
 // 数据预览
 void MainWindow::on_pushButton_4_clicked()
 {
+    sensitivity_ = QString(ui->comboBox->currentText()).toDouble();
+    scan_length_ = QString(ui->lineEdit_2->text()).toDouble();
+    if(QString(ui->lineEdit_2->text()) == "" || QString(ui->comboBox->currentText()) == "")
+    {
+        QMessageBox::warning(this, "Error", "扫查长度或灵敏度未设置!");
+        return;
+    }
+    if(action_state_ == E_ACTION_ST)
+    {
+        QMessageBox::warning(this, "warning", "请先停止采集操作!");
+        return;
+    }
     QString filePath = QFileDialog::getOpenFileName(this, "Open Excel File", "", "Excel Files (*.xlsx)");
     if (!filePath.isEmpty())
     {
@@ -533,7 +609,17 @@ void MainWindow::on_pushButton_4_clicked()
         {
             source_view_ptr_->resetSerials();
             count_size_blk_ = 0;
-            timer_draw_total_.start(100);
+            timer_draw_total_.start(200);
+            if(!thread_calc_ptr_)
+            {
+                thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
+            }
+            if(thread_calc_ptr_)
+            {
+                action_state_ = E_ACTION_REVIEW;
+                setPushButtonEnable();
+                is_calc_start_ = true;
+            }
 //            source_view_ptr_->darwChinnelView(list_draw_src_data_);
         }
     }
@@ -570,26 +656,24 @@ void MainWindow::on_pushButton_SerialSetup_clicked()
     {
         QVector<QString> list;
         manager_ptr_->listPorts(list);
-        setup_win_ptr_->setPortList(list);
+        int conn_action = (manager_ptr_->isPortOpened()==true ? E_SERIAL_CLOSE:E_SERIAL_CONNECT);
+        setup_win_ptr_->setPortList(list,conn_action);
         setup_win_ptr_->show();
     }
 }
 
-void MainWindow::on_action_serial_triggered()
+void MainWindow::onSerialState(int state)
 {
-    if(manager_ptr_)
+    if(state == E_SERIAL_CONNECT)
     {
-        QVector<QString> list;
-        manager_ptr_->listPorts(list);
-        setup_win_ptr_->setPortList(list);
-        setup_win_ptr_->show();
-
-//        if(list.size())
-//        {
-//            manager_ptr_->connectSerial(list[0]);
-//        }
+        ui->pushButton_connect_state->setIcon(QIcon(":/source/serial_connect.png"));
+    }
+    else
+    {
+        ui->pushButton_connect_state->setIcon(QIcon(":/source/serial_close.png"));
     }
 }
+
 // 保存文件的标签值变化触发读标签
 void MainWindow::on_lineEdit_textChanged(const QString &arg1)
 {
@@ -598,6 +682,11 @@ void MainWindow::on_lineEdit_textChanged(const QString &arg1)
         qDebug()<<"save as label:"<<ui->lineEdit->text();
         data_manager_ptr_->setLabel(ui->lineEdit->text());
     }
+}
+
+void MainWindow::on_action_serial_triggered()
+{
+
 }
 
 void MainWindow::on_tabWidget_tabBarClicked(int index)

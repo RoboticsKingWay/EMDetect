@@ -46,6 +46,28 @@ protected:
         }
         event->accept();
     }
+    void mouseMoveEvent(QMouseEvent *event) override
+    {
+        QChartView::mouseMoveEvent(event); // 调用基类的事件处理
+
+        // 将鼠标位置转换为图表坐标
+        QPointF point = chart()->mapToValue(event->pos());
+        // 找到最接近的点，这里使用简单的方法，实际情况可能需要更复杂的查找逻辑
+        double minDistance = std::numeric_limits<double>::max();
+        QPointF closestPoint;
+
+        for (const QPointF &dataPoint : static_cast<QLineSeries *>(chart()->series().first())->points()) {
+            double distance = std::sqrt((dataPoint.x() - point.x()) * (dataPoint.x() - point.x()) +
+                                        (dataPoint.y() - point.y()) * (dataPoint.y() - point.y()));
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPoint = dataPoint;
+            }
+        }
+
+        // 展示鼠标悬停位置的X和Y值
+        QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(closestPoint.x()).arg(closestPoint.y()), this);
+    }
 };
 
 class BaseView : public QObject
@@ -160,6 +182,7 @@ public:
             layout_->addWidget(chart_view_);
         }
     }
+public slots:
     void resetSerials()
     {
         for(int i = 0; i < CH_NUM; i++)
@@ -176,7 +199,7 @@ public:
 protected:
     QColor serial_color_list[CH_NUM] = {
                                 QColor(255,0,0),QColor(0,100,0),QColor(0,0,100),
-                                QColor(139,0,139),QColor(140,10,10),QColor(255,100,10)};
+                                QColor(139,0,139),QColor(140,10,10),QColor(0,0,10)};
     QtCharts::QLineSeries* seriess_[CH_NUM] = {nullptr};
     bool ch_is_on_[CH_NUM] = {false};
     double ymin_[CH_NUM];

@@ -27,21 +27,21 @@ public:
 //        chart_->legend()->setFont(QFont("Arial", 5));
 //        chart_->setTitleFont(QFont("Arial", 5));
 //        chart_->setTitle("磁场强度nT");
-        chart_->setMargins(QMargins(10,0,10,0));
+//        chart_->setMargins(QMargins(10,0,10,0));
 
-        axisX_->setRange(0,30000);
+        axisX_->setRange(0,12000);
         axisX_->setTickCount(10);
         axisX_->setMinorTickCount(100);
-        axisX_->setLabelsFont(QFont("Arial", 5));
-        axisX_->setTitleFont(QFont("Arial", 5));
+//        axisX_->setLabelsFont(QFont("Arial", 5));
+        axisX_->setTitleFont(QFont("Arial", 6));
         axisX_->setTitleText("计数点数");
 
         axisY_->setRange(-30000.0, 30000.0);
         axisX_->setTickCount(4);
         axisX_->setMinorTickCount(20);
-        axisY_->setTitleText("磁场强度");
-        axisY_->setTitleFont(QFont("Arial", 5));
-        axisY_->setLabelsFont(QFont("Arial", 5));
+        axisY_->setTitleText("磁场强度nT");
+        axisY_->setTitleFont(QFont("Arial", 6));
+//        axisY_->setLabelsFont(QFont("Arial", 5));
     }
     void setChinnelRange()
     {

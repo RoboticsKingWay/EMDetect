@@ -33,6 +33,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private slots:
+    void onSerialState(int state);
     void on_action_serial_triggered();
 
     void on_action_save_triggered();
@@ -69,6 +70,7 @@ private slots:
     void on_pushButton_SerialSetup_clicked();
 
 private:
+    void setPushButtonEnable(); //
     void getImageColor();
     void drawImage(bool is_update);
     void picContour(QPainter& painter,bool is_update = false);
@@ -94,7 +96,7 @@ private:
     DataManager* data_manager_ptr_ {nullptr};
     bool is_chinnel_on_ [CH_NUM] = {false};
     QVector<ChinnelData> list_draw_src_data_;
-    QVector<ChinnelData> list_draw_file_data_;
+//    QVector<ChinnelData> list_draw_file_data_;
     int action_state_ {E_ACTION_STOP};//操作初始状态
 
     std::shared_ptr<std::thread> thread_calc_ptr_ {nullptr}; // 检测结果计算线程

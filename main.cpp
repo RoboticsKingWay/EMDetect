@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 //    qRegisterMetaType<QVector<ChinnelData>&>();
     qRegisterMetaType<ChinnelMagData>();
 
-    a.setApplicationName("弱磁检测软件");//设置应用程序名
-    a.setWindowIcon(QIcon("res:/source/res/title.icon"));
+//    QApplication::setApplicationName("弱磁检测软件");//设置应用程序名
+//    QApplication::setWindowIcon(QIcon("res:/appicon"));
     if(!DetectSettings::instance().initSettings())
     {
         return -1;

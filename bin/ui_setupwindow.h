@@ -10,6 +10,7 @@
 #define UI_SETUPWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QGridLayout>
@@ -18,7 +19,6 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -29,19 +29,19 @@ public:
     QWidget *tab_setup_serial;
     QHBoxLayout *horizontalLayout;
     QWidget *widget_3;
-    QVBoxLayout *verticalLayout;
     QWidget *widget;
-    QLabel *label;
-    QComboBox *comboBox;
-    QLabel *label_2;
-    QComboBox *comboBox_2;
-    QLabel *label_3;
-    QComboBox *comboBox_3;
+    QGridLayout *gridLayout_2;
     QLabel *label_4;
     QComboBox *comboBox_4;
+    QLabel *label_3;
+    QComboBox *comboBox_3;
+    QComboBox *comboBox;
+    QLabel *label;
+    QLabel *label_2;
+    QComboBox *comboBox_2;
     QWidget *widget_2;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
+    QPushButton *pushButton_sure;
+    QPushButton *pushButton_cancel;
     QWidget *tab_setup_ip;
     QWidget *widget_4;
     QWidget *widget_5;
@@ -60,26 +60,63 @@ public:
     {
         if (SetupWindow->objectName().isEmpty())
             SetupWindow->setObjectName(QString::fromUtf8("SetupWindow"));
-        SetupWindow->resize(376, 470);
+        SetupWindow->resize(307, 357);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/source/title.png"), QSize(), QIcon::Normal, QIcon::Off);
+        SetupWindow->setWindowIcon(icon);
         tab_setup_serial = new QWidget();
         tab_setup_serial->setObjectName(QString::fromUtf8("tab_setup_serial"));
         horizontalLayout = new QHBoxLayout(tab_setup_serial);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         widget_3 = new QWidget(tab_setup_serial);
         widget_3->setObjectName(QString::fromUtf8("widget_3"));
-        verticalLayout = new QVBoxLayout(widget_3);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         widget = new QWidget(widget_3);
         widget->setObjectName(QString::fromUtf8("widget"));
-        label = new QLabel(widget);
-        label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(20, 30, 54, 16));
+        widget->setGeometry(QRect(9, 9, 211, 181));
+        gridLayout_2 = new QGridLayout(widget);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        label_4 = new QLabel(widget);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+
+        gridLayout_2->addWidget(label_4, 3, 0, 1, 1);
+
+        comboBox_4 = new QComboBox(widget);
+        comboBox_4->addItem(QString());
+        comboBox_4->addItem(QString());
+        comboBox_4->addItem(QString());
+        comboBox_4->setObjectName(QString::fromUtf8("comboBox_4"));
+
+        gridLayout_2->addWidget(comboBox_4, 3, 1, 1, 1);
+
+        label_3 = new QLabel(widget);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        gridLayout_2->addWidget(label_3, 2, 0, 1, 1);
+
+        comboBox_3 = new QComboBox(widget);
+        comboBox_3->addItem(QString());
+        comboBox_3->addItem(QString());
+        comboBox_3->addItem(QString());
+        comboBox_3->addItem(QString());
+        comboBox_3->setObjectName(QString::fromUtf8("comboBox_3"));
+
+        gridLayout_2->addWidget(comboBox_3, 2, 1, 1, 1);
+
         comboBox = new QComboBox(widget);
         comboBox->setObjectName(QString::fromUtf8("comboBox"));
-        comboBox->setGeometry(QRect(90, 30, 91, 21));
+
+        gridLayout_2->addWidget(comboBox, 0, 1, 1, 1);
+
+        label = new QLabel(widget);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        gridLayout_2->addWidget(label, 0, 0, 1, 1);
+
         label_2 = new QLabel(widget);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(20, 80, 54, 16));
+
+        gridLayout_2->addWidget(label_2, 1, 0, 1, 1);
+
         comboBox_2 = new QComboBox(widget);
         comboBox_2->addItem(QString());
         comboBox_2->addItem(QString());
@@ -87,40 +124,19 @@ public:
         comboBox_2->addItem(QString());
         comboBox_2->addItem(QString());
         comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
-        comboBox_2->setGeometry(QRect(90, 70, 91, 21));
-        label_3 = new QLabel(widget);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-        label_3->setGeometry(QRect(20, 120, 54, 16));
-        comboBox_3 = new QComboBox(widget);
-        comboBox_3->addItem(QString());
-        comboBox_3->addItem(QString());
-        comboBox_3->addItem(QString());
-        comboBox_3->addItem(QString());
-        comboBox_3->setObjectName(QString::fromUtf8("comboBox_3"));
-        comboBox_3->setGeometry(QRect(90, 110, 91, 21));
-        label_4 = new QLabel(widget);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(20, 160, 54, 16));
-        comboBox_4 = new QComboBox(widget);
-        comboBox_4->addItem(QString());
-        comboBox_4->addItem(QString());
-        comboBox_4->addItem(QString());
-        comboBox_4->setObjectName(QString::fromUtf8("comboBox_4"));
-        comboBox_4->setGeometry(QRect(90, 150, 91, 21));
 
-        verticalLayout->addWidget(widget);
+        gridLayout_2->addWidget(comboBox_2, 1, 1, 1, 1);
 
         widget_2 = new QWidget(widget_3);
         widget_2->setObjectName(QString::fromUtf8("widget_2"));
-        pushButton = new QPushButton(widget_2);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(10, 20, 80, 24));
-        pushButton_2 = new QPushButton(widget_2);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setGeometry(QRect(120, 20, 80, 24));
-
-        verticalLayout->addWidget(widget_2);
-
+        widget_2->setGeometry(QRect(10, 200, 211, 91));
+        widget_2->setMaximumSize(QSize(16777215, 200));
+        pushButton_sure = new QPushButton(widget_2);
+        pushButton_sure->setObjectName(QString::fromUtf8("pushButton_sure"));
+        pushButton_sure->setGeometry(QRect(10, 30, 81, 31));
+        pushButton_cancel = new QPushButton(widget_2);
+        pushButton_cancel->setObjectName(QString::fromUtf8("pushButton_cancel"));
+        pushButton_cancel->setGeometry(QRect(120, 30, 81, 31));
 
         horizontalLayout->addWidget(widget_3);
 
@@ -183,6 +199,17 @@ public:
     void retranslateUi(QTabWidget *SetupWindow)
     {
         SetupWindow->setWindowTitle(QCoreApplication::translate("SetupWindow", "\345\217\202\346\225\260\350\256\276\347\275\256", nullptr));
+        label_4->setText(QCoreApplication::translate("SetupWindow", "\345\201\234\346\255\242\344\275\215", nullptr));
+        comboBox_4->setItemText(0, QCoreApplication::translate("SetupWindow", "1", nullptr));
+        comboBox_4->setItemText(1, QCoreApplication::translate("SetupWindow", "2", nullptr));
+        comboBox_4->setItemText(2, QCoreApplication::translate("SetupWindow", "3", nullptr));
+
+        label_3->setText(QCoreApplication::translate("SetupWindow", "\346\225\260\346\215\256\344\275\215", nullptr));
+        comboBox_3->setItemText(0, QCoreApplication::translate("SetupWindow", "8", nullptr));
+        comboBox_3->setItemText(1, QCoreApplication::translate("SetupWindow", "5", nullptr));
+        comboBox_3->setItemText(2, QCoreApplication::translate("SetupWindow", "6", nullptr));
+        comboBox_3->setItemText(3, QCoreApplication::translate("SetupWindow", "7", nullptr));
+
         label->setText(QCoreApplication::translate("SetupWindow", "\347\253\257\345\217\243", nullptr));
         label_2->setText(QCoreApplication::translate("SetupWindow", "\346\263\242\347\211\271\347\216\207", nullptr));
         comboBox_2->setItemText(0, QCoreApplication::translate("SetupWindow", "115200", nullptr));
@@ -191,19 +218,8 @@ public:
         comboBox_2->setItemText(3, QCoreApplication::translate("SetupWindow", "256000", nullptr));
         comboBox_2->setItemText(4, QCoreApplication::translate("SetupWindow", "460800", nullptr));
 
-        label_3->setText(QCoreApplication::translate("SetupWindow", "\346\225\260\346\215\256\344\275\215", nullptr));
-        comboBox_3->setItemText(0, QCoreApplication::translate("SetupWindow", "8", nullptr));
-        comboBox_3->setItemText(1, QCoreApplication::translate("SetupWindow", "5", nullptr));
-        comboBox_3->setItemText(2, QCoreApplication::translate("SetupWindow", "6", nullptr));
-        comboBox_3->setItemText(3, QCoreApplication::translate("SetupWindow", "7", nullptr));
-
-        label_4->setText(QCoreApplication::translate("SetupWindow", "\345\201\234\346\255\242\344\275\215", nullptr));
-        comboBox_4->setItemText(0, QCoreApplication::translate("SetupWindow", "1", nullptr));
-        comboBox_4->setItemText(1, QCoreApplication::translate("SetupWindow", "2", nullptr));
-        comboBox_4->setItemText(2, QCoreApplication::translate("SetupWindow", "3", nullptr));
-
-        pushButton->setText(QCoreApplication::translate("SetupWindow", "\350\277\236\346\216\245\344\270\262\345\217\243", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("SetupWindow", "\345\217\226\346\266\210", nullptr));
+        pushButton_sure->setText(QCoreApplication::translate("SetupWindow", "\350\277\236\346\216\245\344\270\262\345\217\243", nullptr));
+        pushButton_cancel->setText(QCoreApplication::translate("SetupWindow", "\345\217\226\346\266\210", nullptr));
         SetupWindow->setTabText(SetupWindow->indexOf(tab_setup_serial), QCoreApplication::translate("SetupWindow", "\344\270\262\345\217\243\350\256\276\347\275\256", nullptr));
         pushButton_3->setText(QCoreApplication::translate("SetupWindow", "\347\241\256\350\256\244", nullptr));
         pushButton_4->setText(QCoreApplication::translate("SetupWindow", "\345\217\226\346\266\210", nullptr));
