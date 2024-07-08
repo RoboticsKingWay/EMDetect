@@ -20,6 +20,7 @@ public:
     {
         is_runing_  = false;
         is_pause_   = false;
+
         saveas_dir_ = QDir::currentPath() + "//data//";
         QDir d(saveas_dir_);
         if(!d.exists())
@@ -39,17 +40,23 @@ public:
         }
 //        CoUninitialize();
     }
-    void setLabel(QString label)
+    void setSaveParam(double sensitivity,QString label,double scan_length)
     {
         file_label_ = label;
+        file_scan_length_ = scan_length;
+        sensitivity_ = sensitivity;
     }
 
-    bool saveDataToFile(QString lable,QVector<ChinnelData>& list)
+    bool saveDataToFile(double sensitivity,QString lable,double len,QVector<ChinnelData>& list)
     {
         QString file_dir = saveas_dir_;
-        QString file_name = generateTimeBasedFileName(lable,".xlsx");
+        QString prefix = lable+ "_" + QString::number(len)+"_" + QString::number(sensitivity);
+//        file_label_ = lable;
+//        file_scan_length_ = len;
+//        sensitivity_ = sensitivity;
+        QString file_name = generateTimeBasedFileName(prefix,".xlsx");
         file_dir += file_name;
-        return QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
+        return QXlsxExcelHelper::getInstance().saveDataToExcel(list.size(),sensitivity,file_label_,len,list,file_dir);
     }
 
     QString getDir()
@@ -84,17 +91,17 @@ private:
         QString fileName = baseName + suffix;
         return fileName;
     }
-    void saveDataToFile()
-    {
-        QVector<ChinnelData> list;
-        if(safe_queue_.dequeue(list))
-        {
-            QString file_dir = saveas_dir_;
-            QString file_name = generateTimeBasedFileName("src",".xlsx");
-            file_dir += file_name;
-            QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
-        }
-    }
+//    void saveDataToFile()
+//    {
+//        QVector<ChinnelData> list;
+//        if(safe_queue_.dequeue(list))
+//        {
+//            QString file_dir = saveas_dir_;
+//            QString file_name = generateTimeBasedFileName("src",".xlsx");
+//            file_dir += file_name;
+//            QXlsxExcelHelper::getInstance().saveDataToExcel(list.size(),QString(""),0.0,list,file_dir);
+//        }
+//    }
 
     void run() override
     {
@@ -108,8 +115,10 @@ private:
                 QString file_dir = saveas_dir_;
                 QString file_name = generateTimeBasedFileName("src",".xlsx");
                 file_dir += file_name;
+                double sensitivity = DetectSettings::instance().sensitivity_perview();
+                double scan_length = DetectSettings::instance().save_scan_length();
                 qDebug()<<"save to "<<file_dir<<" "<<QDateTime::currentDateTime()<<"\n";
-                QXlsxExcelHelper::getInstance().saveDataToExcel(list,file_dir);
+                QXlsxExcelHelper::getInstance().saveDataToExcel(list.size(),sensitivity,QString(""),scan_length,list,file_dir);
             }
             QThread::msleep(100);
         }
@@ -120,6 +129,8 @@ private:
     SafeQueue<QVector<ChinnelData>> safe_queue_;
     QString saveas_dir_;
     QString file_label_ {""};
+    double file_scan_length_ {120.1};
+    double sensitivity_{1.780};
 };
 
 

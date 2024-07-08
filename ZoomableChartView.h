@@ -18,12 +18,23 @@ public:
     explicit ZoomableChartView(QChart* chart)
         : QChartView( chart)
     {
+        grabGesture(Qt::PinchGesture);
     }
     virtual ~ZoomableChartView()
     {
     }
+
 protected:
-    void wheelEvent(QWheelEvent *event) override
+    virtual void gestureEvent(QGestureEvent *event) //override
+    {
+        if (event->gesture(Qt::PinchGesture))
+        {
+            QPinchGesture *pinchGesture = static_cast<QPinchGesture *>(event->gesture(Qt::PinchGesture));
+            handlePinchGesture(pinchGesture);
+        }
+    }
+
+    virtual void wheelEvent(QWheelEvent *event) override
     {
         if (!event)
             return;
@@ -46,27 +57,52 @@ protected:
         }
         event->accept();
     }
-    void mouseMoveEvent(QMouseEvent *event) override
+    virtual void mouseMoveEvent(QMouseEvent *event) override
     {
         QChartView::mouseMoveEvent(event); // 调用基类的事件处理
 
         // 将鼠标位置转换为图表坐标
         QPointF point = chart()->mapToValue(event->pos());
         // 找到最接近的点，这里使用简单的方法，实际情况可能需要更复杂的查找逻辑
-        double minDistance = std::numeric_limits<double>::max();
-        QPointF closestPoint;
+//        double minDistance = std::numeric_limits<double>::max();
+//        QPointF closestPoint;
 
-        for (const QPointF &dataPoint : static_cast<QLineSeries *>(chart()->series().first())->points()) {
-            double distance = std::sqrt((dataPoint.x() - point.x()) * (dataPoint.x() - point.x()) +
-                                        (dataPoint.y() - point.y()) * (dataPoint.y() - point.y()));
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestPoint = dataPoint;
-            }
-        }
-
+//        for (const QPointF &dataPoint : static_cast<QLineSeries *>(chart()->series().first())->points())
+//        {
+//            double distance = std::sqrt((dataPoint.x() - point.x()) * (dataPoint.x() - point.x()) +
+//                                        (dataPoint.y() - point.y()) * (dataPoint.y() - point.y()));
+//            if (distance < minDistance)
+//            {
+//                minDistance = distance;
+//                closestPoint = dataPoint;
+//            }
+//        }
         // 展示鼠标悬停位置的X和Y值
-        QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(closestPoint.x()).arg(closestPoint.y()), this);
+        QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(point.x()).arg(point.y()), this);
+    }
+private:
+    void handlePinchGesture(QPinchGesture *pinchGesture)
+    {
+        if (pinchGesture->state() == Qt::GestureStarted ||
+            pinchGesture->state() == Qt::GestureUpdated) {
+
+            // 计算缩放中心点
+            QPointF center = pinchGesture->centerPoint().toPoint();
+            // 计算缩放比例
+            qreal scaleFactor = pinchGesture->scaleFactor() - 1.0;
+
+            // 应用缩放变换
+            Myzoom(scaleFactor, center);
+        }
+    }
+
+    void Myzoom(qreal scaleFactor, const QPointF &center)
+    {
+        // 根据缩放比例和中心点调整图表的缩放
+        // 这里需要根据你的具体图表和需求来实现缩放逻辑
+        //
+        scale(chart()->size().width() * scaleFactor, chart()->size().height() * scaleFactor);
+        centerOn(center);
     }
 };
 

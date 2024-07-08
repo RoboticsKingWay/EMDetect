@@ -23,6 +23,8 @@ protected:
     int real_time_rate_ {5};
     double calc_coefficient_ {30.0};
     int auto_save_source_ {1};
+    double save_scan_length_{100.1};
+    double sensitivity_perview_{1.91};
 public:
     const QVector<double>& sensitivity_list()
     {
@@ -47,6 +49,14 @@ public:
     const int& auto_save_source()
     {
         return auto_save_source_;
+    }
+    const double& save_scan_length()
+    {
+        return save_scan_length_;
+    }
+    const double& sensitivity_perview()
+    {
+        return sensitivity_perview_;
     }
 public:
     static DetectSettings& instance()
@@ -117,8 +127,11 @@ public:
             }
             calc_coefficient_ = settings.value("Settings/calc_coefficient", 30.0).toDouble();
             auto_save_source_ = settings.value("Settings/auto_save_source", 1).toInt();
+            save_scan_length_ = settings.value("Settings/save_scan_length", 120.1).toDouble();
+            sensitivity_perview_ = settings.value("Settings/sensitivity_perview", 2.91).toDouble();
             qDebug()<<"config: list"<<list<<" max_points_count_"<<max_points_count_<<" add_point_count_"<<add_point_count_\
-                     <<" real_time_rate_"<<real_time_rate_<<" calc_coefficient_"<<calc_coefficient_<<" auto_save_source_"<<auto_save_source_;
+                     <<" real_time_rate_"<<real_time_rate_<<" calc_coefficient_"<<calc_coefficient_<<" auto_save_source_"<<auto_save_source_\
+                     <<"sensitivity_perview_"<<sensitivity_perview_<<"save_scan_length_"<<save_scan_length_;
         }
         catch (const std::exception &e)
         {

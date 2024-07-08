@@ -46,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
 //        ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 //        ui->label_image->setAlignment(Qt::AlignCenter);
 //        bit_map_ = QImage(ui->label_image->width(), ui->label_image->height(), QImage::Format_ARGB32);
-//        ui->label_image->installEventFilter(this);
+        ui->label_image->installEventFilter(this);
+        connect(this,&MainWindow::repaintImageView,this,&MainWindow::onRepaintImageView,Qt::QueuedConnection);
 //        ui->widget_image_view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         getImageColor();
     }
@@ -106,7 +107,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == ui->label_image && event->type() == QEvent::Paint)
     {
-//        draw_Depth_Image();
+        draw_Depth_Image();
     }
     return QWidget::eventFilter(watched, event);
 }
@@ -114,7 +115,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter thePainter(this);
-    draw_Depth_Image();
+//    draw_Depth_Image();
     ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
     ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
     event->accept();
@@ -130,15 +131,19 @@ void MainWindow::draw_Depth_Image()
         image = bit_map_;
         mutex_image_.unlock();
     }
+    else
+    {
+        qDebug()<<"draw_Depth_Image lock fialed.";
+    }
 //    image.scaledToHeight(height);
 //    image.scaledToWidth(width);
 //    ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(ui->label_image->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->label_image->setPixmap(QPixmap::fromImage(image));
-//    QPainter painter(ui->label_image);
-//    if(painter.isActive())
-//    {
-//       painter.drawImage(0, 0, image);
-//    }
+//    ui->label_image->setPixmap(QPixmap::fromImage(image));
+    QPainter painter(ui->label_image);
+    if(painter.isActive())
+    {
+       painter.drawImage(0, 0, image);
+    }
 
 }
 
@@ -272,6 +277,7 @@ void MainWindow::on_pushButton_clicked()
         ui->pushButton->setText("停止");
         setPushButtonEnable();
     }
+    ui->tabWidget->setCurrentIndex(0);
 }
 
 // 数据默认保存在程序路径下 data文件夹，并以时间戳保存,另存数据
@@ -282,10 +288,10 @@ void MainWindow::on_pushButton_2_clicked()
         QMessageBox::warning(this, "warning", "请先停止采集操作!");
         return;
     }
-    if(ui->lineEdit->text() == "")
+    if(ui->lineEdit->text() == ""||ui->lineEdit_2->text() == "")
     {
 
-        QMessageBox::warning(this, "warning", "请设置保存标签!");
+        QMessageBox::warning(this, "warning", "请设置保存标签或扫查长度!");
         return;
     }
     if(list_draw_src_data_.size() <= 0)
@@ -295,8 +301,8 @@ void MainWindow::on_pushButton_2_clicked()
     }
     if(data_manager_ptr_)
     {
-        qDebug()<<"save as label:"<<ui->lineEdit->text();
-        if(data_manager_ptr_->saveDataToFile(ui->lineEdit->text(), list_draw_src_data_))
+        qDebug()<<"save as label:"<<ui->lineEdit->text()<<" len:"<<ui->lineEdit_2->text();
+        if(data_manager_ptr_->saveDataToFile(ui->comboBox->currentText().toDouble(),ui->lineEdit->text(),ui->lineEdit_2->text().toDouble(), list_draw_src_data_))
         {
             QMessageBox::information(this,"info:","保存成功");
         }
@@ -327,6 +333,7 @@ void MainWindow::on_pushButton_3_clicked()
         if(source_view_ptr_)
         {
             qDebug()<<"new timer_draw_total_ start ";
+            ui->tabWidget->setCurrentIndex(1);
             source_view_ptr_->resetSerials();
             count_size_blk_ = 0;
             timer_draw_total_.start(200);
@@ -347,6 +354,12 @@ void MainWindow::on_pushButton_3_clicked()
 
 }
 
+void MainWindow::onRepaintImageView()
+{
+    ui->label_image->showNormal();
+    ui->label_image->repaint();
+}
+
 // 后台线程计算结果
 void MainWindow::drawImageViewThread()
 {
@@ -358,6 +371,7 @@ void MainWindow::drawImageViewThread()
             qDebug()<<"start drawImageViewThread "<<QDateTime::currentDateTime();
             calcDetectData();
             drawImage(true);
+            emit repaintImageView();
             action_state_ = E_ACTION_STOP;
             setPushButtonEnable();
             is_calc_start_ = false;
@@ -377,7 +391,7 @@ void MainWindow::getImageColor()
     yellowGradient_.clear();
     for(int i = 0; i < 64; i++)
     {
-        yellowGradient_.append(QColor::fromRgb(MY_IMG_BLUE[i]*255, MY_IMG_GREEN[i]*255, MY_IMG_RED[i]*255));
+        yellowGradient_.append(QColor::fromRgb(MY_IMG_RED[i]*255, MY_IMG_GREEN[i]*255, MY_IMG_BLUE[i]*255, 255));//255固定不透明
     }
     for (const QColor &color : yellowGradient_)
     {
@@ -400,13 +414,17 @@ void MainWindow::drawImage(bool is_update)
     }
     if(is_update)
     {
+
         QPainter painter(&bit_map);
+//            painter.begin(ui->label_image);
         picContour(painter,is_update);
-        ui->label_image->update();
         if(mutex_image_.tryLock(100))
         {
             bit_map_ = bit_map;
             mutex_image_.unlock();
+//            ui->label_image->repaint();
+//            ui->label_image->update();
+//            painter.end();
             QImageWriter imageWriter("saved_src_image.png");
             imageWriter.setFormat("png");  // 设置图像格式
             // 写入图像
@@ -420,6 +438,10 @@ void MainWindow::drawImage(bool is_update)
             {
                 qDebug() << "Image saved successfully!";
             }
+        }
+        else
+        {
+            qDebug()<<"set draw image lock fialed.";
         }
     }
 }
@@ -441,7 +463,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 
     QPen pen = QColor(0,0,0);
     pen.setWidth(1);
-    painter.setFont(QFont("Arial", 6));
+    painter.setFont(QFont("Arial", 4));
     painter.setPen(pen);
     //        g.DrawRectangle(blackPen, x, y, width, height);
     float x1, x2, y1, y2;
@@ -464,7 +486,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 
         x1 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
         y1 = (float)(this->height_ * (y0 + H + 0.02)) - 3;
-        painter.drawText(x1 + 1, y1, QString::number(k * scan_length_ / 10));
+        painter.drawText(x1 + 1, y1+10, QString::number(k * scan_length_ / 10));
     }
     //画Y方向刻度
     int b;
@@ -487,7 +509,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 //        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
         y1 = (float)(this->height_ * (1 - (y0 + k * H / 3) - 0.05));
         //g.DrawString((k * widthOfPiece / 5).ToString("0"), font, brush, x1, y1);
-        painter.drawText(x1, y1,QString("CH")+QString::number(k));
+        painter.drawText(x1+1, y1,QString("CH")+QString::number(k));
     }
 }
 
@@ -585,29 +607,37 @@ void MainWindow::calcDetectData()
 // 数据预览
 void MainWindow::on_pushButton_4_clicked()
 {
-    sensitivity_ = QString(ui->comboBox->currentText()).toDouble();
-    scan_length_ = QString(ui->lineEdit_2->text()).toDouble();
-    if(QString(ui->lineEdit_2->text()) == "" || QString(ui->comboBox->currentText()) == "")
-    {
-        QMessageBox::warning(this, "Error", "扫查长度或灵敏度未设置!");
-        return;
-    }
-    if(action_state_ == E_ACTION_ST)
-    {
-        QMessageBox::warning(this, "warning", "请先停止采集操作!");
-        return;
-    }
+//    sensitivity_ = QString(ui->comboBox->currentText()).toDouble();
+//    scan_length_ = QString(ui->lineEdit_2->text()).toDouble();
+//    if(QString(ui->lineEdit_2->text()) == "" || QString(ui->comboBox->currentText()) == "")
+//    {
+//        QMessageBox::warning(this, "Error", "扫查长度或灵敏度未设置!");
+//        return;
+//    }
+//    if(action_state_ == E_ACTION_ST)
+//    {
+//        QMessageBox::warning(this, "warning", "请先停止采集操作!");
+//        return;
+//    }
     QString filePath = QFileDialog::getOpenFileName(this, "Open Excel File", "", "Excel Files (*.xlsx)");
     if (!filePath.isEmpty())
     {
         qDebug()<<"execl "<< filePath <<" opened \n";
         qDebug()<<"start open"<<QDateTime::currentDateTime();
         list_draw_src_data_.clear();
-        QXlsxExcelHelper::getInstance().readDataFromExcel(list_draw_src_data_,filePath);
+        QString file_label = "";
+        double sensitivity = 0.0;
+        double scan_length = 0.0;
+        QXlsxExcelHelper::getInstance().readDataFromExcel(sensitivity, file_label, scan_length,list_draw_src_data_,filePath);
+        scan_length_ = scan_length;
+        sensitivity_ = sensitivity;
+//        ui->lineEdit->setText(file_label);
+//        ui->lineEdit_2->setText(QString::number(scan_length));
         qDebug()<<"read file ok."<<QDateTime::currentDateTime();
         if(source_view_ptr_)
         {
             source_view_ptr_->resetSerials();
+            ui->tabWidget->setCurrentIndex(1);
             count_size_blk_ = 0;
             timer_draw_total_.start(200);
             if(!thread_calc_ptr_)
@@ -680,7 +710,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &arg1)
     if(data_manager_ptr_)
     {
         qDebug()<<"save as label:"<<ui->lineEdit->text();
-        data_manager_ptr_->setLabel(ui->lineEdit->text());
+//        data_manager_ptr_->setLabel(ui->lineEdit->text());
     }
 }
 

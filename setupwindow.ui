@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>307</width>
-    <height>357</height>
+    <width>336</width>
+    <height>356</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>参数设置</string>
@@ -32,7 +38,7 @@
         <rect>
          <x>9</x>
          <y>9</y>
-         <width>211</width>
+         <width>251</width>
          <height>181</height>
         </rect>
        </property>
@@ -145,10 +151,10 @@
       <widget class="QWidget" name="widget_2" native="true">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>200</y>
-         <width>211</width>
-         <height>91</height>
+         <x>40</x>
+         <y>190</y>
+         <width>221</width>
+         <height>81</height>
         </rect>
        </property>
        <property name="maximumSize">

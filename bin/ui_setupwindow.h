@@ -60,7 +60,12 @@ public:
     {
         if (SetupWindow->objectName().isEmpty())
             SetupWindow->setObjectName(QString::fromUtf8("SetupWindow"));
-        SetupWindow->resize(307, 357);
+        SetupWindow->resize(336, 356);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(SetupWindow->sizePolicy().hasHeightForWidth());
+        SetupWindow->setSizePolicy(sizePolicy);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/source/title.png"), QSize(), QIcon::Normal, QIcon::Off);
         SetupWindow->setWindowIcon(icon);
@@ -72,7 +77,7 @@ public:
         widget_3->setObjectName(QString::fromUtf8("widget_3"));
         widget = new QWidget(widget_3);
         widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(9, 9, 211, 181));
+        widget->setGeometry(QRect(9, 9, 251, 181));
         gridLayout_2 = new QGridLayout(widget);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         label_4 = new QLabel(widget);
@@ -129,7 +134,7 @@ public:
 
         widget_2 = new QWidget(widget_3);
         widget_2->setObjectName(QString::fromUtf8("widget_2"));
-        widget_2->setGeometry(QRect(10, 200, 211, 91));
+        widget_2->setGeometry(QRect(40, 190, 221, 81));
         widget_2->setMaximumSize(QSize(16777215, 200));
         pushButton_sure = new QPushButton(widget_2);
         pushButton_sure->setObjectName(QString::fromUtf8("pushButton_sure"));

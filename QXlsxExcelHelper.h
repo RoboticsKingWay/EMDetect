@@ -21,7 +21,7 @@ public:
         return instance;
     }
 
-    bool saveDataToExcel(const QVector<ChinnelData>& data, const QString& filePath)
+    bool saveDataToExcel(int size,double sensitivity,QString lable,double length,const QVector<ChinnelData>& data, const QString& filePath)
     {
         if(filePath == "")
         {
@@ -31,20 +31,29 @@ public:
         {
 
             QXlsx::Document doc = QXlsx::Document(filePath);
+            doc.write(1,1,"point_size");
+            doc.write(1,2,"sensitivity");
+            doc.write(1,3,"file_lable");
+            doc.write(1,4,"scan_length/mm");
+
+            doc.write(2,1,size);
+            doc.write(2,2,sensitivity);
+            doc.write(2,3,lable);
+            doc.write(2,4,length);
     //        for(int j = 1; j <= CH_NUM; j++)
     //        {
-                doc.write(1,1,"CH1");
-                doc.write(1,2,"CH2");
-                doc.write(1,3,"CH3");
-                doc.write(1,4,"CH4");
-                doc.write(1,5,"CH5");
-                doc.write(1,6,"CH6");
+                doc.write(3,1,"CH1");
+                doc.write(3,2,"CH2");
+                doc.write(3,3,"CH3");
+                doc.write(3,4,"CH4");
+                doc.write(3,5,"CH5");
+                doc.write(3,6,"CH6");
     //        }
             for(int i = 0; i < data.size(); i++)
             {
                 for(int j = 0; j < CH_NUM; j++)
                 {
-                    doc.write(i+2,j+1,data.at(i).mag_data.data[j]);
+                    doc.write(i+4,j+1,data.at(i).mag_data.data[j]);//从第4行开始写入数据
                 }
             }
             doc.save();
@@ -55,7 +64,7 @@ public:
             qDebug() << "saveDataToExcel Exception occurred: " << e.what();
         }
     }
-    bool readDataFromExcel(QVector<ChinnelData>& data, const QString& filePath)
+    bool readDataFromExcel(double& sensitivity,QString& lable,double& length,QVector<ChinnelData>& data, const QString& filePath)
     {
 
         int count = 0;
@@ -82,13 +91,17 @@ public:
                 QMessageBox::critical(nullptr, "Error", "work Sheet1 not exist!");
                 return false;
             }
+            int count_points = doc.read(2,1).toInt();
+            sensitivity      = doc.read(2,2).toDouble();
+            lable            = doc.read(2,3).toString();
+            length           = doc.read(2,4).toDouble();
             for(int i = 0; i < count -1; i++)
             {
                 ChinnelData item;
                 item.index = ++index;
                 for(int j = 0; j < CH_NUM; j++)
                 {
-                    item.mag_data.data[j] = doc.read(i+2,j+1).toInt();
+                    item.mag_data.data[j] = doc.read(i+4,j+1).toInt();//从第4行开始读取数据
                 }
                 data.append(item);
             }

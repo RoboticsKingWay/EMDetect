@@ -68,8 +68,10 @@ private slots:
     void on_lineEdit_textChanged(const QString &arg1);
 
     void on_pushButton_SerialSetup_clicked();
-
+signals:
+    void repaintImageView();
 private:
+    void onRepaintImageView();
     void setPushButtonEnable(); //
     void getImageColor();
     void drawImage(bool is_update);
