@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 //        ui->label_image->setGeometry(0, 0, ui->widget_image_view->width(), ui->widget_image_view->height());
 //        ui->label_image->resize(ui->widget_image_view->size());
 //        ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-//        ui->label_image->setAlignment(Qt::AlignCenter);
+        ui->label_image->setAlignment(Qt::AlignCenter);
 //        bit_map_ = QImage(ui->label_image->width(), ui->label_image->height(), QImage::Format_ARGB32);
         ui->label_image->installEventFilter(this);
         connect(this,&MainWindow::repaintImageView,this,&MainWindow::onRepaintImageView,Qt::QueuedConnection);
@@ -100,7 +100,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     //    int width = ui->widget_down->geometry().width();
     ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
     ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
-    ui->label_image->setGeometry(0, 0, ui->widget_image_view->width(), ui->widget_image_view->height());
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -115,7 +114,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter thePainter(this);
-//    draw_Depth_Image();
     ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
     ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
     event->accept();
@@ -135,22 +133,18 @@ void MainWindow::draw_Depth_Image()
     {
         qDebug()<<"draw_Depth_Image lock fialed.";
     }
-//    image.scaledToHeight(height);
-//    image.scaledToWidth(width);
-//    ui->label_image->setPixmap(QPixmap::fromImage(image).scaled(ui->label_image->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-//    ui->label_image->setPixmap(QPixmap::fromImage(image));
-    QPainter painter(ui->label_image);
-    if(painter.isActive())
-    {
-       painter.drawImage(0, 0, image);
-    }
-
+    ui->label_image->setPixmap(QPixmap::fromImage(image));
+//    qDebug()<<"image w_h:"<<image.width()<<" "<<image.height();
+//    QPainter painter(ui->label_image);
+//    if(painter.isActive())
+//    {
+//       painter.drawImage(0, 0, image);
+//    }
 }
 
 void MainWindow::updateData()
 {
     static int serial_state = E_SERIAL_CLOSE;
-//    qDebug()<<QDateTime::currentDateTime();
     QVector<ChinnelData> draw_list = manager_ptr_->getDrawData();
 
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
@@ -197,9 +191,6 @@ void MainWindow::setPushButtonEnable()
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_4->setEnabled(false);
         ui->pushButton_SerialSetup->setEnabled(false);
-//        ui->pushButton->setStyleSheet("QPushButton {"
-//                              "  background-color: #eee;"
-//                              "}");
         break;
     }
     case E_ACTION_STOP:  // 停止采集
@@ -332,7 +323,6 @@ void MainWindow::on_pushButton_3_clicked()
     {
         if(source_view_ptr_)
         {
-            qDebug()<<"new timer_draw_total_ start ";
             ui->tabWidget->setCurrentIndex(1);
             source_view_ptr_->resetSerials();
             count_size_blk_ = 0;
@@ -368,14 +358,14 @@ void MainWindow::drawImageViewThread()
     {
         if(is_calc_start_)
         {
-            qDebug()<<"start drawImageViewThread "<<QDateTime::currentDateTime();
+            qDebug()<<">>> start drawImageViewThread <<<<"<<QDateTime::currentDateTime();
             calcDetectData();
             drawImage(true);
             emit repaintImageView();
             action_state_ = E_ACTION_STOP;
             setPushButtonEnable();
             is_calc_start_ = false;
-            qDebug()<<"new drawImageViewThread finished."<<QDateTime::currentDateTime();
+            qDebug()<<">>>> new drawImageViewThread finished.<<<<<"<<QDateTime::currentDateTime();
         }
         QThread::msleep(100);
     }
@@ -406,8 +396,7 @@ void MainWindow::drawImage(bool is_update)
     height_ = ui->label_image->height();
 
     QImage bit_map = QImage(width_, height_, QImage::Format_ARGB32);
-//    bit_map.fill(Qt::white); // Fill the bitmap with blue color
-
+    bit_map.fill(Qt::white); // Fill the bitmap with blue color
     if(draw_image_data_.size() <= 0 || draw_image_data_[0].size() <= 0)
     {
         return;
@@ -509,7 +498,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 //        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
         y1 = (float)(this->height_ * (1 - (y0 + k * H / 3) - 0.05));
         //g.DrawString((k * widthOfPiece / 5).ToString("0"), font, brush, x1, y1);
-        painter.drawText(x1+1, y1,QString("CH")+QString::number(k));
+        painter.drawText(x1+3, y1,QString("CH")+QString::number(k));
     }
 }
 
@@ -544,9 +533,9 @@ void MainWindow::Contourf(long intM, long intN, double Xmax, double Ymax,QPainte
     {
         for (long j = 0; j < intN; j++)
         {
-            CurrentX = (double)(bit_map_.width() * (x0 + j * picDX));
+            CurrentX = (double)(width_ * (x0 + j * picDX));
             // CurrentY = (float)(this->height_ * (1 - (y0 + 0.0625 + i * picDY)));
-            CurrentY = (double)(bit_map_.height() * (0.925 - i * picDY));
+            CurrentY = (double)(height_ * (0.925 - i * picDY));
 //            DDX = (double)(bit_map_.width() * picDX);
 //            DDY = (double)(bit_map_.height() * picDY);
 
@@ -557,15 +546,12 @@ void MainWindow::Contourf(long intM, long intN, double Xmax, double Ymax,QPainte
             }
             if(p < 0 || p > 64)
             {
-//                qDebug()<<" color index out of range p = "<<p;
                 p = 0;
             }
 
             QBrush brush = QBrush(yellowGradient_[p]);
             painter.fillRect(CurrentX, CurrentY, DDX, DDY,brush);
         }
-//        qDebug()<<" color index p: "<<p<<yellowGradient_[p]<<" color:"\
-//                 <<yellowGradient_[p].red() << yellowGradient_[p].green() << yellowGradient_[p].blue()<<yellowGradient_[p].alpha();
     }
 }
 

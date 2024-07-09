@@ -95,7 +95,7 @@ public:
             sensitivity      = doc.read(2,2).toDouble();
             lable            = doc.read(2,3).toString();
             length           = doc.read(2,4).toDouble();
-            for(int i = 0; i < count -1; i++)
+            for(int i = 0; i < count -3; i++)
             {
                 ChinnelData item;
                 item.index = ++index;

@@ -402,6 +402,7 @@ private:
                 }
             }
         }
+        qDebug()<<"serial thread exit.";
     }
 
 private:

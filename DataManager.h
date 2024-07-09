@@ -36,9 +36,8 @@ public:
         {
             is_runing_ = false;
             this->quit();
-            this->wait(100);
+            this->wait();
         }
-//        CoUninitialize();
     }
     void setSaveParam(double sensitivity,QString label,double scan_length)
     {
@@ -122,6 +121,7 @@ private:
             }
             QThread::msleep(100);
         }
+        qDebug()<<"execl data thread exit.";
     }
 private:
     bool is_runing_ {false};
