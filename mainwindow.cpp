@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
       ui->comboBox->addItem(QString::number(sensitive));
     }
     list_draw_src_data_.clear();
+    ui->tabWidget->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
@@ -452,7 +453,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 
     QPen pen = QColor(0,0,0);
     pen.setWidth(1);
-    painter.setFont(QFont("Arial", 4));
+    painter.setFont(QFont("Arial", 6));
     painter.setPen(pen);
     //        g.DrawRectangle(blackPen, x, y, width, height);
     float x1, x2, y1, y2;
@@ -498,7 +499,7 @@ void MainWindow::picContour(QPainter& painter,bool is_update)
 //        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
         y1 = (float)(this->height_ * (1 - (y0 + k * H / 3) - 0.05));
         //g.DrawString((k * widthOfPiece / 5).ToString("0"), font, brush, x1, y1);
-        painter.drawText(x1+3, y1,QString("CH")+QString::number(k));
+        painter.drawText(x1+5, y1,QString("CH")+QString::number(k));
     }
 }
 

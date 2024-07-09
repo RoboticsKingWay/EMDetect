@@ -219,7 +219,7 @@
         </font>
        </property>
        <attribute name="title">
-        <string>梯度曲线</string>
+        <string>数据处理</string>
        </attribute>
        <widget class="QWidget" name="widget_tab_2" native="true">
         <property name="geometry">
