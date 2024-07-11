@@ -29,6 +29,7 @@ debug/xlsxabstractooxmlfile.o
 debug/xlsxchart.o
 debug/xlsxsimpleooxmlfile.o
 debug/xlsxcellformula.o
+debug/calibrateview.o
 debug/main.o
 debug/mainwindow.o
 debug/setupwindow.o
@@ -40,6 +41,7 @@ debug/moc_QXlsxExcelHelper.o
 debug/moc_RealTimeChartView.o
 debug/moc_SerialPortManager.o
 debug/moc_ZoomableChartView.o
+debug/moc_calibrateview.o
 debug/moc_mainwindow.o
 debug/moc_setupwindow.o
 debug/moc_sourceview.o

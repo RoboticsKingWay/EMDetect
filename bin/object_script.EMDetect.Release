@@ -29,6 +29,7 @@ release/xlsxabstractooxmlfile.o
 release/xlsxchart.o
 release/xlsxsimpleooxmlfile.o
 release/xlsxcellformula.o
+release/calibrateview.o
 release/main.o
 release/mainwindow.o
 release/setupwindow.o
@@ -40,6 +41,7 @@ release/moc_QXlsxExcelHelper.o
 release/moc_RealTimeChartView.o
 release/moc_SerialPortManager.o
 release/moc_ZoomableChartView.o
+release/moc_calibrateview.o
 release/moc_mainwindow.o
 release/moc_setupwindow.o
 release/moc_sourceview.o

@@ -11,6 +11,7 @@ CONFIG += c++17
 #RC_ICONS += source/res/title.icon
 include(./src/xlsx/qtxlsx.pri)
 SOURCES += \
+    calibrateview.cpp \
     main.cpp \
     mainwindow.cpp\
     setupwindow.cpp
@@ -31,6 +32,7 @@ HEADERS += \
     calc/CFunction.h \
     calc/Chasing.h \
     calc/SPLine.h \
+    calibrateview.h \
     chinnelview.h \
     imageview.h \
     mainwindow.h\
@@ -38,6 +40,7 @@ HEADERS += \
     sourceview.h
 
 FORMS += \
+    calibrateview.ui \
     mainwindow.ui \
     setupwindow.ui
 

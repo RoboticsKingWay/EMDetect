@@ -124,17 +124,6 @@ public:
 //            delete layout_;
 //        }
     }
-    void setParentLayout(QWidget *parent)
-    {
-        parent_view_ptr_ = parent;
-        layout_ = new QVBoxLayout(parent_view_ptr_);
-        layout_->setAlignment(Qt::AlignCenter);
-        parent_view_ptr_->setLayout(layout_);
-        if(chart_view_)
-        {
-            layout_->addWidget(chart_view_);
-        }
-    }
     void releaseView()
     {
         for(int i = 0; i < CH_NUM; i++)
@@ -184,9 +173,8 @@ public:
         chart_view_->setResizeAnchor(QGraphicsView::AnchorUnderMouse); // 设置缩放锚点
 
         layout_ = new QVBoxLayout(parent_view_ptr_);
-        // 将ChartView添加到布局中，并设置填充和居中
-        layout_->addWidget(chart_view_);
         layout_->setAlignment(Qt::AlignCenter);
+        layout_->addWidget(chart_view_);
         parent_view_ptr_->setLayout(layout_);
         //创建坐标轴
         axisX_ = new QValueAxis;
@@ -194,13 +182,13 @@ public:
         axisX_->setRange(0,100);
         axisX_->setTitleText("点数计数");
 
-        axisY_->setRange(-0.0, -40.0);
+        axisY_->setRange(40.0, -40.0);
         axisY_->setTitleText("磁场强度nT");
         //创建折线序列
         for(int i = 0; i < CH_NUM; i++)
         {
             seriess_[i] = new QtCharts::QLineSeries();
-            seriess_[i]->setName(QString("ch%1").arg(i+1));
+            seriess_[i]->setName(QString("通道%1").arg(i+1));
             QPen pen(serial_color_list[i]);
             pen.setWidth(1);
             seriess_[i]->setPen(pen);
@@ -211,13 +199,7 @@ public:
             chart_->setAxisY(axisY_,seriess_[i]);
         }
     }
-    void addWidget()
-    {
-        if(layout_ && chart_view_)
-        {
-            layout_->addWidget(chart_view_);
-        }
-    }
+
 public slots:
     void resetSerials()
     {
@@ -233,9 +215,7 @@ public slots:
         count_source_points_ = 0;
     }
 protected:
-    QColor serial_color_list[CH_NUM] = {
-                                QColor(255,0,0),QColor(0,100,0),QColor(0,0,100),
-                                QColor(139,0,139),QColor(140,10,10),QColor(0,0,10)};
+    QColor serial_color_list[CH_NUM] = {QColor(0,0,0),QColor(0,100,0)};
     QtCharts::QLineSeries* seriess_[CH_NUM] = {nullptr};
     bool ch_is_on_[CH_NUM] = {false};
     double ymin_[CH_NUM];

@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QThread>
 #include "setupwindow.h"
+#include "calibrateview.h"
 #include "SerialPortManager.h"
 #include "RealTimeChartView.h"
 #include "imageview.h"
@@ -34,27 +35,10 @@ protected:
 
 private slots:
     void onSerialState(int state);
-    void on_action_serial_triggered();
-
-    void on_action_save_triggered();
-
-    void on_action_saveas_triggered();
-
-    void on_action_setup_other_triggered();
-
-    void on_tabWidget_tabBarClicked(int index);
-
-    void on_checkBox_3_stateChanged(int arg1);
 
     void on_checkBox_2_stateChanged(int arg1);
 
     void on_checkBox_stateChanged(int arg1);
-
-    void on_checkBox_4_stateChanged(int arg1);
-
-    void on_checkBox_6_stateChanged(int arg1);
-
-    void on_checkBox_5_stateChanged(int arg1);
 
     void on_pushButton_clicked();
 
@@ -62,16 +46,27 @@ private slots:
 
     void on_pushButton_4_clicked();
 
-    void onOpenExcelClicked();
     void on_pushButton_2_clicked();
 
     void on_lineEdit_textChanged(const QString &arg1);
 
     void on_pushButton_SerialSetup_clicked();
+    void on_checkBox_upline_stateChanged(int arg1);
+
+    void on_checkBox_3_stateChanged(int arg1);
+
+    void on_action_serialSetup_triggered();
+
+    void on_action_thresholdSetup_triggered();
+
+    void on_action_outside_triggered();
+
+    void on_action_inside_triggered();
+
 signals:
-    void repaintImageView();
+
 private:
-    void onRepaintImageView();
+
     void setPushButtonEnable(); //
     void getImageColor();
     void drawImage(bool is_update);
@@ -80,8 +75,6 @@ private:
     void draw_Depth_Image();
     void calcDetectData();
     void drawFileView();
-    void drawImageView();
-    void drawImageViewNew();
     void drawImageViewThread();
 private:
     Ui::MainWindow *ui {nullptr};
@@ -90,6 +83,7 @@ private:
 //    ImageView* image_view_ptr_ {nullptr}; // 暂时不用在主页绘制图像
 //    ImageViewNew* image_view_new_ptr_ {nullptr}; // 暂时不用在主页绘制图像
     SetupWindow* setup_win_ptr_ {nullptr};
+    CalibrateView* calibrate_view_ {nullptr};
 
     QTimer timer_;
     QTimer timer_draw_total_;

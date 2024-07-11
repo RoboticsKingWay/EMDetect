@@ -69,7 +69,7 @@ public:
         {
             if(is_opened_ && is_pause_ == false)
             {
-                QMessageBox::critical(nullptr, "Error", "重连失败,请先停止采集再重连!");
+                QMessageBox::critical(nullptr, "Error", "操作失败,请先停止采集动作!");
                 return false;
             }
             closePort();
@@ -138,15 +138,13 @@ public:
                 {
                     QString stringA = match.captured(1); // 获取匹配到的字符串 A
                     QStringList list = stringA.split(",");
-                    if(list.size() == CH_NUM)
+                    if(list.size() == CH_NUM || list.size() == 6)
                     {
                         ChinnelMagData ch_data;
-                        ch_data.data[0] = list.at(0).toInt()/SCALE_SIZE;
-                        ch_data.data[1] = list.at(1).toInt()/SCALE_SIZE;
-                        ch_data.data[2] = list.at(2).toInt()/SCALE_SIZE;
-                        ch_data.data[3] = list.at(3).toInt()/SCALE_SIZE;
-                        ch_data.data[4] = list.at(4).toInt()/SCALE_SIZE;
-                        ch_data.data[5] = list.at(5).toInt()/SCALE_SIZE;
+                        for(int i = 0; i < CH_NUM; i++)
+                        {
+                            ch_data.data[i] = list.at(i).toInt()/SCALE_SIZE;
+                        }
                         data_src_list_.push_back(ChinnelData(++count_index_,ch_data));
                     }
                     else
@@ -184,12 +182,10 @@ public:
                 {
                     ChinnelData data;
                     data.index = data_src_list_[start + i].index;
-                    data.mag_data.data[0] = data_src_list_[start + i].mag_data.data[0];
-                    data.mag_data.data[1] = data_src_list_[start + i].mag_data.data[1];
-                    data.mag_data.data[2] = data_src_list_[start + i].mag_data.data[2];
-                    data.mag_data.data[3] = data_src_list_[start + i].mag_data.data[3];
-                    data.mag_data.data[4] = data_src_list_[start + i].mag_data.data[4];
-                    data.mag_data.data[5] = data_src_list_[start + i].mag_data.data[5];
+                    for(int j = 0; j < CH_NUM; j++)
+                    {
+                        data.mag_data.data[j] = data_src_list_[start + i].mag_data.data[j];
+                    }
                     data_add_list_.push_back(data);
                 }
             }

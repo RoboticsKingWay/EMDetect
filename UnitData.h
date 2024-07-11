@@ -8,7 +8,7 @@
 //#define DRAW_ADD_SIZE 20    // 实时图绘制增量20个数据
 #define DRAW_MAX_SIZE 300   // 实时图绘制最多300个点数据
 //#define SRC_MAX_SIZE 12000   // 最大存储源数据个数
-#define CH_NUM 6
+#define CH_NUM 2
 #define ZOOM_NUM 1.15
 
 #define LENGTH_TO_POINT   40 // 1mm扫查长度对应点数，扫查平均速率
@@ -42,6 +42,21 @@ struct SerialParam
     int stopbit;
     int action;
 };
+// 缺陷类型
+enum EMDETECTION_TYPE:int
+{
+    E_DETECTION_OUTER = 0,
+    E_DETECTION_INNER
+};
+
+struct DetectDeclaerParam
+{
+    QString label; // 缺陷编号
+    int dete_type; // 缺陷类型
+    double length; // 缺陷宽度
+    double depth;  // 缺陷深度
+    double equivalent; // 缺陷当量
+};
 
 struct ScanThreshold
 {
@@ -64,8 +79,6 @@ struct ChinnelMagData
 {
     int data[CH_NUM];
 };
-
-
 
 struct ChinnelData
 {
