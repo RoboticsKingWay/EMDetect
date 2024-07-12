@@ -46,15 +46,24 @@ public:
         sensitivity_ = sensitivity;
     }
 
-    bool saveDataToFile(double sensitivity,QString lable,double len,QVector<ChinnelData>& list)
+    bool saveDataToFile(double sensitivity,QString lable,double len,QVector<ChinnelData>& list,QString dir = "")
     {
-        QString file_dir = saveas_dir_;
-        QString prefix = lable+ "_" + QString::number(len)+"_" + QString::number(sensitivity);
-//        file_label_ = lable;
-//        file_scan_length_ = len;
-//        sensitivity_ = sensitivity;
-        QString file_name = generateTimeBasedFileName(prefix,".xlsx");
-        file_dir += file_name;
+
+        QString file_dir;
+        if(dir == "")
+        {
+           file_dir = saveas_dir_;
+            QString prefix = lable+ "_" + QString::number(len)+"_" + QString::number(sensitivity);
+    //        file_label_ = lable;
+    //        file_scan_length_ = len;
+    //        sensitivity_ = sensitivity;
+            QString file_name = generateTimeBasedFileName(prefix,".xlsx");
+            file_dir += file_name;
+        }
+        else
+        {
+            file_dir = dir;
+        }
         return QXlsxExcelHelper::getInstance().saveDataToExcel(list.size(),sensitivity,file_label_,len,list,file_dir);
     }
 

@@ -133,39 +133,17 @@ public:
         {
             ymax *= ZOOM_NUM;
         }
+        ymax_value_ = ymax;
+        ymin_value_ = ymin;
+        int x_since = count_points_ - DRAW_MAX_SIZE - draw_add_size_;
+        int x_to    = count_points_ + draw_add_size_;
+        //          axisX_->setTitleText("点数计数10^3");
+        //            axisX_->setTitleText("磁场强度nT");
+        updateThresholdLine(x_since,x_to);
         if(is_init)
         {
-            int x_since = count_points_ - DRAW_MAX_SIZE - draw_add_size_;
-            int x_to    = count_points_ + draw_add_size_;
-
-//          axisX_->setTitleText("点数计数10^3");
             axisX_->setRange(x_since, x_to);
             axisY_->setRange(ymin, ymax);
-//            axisX_->setTitleText("磁场强度nT");
-            if(!b_up_move_to_)
-            {
-                move_upline_to_   = ymax;
-            }
-            if(!b_down_move_to_)
-            {
-                move_downline_to_ = ymin;
-            }
-
-            int y_up_value   = move_upline_to_   + move_up_count_   * setp_move_for_line_;
-            int y_down_value = move_downline_to_ + move_down_count_ * setp_move_for_line_;
-
-            threshold_up_line_[0]   = QPointF(x_since, y_up_value);
-            threshold_up_line_[1]   = QPointF(x_to, y_up_value);
-            threshold_down_line_[0] = QPointF(x_since, y_down_value);
-            threshold_down_line_[1] = QPointF(x_to, y_down_value);
-        }
-        if(b_upline_show_)
-        {
-            threshold_serials_[0]->replace(threshold_up_line_);
-        }
-        if(b_downline_show_)
-        {
-            threshold_serials_[1]->replace(threshold_down_line_);
         }
     }
 
@@ -214,44 +192,149 @@ public:
     {
         b_downline_show_ = show;
     }
+    void updateThresholdLine(qreal x_since, qreal x_to)
+    {
+        if(!b_up_move_to_)
+        {
+            move_upline_to_   = ymax_value_;
+        }
+        if(!b_down_move_to_)
+        {
+            move_downline_to_ = ymin_value_;
+        }
+
+        int y_up_value   = move_upline_to_   + move_up_count_   * setp_move_for_line_;
+        int y_down_value = move_downline_to_ + move_down_count_ * setp_move_for_line_;
+
+        threshold_up_line_[0]   = QPointF(x_since, y_up_value);
+        threshold_up_line_[1]   = QPointF(x_to, y_up_value);
+        threshold_down_line_[0] = QPointF(x_since, y_down_value);
+        threshold_down_line_[1] = QPointF(x_to, y_down_value);
+        if(b_upline_show_)
+        {
+            threshold_serials_[0]->replace(threshold_up_line_);
+        }
+        if(b_downline_show_)
+        {
+            threshold_serials_[1]->replace(threshold_down_line_);
+        }
+    }
+    /*******************************************************/
+    void setViewChinnelRange()
+    {
+        qreal ymin = 0.0;
+        qreal ymax = 0.0;
+
+        ymin = 1000000.0;
+        ymax = -1000000.0;
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            ymin = std::min(ymin_[i],ymin);
+            ymax = std::max(ymax_[i],ymax);
+        }
+        if(ymin < 0)
+        {
+            ymin *= ZOOM_NUM;
+        }
+        else
+        {
+            ymin /= ZOOM_NUM;
+
+        }
+        if(ymax < 0)
+        {
+            ymax /= ZOOM_NUM;
+        }
+        else
+        {
+            ymax *= ZOOM_NUM;
+        }
+        ymax_value_ = ymax;
+        ymin_value_ = ymin;
+
+        int x_since = -10;
+        int x_to    = count_source_points_ + 10;
+        updateThresholdLine(x_since,x_to);
+        axisX_->setRange(x_since, x_to);
+        axisY_->setRange(ymin, ymax);
+    }
+
+    void updateChinnelView(QVector<ChinnelData>& draw_list)
+    {
+        if(0 >= draw_list.size())
+        {
+            return;
+        }
+        qreal ymin = 1000000.0;
+        qreal ymax = -1000000.0;
+        for(int i = 0; i < CH_NUM; i++)
+        {
+            int x = count_source_points_;
+            QList<QPointF> points;
+            for (int j = 0; j< draw_list.size(); j++)
+            {
+                points.append(QPointF(x++,(qreal)draw_list[j].mag_data.data[i]));
+                //seriess_[i]->append(x++, (qreal)drawItem.mag_data.data[i]);
+                ymin = std::min(ymin, (qreal)draw_list[j].mag_data.data[i]);
+                ymax = std::max(ymax, (qreal)draw_list[j].mag_data.data[i]);
+            }
+            seriess_[i]->append(points);
+            ymin_[i] = std::min(ymin,ymin_[i]);
+            ymax_[i] = std::max(ymax,ymax_[i]);
+            //            qDebug()<<"ymin_:"<<ymin_[i]<<"  ymax_:"<<ymax_[i];
+        }
+        count_source_points_ += draw_list.size();
+        qDebug()<<"chartview count_source_points_:"<<count_source_points_<<QDateTime::currentDateTime();
+    }
+    /*******************************************************/
 public slots:
     void on_uplinePlus()
     {
         move_up_count_++;
+        updateThresholdLine(threshold_up_line_[0].x(),threshold_up_line_[1].x());
     }
     void on_uplineDe()
     {
         move_up_count_--;
+        updateThresholdLine(threshold_up_line_[0].x(),threshold_up_line_[1].x());
     }
     void on_uplineMoveto(double y_to)
     {
         move_upline_to_ = y_to;
         b_up_move_to_ = true;
+        move_up_count_ = 0;
+        updateThresholdLine(threshold_up_line_[0].x(),threshold_up_line_[1].x());
     }
     void on_uplineReset()
     {
         move_upline_to_ = 0;
         b_up_move_to_ = false;
         move_up_count_ = 0;
+        updateThresholdLine(threshold_up_line_[0].x(),threshold_up_line_[1].x());
     }
     void on_downlinePlus()
     {
         move_down_count_++;
+        updateThresholdLine(threshold_down_line_[0].x(),threshold_down_line_[1].x());
     }
     void on_downlineDe()
     {
         move_down_count_--;
+        updateThresholdLine(threshold_down_line_[0].x(),threshold_down_line_[1].x());
     }
     void on_downlineMoveto(double y_to)
     {
         move_downline_to_ = y_to;
         b_down_move_to_ = true;
+        move_down_count_ = 0;
+        updateThresholdLine(threshold_down_line_[0].x(),threshold_down_line_[1].x());
     }
     void on_downlineReset()
     {
         move_upline_to_ = 0;
         b_down_move_to_ = false;
         move_down_count_ = 0;
+        updateThresholdLine(threshold_down_line_[0].x(),threshold_down_line_[1].x());
     }
 private:
     int count_points_ = 0;
@@ -267,6 +350,8 @@ private:
     QVector<QPointF> threshold_up_line_;
     QVector<QPointF> threshold_down_line_;
     const int setp_move_for_line_ = 100;
+    double ymax_value_ {26000};
+    double ymin_value_{20000};
 };
 
 #endif // REALTIMECHARTVIEW_H

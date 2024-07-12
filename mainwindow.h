@@ -63,6 +63,8 @@ private slots:
 
     void on_action_inside_triggered();
 
+    void on_action_filesave_triggered();
+
 signals:
 
 private:

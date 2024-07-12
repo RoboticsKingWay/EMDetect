@@ -2183,7 +2183,7 @@ debug/moc_calibrateview.cpp: ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qcontiguouscache.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsharedpointer.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsharedpointer_impl.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVector \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QTabWidget \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtabwidget.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtwidgetsglobal.h \
@@ -2226,6 +2226,7 @@ debug/moc_calibrateview.cpp: ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtouchdevice.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qicon.h \
 		../UnitData.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVector \
 		../DetectSettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
@@ -2374,6 +2375,7 @@ debug/moc_mainwindow.cpp: ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qmessagebox.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdialog.h \
 		../calibrateview.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		../SerialPortManager.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtSerialPort/QSerialPort \
 		C:/Qt/5.15.2/mingw81_64/include/QtSerialPort/qserialport.h \
@@ -2852,7 +2854,6 @@ debug/moc_mainwindow.cpp: ../mainwindow.h \
 		../src/xlsx/xlsxcell.h \
 		../src/xlsx/xlsxcellrange.h \
 		../src/xlsx/xlsxcellreference.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		../src/xlsx/xlsxworkbook.h \
 		../DataManager.h \
 		debug/moc_predefs.h \
@@ -6474,7 +6475,7 @@ debug/calibrateview.o: ../calibrateview.cpp ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qcontiguouscache.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsharedpointer.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsharedpointer_impl.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVector \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QTabWidget \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtabwidget.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtwidgetsglobal.h \
@@ -6517,6 +6518,7 @@ debug/calibrateview.o: ../calibrateview.cpp ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtouchdevice.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtGui/qicon.h \
 		../UnitData.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVector \
 		../DetectSettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
@@ -6664,6 +6666,7 @@ debug/main.o: ../main.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qmessagebox.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdialog.h \
 		../calibrateview.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		../SerialPortManager.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtSerialPort/QSerialPort \
 		C:/Qt/5.15.2/mingw81_64/include/QtSerialPort/qserialport.h \
@@ -7142,7 +7145,6 @@ debug/main.o: ../main.cpp ../mainwindow.h \
 		../src/xlsx/xlsxcell.h \
 		../src/xlsx/xlsxcellrange.h \
 		../src/xlsx/xlsxcellreference.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		../src/xlsx/xlsxworkbook.h \
 		../DataManager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/main.o ../main.cpp
@@ -7279,6 +7281,7 @@ debug/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qmessagebox.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdialog.h \
 		../calibrateview.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		../SerialPortManager.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtSerialPort/QSerialPort \
 		C:/Qt/5.15.2/mingw81_64/include/QtSerialPort/qserialport.h \
@@ -7757,7 +7760,6 @@ debug/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../src/xlsx/xlsxcell.h \
 		../src/xlsx/xlsxcellrange.h \
 		../src/xlsx/xlsxcellreference.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/QMap \
 		../src/xlsx/xlsxworkbook.h \
 		../DataManager.h \
 		ui_mainwindow.h \

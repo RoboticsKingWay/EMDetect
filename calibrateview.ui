@@ -23,7 +23,7 @@
     <normaloff>:/source/title.png</normaloff>:/source/title.png</iconset>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab">
    <attribute name="title">
@@ -321,7 +321,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>120</width>
+             <width>32</width>
              <height>20</height>
             </size>
            </property>

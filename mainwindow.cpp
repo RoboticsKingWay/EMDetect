@@ -322,10 +322,10 @@ void MainWindow::on_pushButton_3_clicked()
     }
     if(list_draw_src_data_.size() > 0)
     {
-        if(source_view_ptr_)
+        if(chartview_ptr_)
         {
 //            ui->tabWidget->setCurrentIndex(1);
-            source_view_ptr_->resetSerials();
+            chartview_ptr_->resetSerials();
             count_size_blk_ = 0;
             timer_draw_total_.start(200);
             // source_view_ptr_->darwChinnelView(list_draw_src_data_);
@@ -357,6 +357,9 @@ void MainWindow::drawImageViewThread()
             qDebug()<<">>> start drawImageViewThread <<<<"<<QDateTime::currentDateTime();
 
             qDebug()<<">>>> new drawImageViewThread finished.<<<<<"<<QDateTime::currentDateTime();
+            is_calc_start_ = false;
+            action_state_ = E_ACTION_STOP;
+            setPushButtonEnable();
         }
         QThread::msleep(100);
     }
@@ -644,14 +647,14 @@ void MainWindow::drawFileView()
     {
         draw_list = list_draw_src_data_.mid(count_size_blk_*copy_size);
         timer_draw_total_.stop();
-        source_view_ptr_->updateChinnelView(draw_list);
-        source_view_ptr_->setChinnelRange();
+        chartview_ptr_->updateChinnelView(draw_list);
+        chartview_ptr_->setViewChinnelRange();
         qDebug()<<"draw file view finished."<<QDateTime::currentDateTime();
     }
     else
     {
         draw_list = list_draw_src_data_.mid(count_size_blk_*copy_size,copy_size);
-        source_view_ptr_->updateChinnelView(draw_list);
+        chartview_ptr_->updateChinnelView(draw_list);
     }
 //    ui->widget_real_total_view->repaint();
     count_size_blk_++;
@@ -791,6 +794,24 @@ void MainWindow::on_action_inside_triggered()
     {
         calibrate_view_->setCurrentIndex(1);
         calibrate_view_->showNormal();
+    }
+}
+
+
+void MainWindow::on_action_filesave_triggered()
+{
+
+    // 创建文件对话框
+    QString fileName = QFileDialog::getSaveFileName(
+        nullptr,
+        "Save File", // 初始目录
+        "detect_source.xlsx", // 默认文件名
+        "Text Files (*.xlsx);;All Files (*)"); // 文件过滤器
+
+    if (!fileName.isEmpty())
+    {
+        data_manager_ptr_->saveDataToFile(ui->comboBox->currentText().toDouble(),ui->lineEdit->text(),\
+                                            ui->lineEdit_2->text().toDouble(), list_draw_src_data_);
     }
 }
 
