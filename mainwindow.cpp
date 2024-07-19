@@ -155,7 +155,12 @@ void MainWindow::updateData()
         {
             chartview_ptr_->updateChinnelView(draw_list,i,is_chinnel_on_[i]);
         }
-        chartview_ptr_->setChinnelRange();
+        chartview_ptr_->setChinnelRange(draw_list.size());
+    }
+    if(source_view_ptr_ && draw_list.size())
+    {
+        source_view_ptr_->updateChinnelView(draw_list);
+        source_view_ptr_->setViewChinnelRange();
     }
     if(manager_ptr_ && serial_state != manager_ptr_->getHeartbeatState())
     {
@@ -265,7 +270,7 @@ void MainWindow::on_pushButton_clicked()
         list_draw_src_data_.clear();
         manager_ptr_->clearSrcListData();
         chartview_ptr_->resetSerials();
-//        source_view_ptr_->resetSerials();
+        source_view_ptr_->resetSerials();
         manager_ptr_->setSerialPause(false);
         ui->pushButton->setText("停止");
         setPushButtonEnable();
@@ -324,11 +329,13 @@ void MainWindow::on_pushButton_3_clicked()
     {
         if(chartview_ptr_)
         {
-//            ui->tabWidget->setCurrentIndex(1);
             chartview_ptr_->resetSerials();
             count_size_blk_ = 0;
-            timer_draw_total_.start(200);
-            // source_view_ptr_->darwChinnelView(list_draw_src_data_);
+            timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
+        }
+        if(source_view_ptr_)
+        {
+            source_view_ptr_->resetSerials();
         }
         if(!thread_calc_ptr_)
         {
@@ -340,7 +347,6 @@ void MainWindow::on_pushButton_3_clicked()
             setPushButtonEnable();
             is_calc_start_ = true;
         }
-        // calc_thread_ptr->detach();
     }
 
 }
@@ -594,11 +600,11 @@ void MainWindow::on_pushButton_4_clicked()
 //        QMessageBox::warning(this, "Error", "扫查长度或灵敏度未设置!");
 //        return;
 //    }
-//    if(action_state_ == E_ACTION_ST)
-//    {
-//        QMessageBox::warning(this, "warning", "请先停止采集操作!");
-//        return;
-//    }
+    if(action_state_ == E_ACTION_ST)
+    {
+        QMessageBox::warning(this, "warning", "请先停止采集操作!");
+        return;
+    }
     QString filePath = QFileDialog::getOpenFileName(this, "Open Excel File", "", "Excel Files (*.xlsx)");
     if (!filePath.isEmpty())
     {
@@ -614,12 +620,15 @@ void MainWindow::on_pushButton_4_clicked()
 //        ui->lineEdit->setText(file_label);
 //        ui->lineEdit_2->setText(QString::number(scan_length));
         qDebug()<<"read file ok."<<QDateTime::currentDateTime();
-        if(source_view_ptr_)
+        if(chartview_ptr_)
         {
-            source_view_ptr_->resetSerials();
-//            ui->tabWidget->setCurrentIndex(1);
+//            if(source_view_ptr_)
+//            {
+//                source_view_ptr_->resetSerials();
+//            }
+            chartview_ptr_->resetSerials();
             count_size_blk_ = 0;
-            timer_draw_total_.start(200);
+            timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
             if(!thread_calc_ptr_)
             {
                 thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
@@ -649,12 +658,15 @@ void MainWindow::drawFileView()
         timer_draw_total_.stop();
         chartview_ptr_->updateChinnelView(draw_list);
         chartview_ptr_->setViewChinnelRange();
+//        source_view_ptr_->updateChinnelView(draw_list);
+//        source_view_ptr_->setViewChinnelRange();
         qDebug()<<"draw file view finished."<<QDateTime::currentDateTime();
     }
     else
     {
         draw_list = list_draw_src_data_.mid(count_size_blk_*copy_size,copy_size);
-        chartview_ptr_->updateChinnelView(draw_list);
+//        chartview_ptr_->updateChinnelView(draw_list);
+        source_view_ptr_->updateChinnelView(draw_list);
     }
 //    ui->widget_real_total_view->repaint();
     count_size_blk_++;
@@ -800,7 +812,22 @@ void MainWindow::on_action_inside_triggered()
 
 void MainWindow::on_action_filesave_triggered()
 {
+    if(action_state_ == E_ACTION_ST)
+    {
+        QMessageBox::warning(this, "warning", "请先停止采集操作!");
+        return;
+    }
+    if(ui->lineEdit->text() == ""||ui->lineEdit_2->text() == "")
+    {
 
+        QMessageBox::warning(this, "warning", "请设置保存标签或扫查长度!");
+        return;
+    }
+    if(list_draw_src_data_.size() <= 0)
+    {
+        QMessageBox::information(this,"info:","没有可保存的数据");
+        return;
+    }
     // 创建文件对话框
     QString fileName = QFileDialog::getSaveFileName(
         nullptr,
@@ -811,7 +838,7 @@ void MainWindow::on_action_filesave_triggered()
     if (!fileName.isEmpty())
     {
         data_manager_ptr_->saveDataToFile(ui->comboBox->currentText().toDouble(),ui->lineEdit->text(),\
-                                            ui->lineEdit_2->text().toDouble(), list_draw_src_data_);
+                                            ui->lineEdit_2->text().toDouble(), list_draw_src_data_,fileName);
     }
 }
 

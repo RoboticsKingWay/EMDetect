@@ -54,3 +54,7 @@ RESOURCES += \
 
 #DISTFILES += \
 #    src/xlsx/qtxlsx.pri
+
+DISTFILES += \
+    bin/config/detect.ini \
+    release/release/config/detect.ini

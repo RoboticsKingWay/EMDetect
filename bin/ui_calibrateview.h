@@ -390,7 +390,7 @@ public:
 
         retranslateUi(CalibrateView);
 
-        CalibrateView->setCurrentIndex(0);
+        CalibrateView->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(CalibrateView);
@@ -409,9 +409,9 @@ public:
         label_11->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
         label_4->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\346\267\261\345\272\246", nullptr));
         label_5->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\256\275\345\272\246", nullptr));
-        pushButton_outside_add->setText(QCoreApplication::translate("CalibrateView", "\346\226\260\345\242\236\347\274\272\351\231\267 +", nullptr));
+        pushButton_outside_add->setText(QCoreApplication::translate("CalibrateView", "\346\240\207\345\256\232", nullptr));
         label_6->setText(QCoreApplication::translate("CalibrateView", "\351\200\211\346\213\251\345\210\240\351\231\244\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
-        pushButton_outside_del->setText(QCoreApplication::translate("CalibrateView", "\345\210\240\351\231\244\347\274\272\351\231\267  -", nullptr));
+        pushButton_outside_del->setText(QCoreApplication::translate("CalibrateView", "\345\210\240\351\231\244\346\240\207\345\256\232", nullptr));
         label_13->setText(QCoreApplication::translate("CalibrateView", "--------------------------------------------------------------------------------------------", nullptr));
         CalibrateView->setTabText(CalibrateView->indexOf(tab), QCoreApplication::translate("CalibrateView", "\345\244\226\351\203\250\347\274\272\351\231\267\346\240\207\345\256\232", nullptr));
         label_7->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
@@ -419,8 +419,8 @@ public:
         label_14->setText(QCoreApplication::translate("CalibrateView", "-----------------------------------------------------------------------------------", nullptr));
         label_12->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
         label_9->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\275\223\351\207\217", nullptr));
-        pushButton_inside_add->setText(QCoreApplication::translate("CalibrateView", "\346\226\260\345\242\236 +", nullptr));
-        pushButton_inside_del->setText(QCoreApplication::translate("CalibrateView", "\345\210\240\351\231\244 -", nullptr));
+        pushButton_inside_add->setText(QCoreApplication::translate("CalibrateView", "\346\240\207\345\256\232", nullptr));
+        pushButton_inside_del->setText(QCoreApplication::translate("CalibrateView", "\345\210\240\351\231\244\346\240\207\345\256\232", nullptr));
         label_10->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
         CalibrateView->setTabText(CalibrateView->indexOf(tab_2), QCoreApplication::translate("CalibrateView", "\345\206\205\351\203\250\347\274\272\351\231\267\346\240\207\345\256\232", nullptr));
     } // retranslateUi

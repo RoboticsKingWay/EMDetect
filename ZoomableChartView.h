@@ -23,7 +23,10 @@ public:
     virtual ~ZoomableChartView()
     {
     }
-
+    void setLocationShow(bool show)
+    {
+        is_localtion_show_ = show;
+    }
 protected:
     virtual void gestureEvent(QGestureEvent *event) //override
     {
@@ -62,23 +65,26 @@ protected:
         QChartView::mouseMoveEvent(event); // 调用基类的事件处理
 
         // 将鼠标位置转换为图表坐标
-        QPointF point = chart()->mapToValue(event->pos());
-        // 找到最接近的点，这里使用简单的方法，实际情况可能需要更复杂的查找逻辑
-//        double minDistance = std::numeric_limits<double>::max();
-//        QPointF closestPoint;
+        if(is_localtion_show_)
+        {
+            QPointF point = chart()->mapToValue(event->pos());
+            // 找到最接近的点，这里使用简单的方法，实际情况可能需要更复杂的查找逻辑
+    //        double minDistance = std::numeric_limits<double>::max();
+    //        QPointF closestPoint;
 
-//        for (const QPointF &dataPoint : static_cast<QLineSeries *>(chart()->series().first())->points())
-//        {
-//            double distance = std::sqrt((dataPoint.x() - point.x()) * (dataPoint.x() - point.x()) +
-//                                        (dataPoint.y() - point.y()) * (dataPoint.y() - point.y()));
-//            if (distance < minDistance)
-//            {
-//                minDistance = distance;
-//                closestPoint = dataPoint;
-//            }
-//        }
-        // 展示鼠标悬停位置的X和Y值
-        QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(point.x()).arg(point.y()), this);
+    //        for (const QPointF &dataPoint : static_cast<QLineSeries *>(chart()->series().first())->points())
+    //        {
+    //            double distance = std::sqrt((dataPoint.x() - point.x()) * (dataPoint.x() - point.x()) +
+    //                                        (dataPoint.y() - point.y()) * (dataPoint.y() - point.y()));
+    //            if (distance < minDistance)
+    //            {
+    //                minDistance = distance;
+    //                closestPoint = dataPoint;
+    //            }
+    //        }
+            // 展示鼠标悬停位置的X和Y值
+            QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(point.x()).arg(point.y()), this);
+        }
     }
 private:
     void handlePinchGesture(QPinchGesture *pinchGesture)
@@ -104,6 +110,8 @@ private:
         scale(chart()->size().width() * scaleFactor, chart()->size().height() * scaleFactor);
         centerOn(center);
     }
+private:
+    bool is_localtion_show_{true};
 };
 
 class BaseView : public QObject
@@ -115,6 +123,7 @@ public:
     {
         parent_view_ptr_ = parent;
         draw_add_size_ = DetectSettings::instance().add_point_count();
+        draw_max_size_ = DetectSettings::instance().max_darw_point_count();
     }
     virtual ~BaseView()
     {
@@ -160,7 +169,8 @@ public:
     virtual void createChartView()
     {
         chart_ = new QChart();
-        chart_->setTheme(QChart::ChartThemeLight);
+//        chart_->setTheme(QChart::ChartThemeLight);
+        chart_->setAnimationOptions(QChart::AllAnimations);
 //        chart_->setAnimationOptions(QChart::NoAnimation); // 禁用图表动画
         chart_->setAnimationOptions(QChart::SeriesAnimations);
         //chart_->setTitle(QStringLiteral("实时曲线"));
@@ -179,29 +189,26 @@ public:
         //创建坐标轴
         axisX_ = new QValueAxis;
         axisY_ = new QValueAxis;
-        axisX_->setRange(0,100);
-        axisX_->setTitleText("点数计数");
-
-        axisY_->setRange(40.0, -40.0);
-        axisY_->setTitleText("磁场强度nT");
+        axisX_->setRange(-80000,80000);
+        axisY_->setRange(-80000,80000);
         //创建折线序列
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            seriess_[i] = new QtCharts::QLineSeries();
-            seriess_[i]->setName(QString("通道%1").arg(i+1));
-            QPen pen(serial_color_list[i]);
-            pen.setWidth(1);
-            seriess_[i]->setPen(pen);
+//        for(int i = 0; i < CH_NUM; i++)
+//        {
+//            seriess_[i] = new QtCharts::QLineSeries();
+//            seriess_[i]->setName(QString("通道%1").arg(i+1));
+//            QPen pen(serial_color_list[i]);
+//            pen.setWidth(1);
+//            seriess_[i]->setPen(pen);
 //            seriess_[i]->setPointLabelsFont(QFont("Arial", 4));
-            //seriess_[i]->setPointLabelsVisible(true);
-            chart_->addSeries(seriess_[i]);
-            chart_->setAxisX(axisX_,seriess_[i]);//为序列添加坐标轴
-            chart_->setAxisY(axisY_,seriess_[i]);
-        }
+//            //seriess_[i]->setPointLabelsVisible(true);
+//            chart_->addSeries(seriess_[i]);
+//            chart_->setAxisX(axisX_,seriess_[i]);//为序列添加坐标轴
+//            chart_->setAxisY(axisY_,seriess_[i]);
+//        }
     }
 
 public slots:
-    void resetSerials()
+    virtual void resetSerials()
     {
         for(int i = 0; i < CH_NUM; i++)
         {
@@ -223,12 +230,13 @@ protected:
     QValueAxis *axisX_ = {nullptr};
     QValueAxis *axisY_ = {nullptr};
 //    ZoomableChartView *chart_view_ = {nullptr};
-    QChartView *chart_view_ = {nullptr};
+    ZoomableChartView *chart_view_ = {nullptr};
     QChart* chart_ = {nullptr};
     QVBoxLayout* layout_ = {nullptr};
     QWidget* parent_view_ptr_ {nullptr};
     int count_source_points_ = 0;
     int draw_add_size_ = {20};
+    int draw_max_size_ = {300};
 };
 
 #endif // ZOOMABLECHARTVIEW_H

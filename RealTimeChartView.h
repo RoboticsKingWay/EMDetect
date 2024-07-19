@@ -52,12 +52,12 @@ public:
         axisX_ = new QValueAxis;
         axisY_ = new QValueAxis;
 
-        axisX_->setRange(0,100);
+        axisX_->setRange(0,200);
         axisX_->setTitleText("点数计数");
         axisX_->setTickCount(5);
         axisX_->setMinorTickCount(2);
 
-        axisY_->setRange(40.0, -40.0);
+        axisY_->setRange(-40000, 40000);
         axisY_->setTitleText("磁场强度nT");
         axisY_->setTickCount(5);
         axisY_->setMinorTickCount(2);
@@ -80,8 +80,8 @@ public:
         pen.setWidth(2);
         threshold_serials_[0] = new QtCharts::QLineSeries();
         threshold_serials_[0]->setName(QString("上阈值线"));
-        threshold_serials_[0]->append(0,0);
-        threshold_serials_[0]->append(0,0.001);
+        threshold_serials_[0]->append(0,40000);
+        threshold_serials_[0]->append(200,40000);
         threshold_serials_[0]->setPen(pen);
         chart_->addSeries(threshold_serials_[0]);
         chart_->setAxisX(axisX_,threshold_serials_[0]);
@@ -89,15 +89,15 @@ public:
 
         threshold_serials_[1] = new QtCharts::QLineSeries();
         threshold_serials_[1]->setName(QString("下阈值线"));
-        threshold_serials_[1]->append(0,0);
-        threshold_serials_[1]->append(0,0.001);
+        threshold_serials_[1]->append(0,-40000);
+        threshold_serials_[1]->append(200,-40000);
         threshold_serials_[1]->setPen(pen);
         chart_->addSeries(threshold_serials_[1]);
         chart_->setAxisX(axisX_,threshold_serials_[1]);
         chart_->setAxisY(axisY_,threshold_serials_[1]);
     }
 
-    void setChinnelRange()
+    void setChinnelRange(int count)
     {
         qreal ymin = 0.0;
         qreal ymax = 0.0;
@@ -135,7 +135,8 @@ public:
         }
         ymax_value_ = ymax;
         ymin_value_ = ymin;
-        int x_since = count_points_ - DRAW_MAX_SIZE - draw_add_size_;
+        count_points_ += count;
+        int x_since = count_points_ - draw_max_size_ - draw_add_size_;
         int x_to    = count_points_ + draw_add_size_;
         //          axisX_->setTitleText("点数计数10^3");
         //            axisX_->setTitleText("磁场强度nT");
@@ -153,13 +154,13 @@ public:
         {
             return;
         }
-        count_points_ = draw_list[0].index + draw_list.size();
-        int x = draw_list[0].index;;
+        //count_points_ = draw_list[0].index + draw_list.size();
+        int x = count_points_;//draw_list[0].index;;
         if(seriess_[ch_num] && is_on)
         {
             ch_is_on_[ch_num] = is_on;
 
-            if (seriess_[ch_num]->count() > DRAW_MAX_SIZE)
+            if (seriess_[ch_num]->count() > DetectSettings::instance().max_points_count())
             {
                 seriess_[ch_num]->removePoints(0,draw_list.size());
             }
@@ -168,10 +169,24 @@ public:
             {
                 seriess_[ch_num]->append(x++, (qreal)drawItem.mag_data.data[ch_num]);
             }
-            qreal ymin = seriess_[ch_num]->at(0).y();
-            qreal ymax = seriess_[ch_num]->at(0).y();
-            int count = seriess_[ch_num]->count();
-            for(int i = 0; i < seriess_[ch_num]->count(); i++)
+//            qreal ymin = seriess_[ch_num]->at(0).y();
+//            qreal ymax = seriess_[ch_num]->at(0).y();
+//            int count = seriess_[ch_num]->count();
+//            for(int i = 0; i < seriess_[ch_num]->count(); i++)
+//            {
+//                ymin = std::min(ymin, seriess_[ch_num]->at(i).y());
+//                ymax = std::max(ymax, seriess_[ch_num]->at(i).y());
+//            }
+//            int start = seriess_[ch_num]->count() - draw_list.size();
+            qreal ymin = 1000000;
+            qreal ymax = -1000000;
+            int start = seriess_[ch_num]->count() - draw_list.size();
+            if(seriess_[ch_num]->count() > 60)
+            {
+                start = seriess_[ch_num]->count() - 60;
+            }
+
+            for(int i = start; i < seriess_[ch_num]->count(); i++)
             {
                 ymin = std::min(ymin, seriess_[ch_num]->at(i).y());
                 ymax = std::max(ymax, seriess_[ch_num]->at(i).y());

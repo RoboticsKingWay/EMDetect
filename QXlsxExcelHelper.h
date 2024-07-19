@@ -40,15 +40,15 @@ public:
             doc.write(2,2,sensitivity);
             doc.write(2,3,lable);
             doc.write(2,4,length);
-    //        for(int j = 1; j <= CH_NUM; j++)
-    //        {
-                doc.write(3,1,"CH1");
-                doc.write(3,2,"CH2");
-                doc.write(3,3,"CH3");
-                doc.write(3,4,"CH4");
-                doc.write(3,5,"CH5");
-                doc.write(3,6,"CH6");
-    //        }
+            for(int j = 1; j <= CH_NUM; j++)
+            {
+                doc.write(3,j,QString("CH%1").arg(j));
+//                doc.write(3,2,"CH2");
+//                doc.write(3,3,"CH3");
+//                doc.write(3,4,"CH4");
+//                doc.write(3,5,"CH5");
+//                doc.write(3,6,"CH6");
+            }
             for(int i = 0; i < data.size(); i++)
             {
                 for(int j = 0; j < CH_NUM; j++)

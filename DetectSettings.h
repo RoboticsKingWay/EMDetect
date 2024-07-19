@@ -19,6 +19,7 @@ private:
 protected:
     QVector<double> sensitivity_list_;
     int max_points_count_ {12000};
+    int max_draw_points_count_ {300};
     int add_point_count_ {20};
     int real_time_rate_ {5};
     double calc_coefficient_ {30.0};
@@ -33,6 +34,10 @@ public:
     const int& max_points_count()
     {
         return max_points_count_;
+    }
+    const int& max_darw_point_count()
+    {
+        return max_draw_points_count_;
     }
     const int& add_point_count()
     {
@@ -119,6 +124,7 @@ public:
             QString list = settings.value("Settings/sensitivity").toString();
             sensitivity_list_ = extractFloatsFromBracedString(list);
             max_points_count_ = settings.value("Settings/max_points_count", 12000).toInt();
+            max_draw_points_count_ = settings.value("Settings/max_draw_points_count", 300).toInt();
             add_point_count_ = settings.value("Settings/add_point_count", 20).toInt();
             real_time_rate_ = settings.value("Settings/real_time_rate", 5).toInt();
             if(real_time_rate_ > 10 || real_time_rate_ < 1)

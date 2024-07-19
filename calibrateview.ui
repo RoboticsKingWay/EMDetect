@@ -23,7 +23,7 @@
     <normaloff>:/source/title.png</normaloff>:/source/title.png</iconset>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab">
    <attribute name="title">
@@ -206,7 +206,7 @@
          <item row="3" column="1">
           <widget class="QPushButton" name="pushButton_outside_add">
            <property name="text">
-            <string>新增缺陷 +</string>
+            <string>标定</string>
            </property>
           </widget>
          </item>
@@ -242,7 +242,7 @@
          <item row="1" column="1">
           <widget class="QPushButton" name="pushButton_outside_del">
            <property name="text">
-            <string>删除缺陷  -</string>
+            <string>删除标定</string>
            </property>
           </widget>
          </item>
@@ -404,7 +404,7 @@
            <item row="2" column="3">
             <widget class="QPushButton" name="pushButton_inside_add">
              <property name="text">
-              <string>新增 +</string>
+              <string>标定</string>
              </property>
             </widget>
            </item>
@@ -427,7 +427,7 @@
            <item row="1" column="1">
             <widget class="QPushButton" name="pushButton_inside_del">
              <property name="text">
-              <string>删除 -</string>
+              <string>删除标定</string>
              </property>
             </widget>
            </item>

@@ -73,7 +73,7 @@ public:
                 return false;
             }
             closePort();
-            QThread::sleep(1);
+            QThread::msleep(100);
             m_serialPort = nullptr;
             delete m_serialPort;
         }
@@ -81,6 +81,16 @@ public:
     }
     bool connectSerial(const QString portName = "COM3")
     {
+        if(m_serialPort)
+        {
+            if(m_serialPort->isOpen())
+            {
+               QMessageBox::critical(nullptr, "Error", "串口已连接，请先关闭再选择重连");
+                return false;
+            }
+            closePort();
+            delete m_serialPort;
+        }
         m_serialPort = new QSerialPort(serial_param_.port, this);
         port_name_ = portName;
         // 配置串口参数
@@ -115,7 +125,7 @@ public:
         }
         else
         {
-            QMessageBox::critical(nullptr, "Error", "开发串口失败");
+            QMessageBox::critical(nullptr, "Error", "连接串口失败");
             is_opened_ = false;
         }
     }
@@ -145,7 +155,7 @@ public:
                         {
                             ch_data.data[i] = list.at(i).toInt()/SCALE_SIZE;
                         }
-                        data_src_list_.push_back(ChinnelData(++count_index_,ch_data));
+                        data_src_list_.push_back(ChinnelData(count_index_++,ch_data));
                     }
                     else
                     {
@@ -157,27 +167,26 @@ public:
                     {
                         qDebug()<<"size >= "<<src_max_size_;
                         saveDataToExcelFile();
-                        emit clearRealTimeSerial();
-                        count_index_ = 0;
+                        //emit clearRealTimeSerial();
+//                        count_index_ = 0;
                         data_src_list_.clear();
                     }
                     if(count_index_ % draw_add_size_ == 0)
                     {
-//                        qDebug()<<"data_size="<<data.size()<<"  src_size="<<data_src_list_.size()<<" count_index="<<count_index_;
-                        setDrawData(count_index_);
+                        setDrawData();
                     }
                 }
             }
             last_str = last_str.mid(lastPosition);
         }
     }
-    void setDrawData(int count)
+    void setDrawData()
     {
-        if(mutex_.try_lock())
-        {
+//        if(mutex_.try_lock())
+//        {
             if(data_src_list_.size() >= draw_add_size_ && data_src_list_.size()%draw_add_size_ == 0)
             {
-                int start = (count % src_max_size_) - draw_add_size_;
+                int start = (count_index_ % src_max_size_) - draw_add_size_;
                 for(int i = 0; i < draw_add_size_; i++)
                 {
                     ChinnelData data;
@@ -188,18 +197,22 @@ public:
                     }
                     data_add_list_.push_back(data);
                 }
+                draw_queue_.enqueue(data_add_list_);
+                data_add_list_.clear();
             }
-            mutex_.unlock();
-        }
-        else
-        {
-            qDebug()<<"set draw data mutex_.try_lock() failed"<<"\n";
-        }
+//            mutex_.unlock();
+//        }
+//        else
+//        {
+//            qDebug()<<"set draw data mutex_.try_lock() failed"<<"\n";
+//        }
     }
 
     QVector<ChinnelData> getDrawData()
     {
         QVector<ChinnelData> temp;
+        draw_queue_.dequeue(temp);
+        return temp;
         if(mutex_.tryLock(100))
         {
             if(data_add_list_.size() <= 0)
@@ -395,6 +408,7 @@ private:
                 {
                     heart_beat_count = 0;
                     heart_beat_state_ = E_SERIAL_CLOSE;
+                    closePort();
                 }
             }
         }
@@ -403,7 +417,8 @@ private:
 
 private:
     QMutex mutex_;
-    long long count_index_ {0};
+    int count_index_ {0};
+    int count_size_  {0};
     bool is_runing_ {false};
     bool is_pause_ {false};
     int heart_beat_state_ {E_SERIAL_CLOSE}; //串口在线 与 离线状态
@@ -417,6 +432,7 @@ private:
     QVector<ChinnelData> data_add_list_;
     int draw_add_size_ {20};
     int src_max_size_ {12000};
+    SafeQueue<QVector<ChinnelData>> draw_queue_;
 };
 
 // 在你的应用程序中创建SerialPortManager实例并使用

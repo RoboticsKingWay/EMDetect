@@ -6,16 +6,16 @@
 #include "DetectSettings.h"
 
 //#define DRAW_ADD_SIZE 20    // 实时图绘制增量20个数据
-#define DRAW_MAX_SIZE 300   // 实时图绘制最多300个点数据
+#define DRAW_MAX_SIZE 200   // 实时图绘制最多200个点数据
 //#define SRC_MAX_SIZE 12000   // 最大存储源数据个数
 #define CH_NUM 2
-#define ZOOM_NUM 1.15
+#define ZOOM_NUM 1.03
 
 #define LENGTH_TO_POINT   40 // 1mm扫查长度对应点数，扫查平均速率
 #define SENSOR_TO_WIDTH   40 // 一组通道的传感器扫查宽度
 #define SCALE_SIZE         1 // 处理检测数据缩放比例
 #define YELLOW_GRADIENT_SIZE  10 // 设置黄色10个梯度，缺陷梯度颜色变化，距离阈值线远缺陷越大，颜色越深
-
+#define SLEEP_TIMER_ON_DRAW 100 // 100ms绘制全图的定时时间
 enum E_SERIAL_ACTION:int
 {
     E_SERIAL_INVAL = -1,
