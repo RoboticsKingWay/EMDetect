@@ -4,12 +4,11 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QThread>
+#include <condition_variable>
 #include "setupwindow.h"
 #include "calibrateview.h"
 #include "SerialPortManager.h"
 #include "RealTimeChartView.h"
-#include "imageview.h"
-#include "ImageViewNew.h"
 #include "sourceview.h"
 #include "QXlsxExcelHelper.h"
 #include "DataManager.h"
@@ -27,11 +26,11 @@ public:
     ~MainWindow();
     void updateData();
 
-protected:
+//protected:
 
-    void resizeEvent(QResizeEvent *event) override;
-    void paintEvent(QPaintEvent *event)override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
+//    void resizeEvent(QResizeEvent *event) override;
+//    void paintEvent(QPaintEvent *event)override;
+//    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private slots:
     void onSerialState(int state);
@@ -65,25 +64,19 @@ private slots:
 
     void on_action_filesave_triggered();
 
+    void on_pushButton_5_clicked();
+
 signals:
 
 private:
 
     void setPushButtonEnable(); //
-    void getImageColor();
-    void drawImage(bool is_update);
-    void picContour(QPainter& painter,bool is_update = false);
-    void Contourf(long intM, long intN, double Xmax, double Ymax,QPainter& painter);
-    void draw_Depth_Image();
-    void calcDetectData();
     void drawFileView();
     void drawImageViewThread();
 private:
     Ui::MainWindow *ui {nullptr};
     RealTimeChartView* chartview_ptr_ {nullptr};
     SourceView* source_view_ptr_ {nullptr};
-//    ImageView* image_view_ptr_ {nullptr}; // 暂时不用在主页绘制图像
-//    ImageViewNew* image_view_new_ptr_ {nullptr}; // 暂时不用在主页绘制图像
     SetupWindow* setup_win_ptr_ {nullptr};
     CalibrateView* calibrate_view_ {nullptr};
 
@@ -100,18 +93,13 @@ private:
     std::shared_ptr<std::thread> thread_calc_ptr_ {nullptr}; // 检测结果计算线程
     bool is_calc_thread_start_ {true};
     bool is_calc_start_ {false};
+    std::condition_variable wait_event_;
+    std::mutex wait_mutex_;
 
-    // 绘制云图需要的参数
-    QImage bit_map_;
-    int width_;
-    int height_;
-    double max_data_ {0};
-    double min_data_ {0};
     double scan_length_{20}; // mm
     double sensitivity_{0.0};
     QVector<QColor> yellowGradient_;
-    std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据
-    QMutex mutex_image_;
+    std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据 
 
 };
 #endif // MAINWINDOW_H

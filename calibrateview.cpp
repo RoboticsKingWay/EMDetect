@@ -1,5 +1,7 @@
 #include "calibrateview.h"
 #include "ui_calibrateview.h"
+#include "UnitCalc.h"
+#include "DetectSettings.h"
 
 #include <QMessageBox>
 CalibrateView::CalibrateView(QWidget *parent) :
@@ -25,16 +27,18 @@ CalibrateView::CalibrateView(QWidget *parent) :
         param.label = QString("缺陷%1").arg(i+1);
         param.depth = i+1;
         param.length = i*10+1;
+        param.equivalent = i*2+1;
         param.dete_type = EMDETECTION_TYPE::E_DETECTION_OUTER;
         cfg_detection_list_[param.label] = param;
         ui->comboBox_outside_list->addItem(param.label);
         ui->comboBox_outside_del->addItem(param.label);
     }
+
     for(int i = 0; i < 5; i++)
     {
         DetectDeclaerParam param;
         param.label = QString("缺陷%1").arg(i+6);
-        param.equivalent = i+1;
+        param.equivalent = i*2+1;
         param.dete_type = EMDETECTION_TYPE::E_DETECTION_INNER;
         cfg_detection_list_[param.label] = param;
         ui->comboBox_inside_list->addItem(param.label);
@@ -53,8 +57,9 @@ void CalibrateView::on_comboBox_outside_list_currentIndexChanged(int index)
     auto it = cfg_detection_list_.find(label);
     if(it != cfg_detection_list_.end())
     {
-        ui->lineEdit_deep_read->setText(QString::number(it->depth));
-        ui->lineEdit_width_read->setText(QString::number(it->length));
+        ui->label_outside_depth_read->setText(QString::number(it->depth));
+        ui->label_outside_width_read->setText(QString::number(it->length));
+        ui->label_outside_db_read->setText(QString::number(it->equivalent));
     }
 }
 
@@ -68,6 +73,7 @@ void CalibrateView::on_pushButton_outside_add_clicked()
     }
     param.depth   = ui->lineEdit_deep_set->text().toDouble();
     param.length  = ui->lineEdit_width_set->text().toDouble();
+    param.equivalent  = ui->lineEdit_outside_db_set->text().toDouble();
     param.dete_type = EMDETECTION_TYPE::E_DETECTION_OUTER;
 
     cfg_detection_list_[param.label] = param;
@@ -104,7 +110,7 @@ void CalibrateView::on_comboBox_inside_list_currentIndexChanged(int index)
     auto it = cfg_detection_list_.find(label);
     if(it != cfg_detection_list_.end())
     {
-        ui->lineEdit_inside_read->setText(QString::number(it->equivalent));
+        ui->label_inside_db_read->setText(QString::number(it->equivalent));
     }
 }
 
@@ -145,5 +151,41 @@ void CalibrateView::on_pushButton_inside_del_clicked()
         }
         QMessageBox::information(this,"info","删除成功");
     }
+}
+
+
+void CalibrateView::on_pushButton_outside_stand_clicked()
+{
+    std::vector<std::pair<double, double>> points;
+    for(auto& item : cfg_detection_list_)
+    {
+        if(item.dete_type == EMDETECTION_TYPE::E_DETECTION_OUTER)
+        {
+            std::pair<double, double> point;
+            point.first   = item.depth/item.length;
+            point.second  = item.equivalent;
+            points.push_back(point);
+        }
+    }
+    result_param_ = leastSquares(points);
+    QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
+    ui->lineEdit_stand_result->setText(text);
+}
+
+void CalibrateView::on_pushButton_inside_stand_clicked()
+{
+
+}
+
+void CalibrateView::on_pushButton_outside_stand_save_clicked()
+{
+    QString label = ui->lineEdit_stand_result_label->text();
+    DetectSettings::instance().setDetectParam(result_param_.first,result_param_.second,label);
+    DetectSettings::instance().saveSetting();
+}
+
+void CalibrateView::on_pushButton_inside_stand_save_clicked()
+{
+
 }
 

@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         chartview_ptr_ = new RealTimeChartView(ui->widget_real_chat_view);
         chartview_ptr_->createChartView();
+//        ui->widget_real_chat_view->installEventFilter(this);
     }
     if(chartview_ptr_ && manager_ptr_)
     {
@@ -90,58 +91,40 @@ MainWindow::~MainWindow()
     }
     delete ui;
 }
-
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    // 调用基类的 resizeEvent 函数，确保正确处理窗口大小变化事件
-    QMainWindow::resizeEvent(event);
-
-    // 获取窗口的新大小
-    //QSize newSize = event->size();
-    //    int top = ui->widget_down->geometry().top();
-    //    int width = ui->widget_down->geometry().width();
-//    ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
-//    ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
-}
-
-bool MainWindow::eventFilter(QObject *watched, QEvent *event)
-{
-//    if (watched == ui->label_image && event->type() == QEvent::Paint)
+//bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+//{
+//    if (watched == ui->widget_real_chat_view && event->type() == QEvent::Paint)
 //    {
-//        draw_Depth_Image();
+//        chartview_ptr_->chart_view_->update();
 //    }
-    return QWidget::eventFilter(watched, event);
-}
+//    return QWidget::eventFilter(watched, event);
+//}
 
-void MainWindow::paintEvent(QPaintEvent *event)
+// 后台线程计算结果
+void MainWindow::drawImageViewThread()
 {
-    QPainter thePainter(this);
-//    ui->widget_tab_1->setGeometry(0, 0, ui->tab_1->width(), ui->tab_1->height());
-//    ui->widget_tab_2->setGeometry(0, 0, ui->tab_2->width(), ui->tab_2->height());
-    event->accept();
-}
+    is_calc_thread_start_ = true;
+    while(is_calc_thread_start_)
+    {
+        if(is_calc_start_)
+        {
+            qDebug()<<">>> start drawImageViewThread <<<<"<<QDateTime::currentDateTime();
 
-void MainWindow::draw_Depth_Image()
-{
-//    int width  = ui->label_image->width();
-//    int height = ui->label_image->height();
-//    QImage image;
-//    if(mutex_image_.tryLock(100))
-//    {
-//        image = bit_map_;
-//        mutex_image_.unlock();
-//    }
-//    else
-//    {
-//        qDebug()<<"draw_Depth_Image lock fialed.";
-//    }
-//    ui->label_image->setPixmap(QPixmap::fromImage(image));
-//    qDebug()<<"image w_h:"<<image.width()<<" "<<image.height();
-//    QPainter painter(ui->label_image);
-//    if(painter.isActive())
-//    {
-//       painter.drawImage(0, 0, image);
-//    }
+            qDebug()<<">>>> new drawImageViewThread finished.<<<<<"<<QDateTime::currentDateTime();
+            is_calc_start_ = false;
+            //            std::unique_lock<std::mutex> lock(wait_mutex_);
+            //            wait_event_.wait(lock,[]{return true;});
+//            do
+//            {
+//                QThread::msleep(50);
+//            }while(is_draw_file_runing_);
+//            is_draw_file_runing_ = false;
+            action_state_ = E_ACTION_STOP;
+            setPushButtonEnable();
+        }
+        QThread::msleep(100);
+    }
+    qDebug()<<"calc thread exit.";
 }
 
 void MainWindow::updateData()
@@ -167,20 +150,6 @@ void MainWindow::updateData()
         serial_state = manager_ptr_->getHeartbeatState();
         onSerialState(serial_state);
     }
-    // update time
-    // 获取当前日期和时间
-//    QDateTime currentDateTime = QDateTime::currentDateTime();
-
-//    int year = currentDateTime.date().year();
-//    int month = currentDateTime.date().month();
-//    int day = currentDateTime.date().day();
-//    // 获取时间的时、分、秒
-//    int hour = currentDateTime.time().hour();
-//    int minute = currentDateTime.time().minute();
-//    int second = currentDateTime.time().second();
-//    QString datetime = QString::asprintf("%04d.%02d.%02d %02d:%02d:%02d",
-//                                         year, month, day, hour, minute, second);
-//    ui->label_5->setText(datetime);
 }
 
 void MainWindow::setPushButtonEnable()
@@ -327,16 +296,16 @@ void MainWindow::on_pushButton_3_clicked()
     }
     if(list_draw_src_data_.size() > 0)
     {
-        if(chartview_ptr_)
-        {
-            chartview_ptr_->resetSerials();
-            count_size_blk_ = 0;
-            timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
-        }
-        if(source_view_ptr_)
-        {
-            source_view_ptr_->resetSerials();
-        }
+//        if(chartview_ptr_)
+//        {
+//            chartview_ptr_->resetSerials();
+//            count_size_blk_ = 0;
+//            timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
+//        }
+//        if(source_view_ptr_)
+//        {
+//            source_view_ptr_->resetSerials();
+//        }
         if(!thread_calc_ptr_)
         {
             thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
@@ -349,245 +318,6 @@ void MainWindow::on_pushButton_3_clicked()
         }
     }
 
-}
-
-
-// 后台线程计算结果
-void MainWindow::drawImageViewThread()
-{
-    is_calc_thread_start_ = true;
-    while(is_calc_thread_start_)
-    {
-        if(is_calc_start_)
-        {
-            qDebug()<<">>> start drawImageViewThread <<<<"<<QDateTime::currentDateTime();
-
-            qDebug()<<">>>> new drawImageViewThread finished.<<<<<"<<QDateTime::currentDateTime();
-            is_calc_start_ = false;
-            action_state_ = E_ACTION_STOP;
-            setPushButtonEnable();
-        }
-        QThread::msleep(100);
-    }
-    qDebug()<<"calc thread exit.";
-}
-
-// 设置绘图颜色列表
-void MainWindow::getImageColor()
-{
-    double MY_IMG_BLUE[64]  =  { 0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9375, 0.875, 0.8125, 0.75, 0.6875, 0.625, 0.5625, 0.5, 0.4375, 0.375, 0.3125, 0.25, 0.1875, 0.125, 0.0625, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    double MY_IMG_GREEN[64] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9375, 0.875, 0.8125, 0.75, 0.6875, 0.625, 0.5625, 0.5, 0.4375, 0.375, 0.3125, 0.25, 0.1875, 0.125, 0.0625, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    double MY_IMG_RED[64]   =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9375, 0.875, 0.8125, 0.75, 0.6875, 0.625, 0.5625, 0.5 };
-    yellowGradient_.clear();
-    for(int i = 0; i < 64; i++)
-    {
-        yellowGradient_.append(QColor::fromRgb(MY_IMG_RED[i]*255, MY_IMG_GREEN[i]*255, MY_IMG_BLUE[i]*255, 255));//255固定不透明
-    }
-    for (const QColor &color : yellowGradient_)
-    {
-        qDebug() << "main_image_view: Yellow gradient color: RGB(" << color.red() << color.green() << color.blue() << ")";
-    }
-}
-
-// 点云绘制
-void MainWindow::drawImage(bool is_update)
-{
-//    width_ = ui->label_image->width();
-//    height_ = ui->label_image->height();
-
-    QImage bit_map = QImage(width_, height_, QImage::Format_ARGB32);
-    bit_map.fill(Qt::white); // Fill the bitmap with blue color
-    if(draw_image_data_.size() <= 0 || draw_image_data_[0].size() <= 0)
-    {
-        return;
-    }
-    if(is_update)
-    {
-
-        QPainter painter(&bit_map);
-//            painter.begin(ui->label_image);
-        picContour(painter,is_update);
-        if(mutex_image_.tryLock(100))
-        {
-            bit_map_ = bit_map;
-            mutex_image_.unlock();
-//            ui->label_image->repaint();
-//            ui->label_image->update();
-//            painter.end();
-            QImageWriter imageWriter("saved_src_image.png");
-            imageWriter.setFormat("png");  // 设置图像格式
-            // 写入图像
-            bool success = imageWriter.write(bit_map);
-            // 检查是否有错误
-            if (!success)
-            {
-                qDebug() << "Failed to save image:" << imageWriter.errorString();
-            }
-            else
-            {
-                qDebug() << "Image saved successfully!";
-            }
-        }
-        else
-        {
-            qDebug()<<"set draw image lock fialed.";
-        }
-    }
-}
-
-void MainWindow::picContour(QPainter& painter,bool is_update)
-{
-    double x0 = 0.025;
-    double y0 = 0.025;
-    double W = 0.95;
-    double H = 0.90;
-    float x = (float)(this->width_ * x0);
-    float y = (float)(this->height_ * y0);
-    float width = (float)(this->width_ * W);
-    float height = (float)(this->height_ * H);
-    //Contourf(g, 2 * 40, (original_num - 1) * 5, FreadData, (original_num - 1) * 5, 2 * 40);
-    //Contourf(g, 2, original_num, FreadData, original_num, 2);
-
-    Contourf(2 * 40, draw_image_data_[0].size(), draw_image_data_[0].size(), 2 * 40,painter);
-
-    QPen pen = QColor(0,0,0);
-    pen.setWidth(1);
-    painter.setFont(QFont("Arial", 6));
-    painter.setPen(pen);
-    //        g.DrawRectangle(blackPen, x, y, width, height);
-    float x1, x2, y1, y2;
-    //画X方向刻度
-    for (int k = 0; k <= 10; k++)
-    {
-        x1 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
-        y1 = (float)(this->height_ * y0);
-        x2 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
-        y2 = (float)(this->height_ * (y0 + 0.02));
-        painter.drawLine(x1, y1, x2, y2);
-
-
-        x1 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
-        y1 = (float)(this->height_ * (x0 + H));
-        x2 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
-        y2 = (float)(this->height_ * (x0 + H - 0.02));
-        painter.drawLine(x1, y1, x2, y2);
-
-
-        x1 = (float)(this->width_ * x0 + k * this->width_ * W / 10);
-        y1 = (float)(this->height_ * (y0 + H + 0.02)) - 3;
-        painter.drawText(x1 + 1, y1+10, QString::number(k * scan_length_ / 10));
-    }
-    //画Y方向刻度
-    int b;
-    for (int k = 1; k <= 2; k++)
-    {
-        b = k;
-        x1 = (float)(this->width_ * x0);
-        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
-        x2 = (float)(this->width_ * (x0 + 0.005));
-        y2 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
-        painter.drawLine(x1, y1, x2, y2);
-
-        x1 = (float)(this->width_ * (x0 + W));
-        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
-        x2 = (float)(this->width_ * (x0 + W - 0.005));
-        y2 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
-        painter.drawLine(x1, y1, x2, y2);
-
-        x1 = (float)(this->width_ * (x0 - 0.02)) - 7;
-//        y1 = (float)(this->height_ * (1 - (y0 + k * H / 2) - 0.05));
-        y1 = (float)(this->height_ * (1 - (y0 + k * H / 3) - 0.05));
-        //g.DrawString((k * widthOfPiece / 5).ToString("0"), font, brush, x1, y1);
-        painter.drawText(x1+3, y1,QString("CH")+QString::number(k));
-    }
-}
-
-void MainWindow::Contourf(long intM, long intN, double Xmax, double Ymax,QPainter& painter)
-{
-    //  Contourf(g, 2, original_num, FreadData, original_num, 2);
-
-    int p;
-    double picDX,picDY;
-    double x0 = 0.025;
-    double y0 = 0.025;
-    double W = 0.95;
-    double H = 0.90;
-    double CurrentX = 0;
-    double CurrentY = 0;
-    double DDX = 0;
-    double DDY = 0;
-
-    //画彩图
-    picDX = W / Xmax;
-    picDY = H / Ymax;
-    if(DDX < 1)
-    {
-        DDX = 2;
-    }
-    if(DDY < 1)
-    {
-        DDY = 2;
-    }
-
-    for (long i = 0; i < intM; i++)
-    {
-        for (long j = 0; j < intN; j++)
-        {
-            CurrentX = (double)(width_ * (x0 + j * picDX));
-            // CurrentY = (float)(this->height_ * (1 - (y0 + 0.0625 + i * picDY)));
-            CurrentY = (double)(height_ * (0.925 - i * picDY));
-//            DDX = (double)(bit_map_.width() * picDX);
-//            DDY = (double)(bit_map_.height() * picDY);
-
-            p = (int)((draw_image_data_[i][j] - min_data_) * 63 / (max_data_ - min_data_));
-            if (j > intN - 80)//彩图去右边图像。    //DynamicpicContour（）的代码是j>intN-50   intN是数据点数
-            {
-                p = 0;
-            }
-            if(p < 0 || p > 64)
-            {
-                p = 0;
-            }
-
-            QBrush brush = QBrush(yellowGradient_[p]);
-            painter.fillRect(CurrentX, CurrentY, DDX, DDY,brush);
-        }
-    }
-}
-
-// 检测结果计算
-void MainWindow::calcDetectData()
-{
-    CFunction calc_fun;
-    double max = 0.,min = 0.;
-    std::vector<std::vector<double>> src_data = std::vector<std::vector<double>>(CH_NUM,std::vector<double>(list_draw_src_data_.size(),0));
-    std::vector<std::vector<double>> data = std::vector<std::vector<double>>(2,std::vector<double>(list_draw_src_data_.size(),0));
-    std::vector<std::vector<double>> result = std::vector<std::vector<double>>(2 * 40,std::vector<double>((list_draw_src_data_.size() -1) * 5, 0));
-    for(int i = 0; i < CH_NUM; i++)
-    {
-
-        for(int j = 0; j < list_draw_src_data_.size(); j++)
-        {
-            src_data[i][j] = list_draw_src_data_[j].mag_data.data[i];
-        }
-    }
-    if(src_data.size() <= 0 || src_data[0].size() <= 0)
-    {
-        return;
-    }
-
-    for (int i = 0; i < 2; i++)
-    {
-        for (int j = 2; j < src_data[0].size(); j++)
-        {
-            data[i][j] = (-3 * src_data[i][j - 2] + 12 * src_data[i][j - 1] + 17 * src_data[i][j] + 12 * src_data[i][j + 1] - 3 * src_data[i][j + 2]) / 35;
-        }
-    }
-    calc_fun.Function(data, 2, data[0].size());
-    calc_fun.defect(sensitivity_,result);
-    calc_fun.calcMaxAndMin(result,min_data_,min_data_);
-    draw_image_data_.clear();
-    draw_image_data_ = result;
 }
 
 // 数据预览
@@ -622,10 +352,10 @@ void MainWindow::on_pushButton_4_clicked()
         qDebug()<<"read file ok."<<QDateTime::currentDateTime();
         if(chartview_ptr_)
         {
-//            if(source_view_ptr_)
-//            {
-//                source_view_ptr_->resetSerials();
-//            }
+            if(source_view_ptr_)
+            {
+                source_view_ptr_->resetSerials();
+            }
             chartview_ptr_->resetSerials();
             count_size_blk_ = 0;
             timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
@@ -639,12 +369,34 @@ void MainWindow::on_pushButton_4_clicked()
                 setPushButtonEnable();
                 is_calc_start_ = true;
             }
-//            source_view_ptr_->darwChinnelView(list_draw_src_data_);
         }
     }
     else
     {
         QMessageBox::warning(this, "Error", "No file selected.");
+    }
+}
+// 选择框
+void MainWindow::on_pushButton_5_clicked()
+{
+    if(action_state_ == E_ACTION_ST)
+    {
+        QMessageBox::warning(this, "warning", "请先停止采集操作!");
+        return;
+    }
+    if(chartview_ptr_)
+    {
+        QString curr = ui->pushButton_5->text();
+        if(curr == QString("特征区域"))
+        {
+            chartview_ptr_->setSelectSwitch(true);
+            ui->pushButton_5->setText("取消");
+        }
+        else if(curr == QString("取消"))
+        {
+            chartview_ptr_->setSelectSwitch(false);
+            ui->pushButton_5->setText("特征区域");
+        }
     }
 }
 
@@ -658,15 +410,22 @@ void MainWindow::drawFileView()
         timer_draw_total_.stop();
         chartview_ptr_->updateChinnelView(draw_list);
         chartview_ptr_->setViewChinnelRange();
-//        source_view_ptr_->updateChinnelView(draw_list);
-//        source_view_ptr_->setViewChinnelRange();
+        //if(action_state_ == E_ACTION_REVIEW)
+        {
+            source_view_ptr_->updateButterflyView(draw_list);
+            source_view_ptr_->setViewChinnelRange();
+        }
         qDebug()<<"draw file view finished."<<QDateTime::currentDateTime();
     }
     else
     {
         draw_list = list_draw_src_data_.mid(count_size_blk_*copy_size,copy_size);
-//        chartview_ptr_->updateChinnelView(draw_list);
-        source_view_ptr_->updateChinnelView(draw_list);
+        chartview_ptr_->updateChinnelView(draw_list);
+        //if(action_state_ == E_ACTION_REVIEW)
+        {
+            source_view_ptr_->updateButterflyView(draw_list);
+            source_view_ptr_->setViewChinnelRange();
+        }
     }
 //    ui->widget_real_total_view->repaint();
     count_size_blk_++;

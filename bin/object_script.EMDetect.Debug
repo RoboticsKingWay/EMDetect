@@ -36,7 +36,6 @@ debug/setupwindow.o
 debug/qrc_resource.o
 debug/moc_xlsxdocument.o
 debug/moc_DataManager.o
-debug/moc_ExcelHelper.o
 debug/moc_QXlsxExcelHelper.o
 debug/moc_RealTimeChartView.o
 debug/moc_SerialPortManager.o

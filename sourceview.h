@@ -68,6 +68,7 @@ public:
         chart_->addSeries(butterfly_serial_ptr_);
         chart_->setAxisX(axisX_,butterfly_serial_ptr_);//为序列添加坐标轴
         chart_->setAxisY(axisY_,butterfly_serial_ptr_);
+        chart_->legend()->hide();
     }
 
     void setViewChinnelRange()
@@ -122,10 +123,6 @@ public:
         {
             return;
         }
-//        if(draw_list.size() > draw_max_size_)
-//        {
-//            resetSerials();
-//        }
         if (butterfly_serial_ptr_->count() >= DetectSettings::instance().max_points_count())
         {
 //            butterfly_serial_ptr_->removePoints(0,draw_list.size());
@@ -137,7 +134,6 @@ public:
         int ymax = -1000000;
         int xmin = 1000000;
         int xmax = -1000000;
-//        QList<QPointF> points;
         for (int j = 0; j< draw_list.size(); j++)
         {
             butterfly_serial_ptr_->append(QPointF(draw_list[j].mag_data.data[1],draw_list[j].mag_data.data[0]));
@@ -162,12 +158,40 @@ public:
         count_source_points_ += draw_list.size();
     }
 
+    void updateButterflyView(QVector<ChinnelData>& draw_list)
+    {
+        if(0 >= draw_list.size())
+        {
+            return;
+        }
+        int ymin = 1000000;
+        int ymax = -1000000;
+        int xmin = 1000000;
+        int xmax = -1000000;
+        for (int j = 0; j< draw_list.size(); j++)
+        {
+            butterfly_serial_ptr_->append(QPointF(draw_list[j].mag_data.data[1],draw_list[j].mag_data.data[0]));
+        }
+
+        xmin = std::min(butterfly_serial_ptr_->at(0).x(),butterfly_serial_ptr_->at(butterfly_serial_ptr_->count()-1).x());
+        xmax = std::max(butterfly_serial_ptr_->at(0).x(),butterfly_serial_ptr_->at(butterfly_serial_ptr_->count()-1).x());
+        ymin = std::min(butterfly_serial_ptr_->at(0).y(),butterfly_serial_ptr_->at(butterfly_serial_ptr_->count()-1).y());
+        ymax = std::max(butterfly_serial_ptr_->at(0).y(),butterfly_serial_ptr_->at(butterfly_serial_ptr_->count()-1).y());
+        y_max_ = std::max(ymax,y_max_);
+        y_min_ = std::min(ymin,y_min_);
+        x_max_ = std::max(xmax,x_max_);
+        x_min_ = std::min(xmin,x_min_);
+        if(chart_ && chart_view_)
+        {
+            chart_->update();
+            chart_view_->update();
+        }
+    }
     virtual void resetSerials() override
     {
         if(butterfly_serial_ptr_)
         {
             newSerial();
-//            butterfly_serial_ptr_->clear();
             if(chart_ && chart_view_)
             {
                 chart_->update();

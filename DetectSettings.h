@@ -26,6 +26,14 @@ protected:
     int auto_save_source_ {1};
     double save_scan_length_{100.1};
     double sensitivity_perview_{1.91};
+
+    int scan_speed_          = 40;
+    int upline_              = 68000;
+    int downline_            = 49000;
+    double fitted_param_a_   = -5.1;
+    double fitted_param_b_   = -1000.1;
+    QString detect_profile_  = "奥氏体钢";
+
 public:
     const QVector<double>& sensitivity_list()
     {
@@ -62,6 +70,41 @@ public:
     const double& sensitivity_perview()
     {
         return sensitivity_perview_;
+    }
+    const int& scan_speed()
+    {
+        return scan_speed_;
+    }
+    const int& upline()
+    {
+        return upline_;
+    }
+    const int& downline()
+    {
+        return downline_;
+    }
+    const double& fitted_param_a()
+    {
+        return fitted_param_a_;
+    }
+    const double& fitted_param_b()
+    {
+        return fitted_param_b_;
+    }
+    QString& detect_profile()
+    {
+        return detect_profile_;
+    }
+    void setline(int upline,int downline)
+    {
+        upline_ = upline;
+        downline_ = downline;
+    }
+    void setDetectParam(double a, double b, QString label)
+    {
+        fitted_param_a_ = a;
+        fitted_param_b_ = b;
+        detect_profile_ = label;
     }
 public:
     static DetectSettings& instance()
@@ -138,16 +181,51 @@ public:
             qDebug()<<"config: list"<<list<<" max_points_count_"<<max_points_count_<<" add_point_count_"<<add_point_count_\
                      <<" real_time_rate_"<<real_time_rate_<<" calc_coefficient_"<<calc_coefficient_<<" auto_save_source_"<<auto_save_source_\
                      <<"sensitivity_perview_"<<sensitivity_perview_<<"save_scan_length_"<<save_scan_length_;
+            //
+            scan_speed_ = settings.value("Settings/scan_speed", 40.0).toInt();
+            upline_ = settings.value("Settings/upline", 30000.0).toInt();
+            downline_ = settings.value("Settings/downline", -30000.0).toInt();
+            fitted_param_a_ = settings.value("Settings/fitted_param_a", 30.0).toDouble();
+            fitted_param_b_ = settings.value("Settings/fitted_param_b", 30.0).toDouble();
+            detect_profile_ = settings.value("Settings/detect_profile", "奥氏体钢").toString();
+            qDebug()<<"config: scan_speed_"<<scan_speed_<<" upline_"<<upline_<<" downline_"<<downline_\
+                     <<" fitted_param_a_"<<fitted_param_a_<<" fitted_param_b_"<<fitted_param_b_<<" detect_profile_"<<detect_profile_;
         }
         catch (const std::exception &e)
         {
-            qDebug() << "detect.ini error: " << e.what();
+            qDebug() << "read detect.ini error: " << e.what();
             QMessageBox::critical(nullptr, "config Error", QString(e.what()));
             return false;
         }
         return true;
     }
 
+    bool saveSetting()
+    {
+        QString config_dir = QDir::currentPath() + "//config//detect.ini";
+        if(!QFile::exists(config_dir))
+        {
+            QMessageBox::critical(nullptr, "Error", "配置文件 detect.ini 不存在!");
+            return false;
+        }
+        QSettings settings(config_dir, QSettings::IniFormat);
+        try
+        {
+            settings.setValue("Settings/upline", upline_);
+            settings.setValue("Settings/downline", downline_);
+            settings.setValue("Settings/fitted_param_a", fitted_param_a_);
+            settings.setValue("Settings/fitted_param_b", fitted_param_b_);
+            settings.setValue("Settings/detect_profile", detect_profile_);
+            settings.sync();
+        }
+        catch (const std::exception &e)
+        {
+            qDebug() << "write detect.ini error: " << e.what();
+            QMessageBox::critical(nullptr, "config Error", QString(e.what()));
+            return false;
+        }
+        return true;
+    }
 };
 
 #endif // DETECTSETTINGS_H

@@ -36,7 +36,6 @@ release/setupwindow.o
 release/qrc_resource.o
 release/moc_xlsxdocument.o
 release/moc_DataManager.o
-release/moc_ExcelHelper.o
 release/moc_QXlsxExcelHelper.o
 release/moc_RealTimeChartView.o
 release/moc_SerialPortManager.o

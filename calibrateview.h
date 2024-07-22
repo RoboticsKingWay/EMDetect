@@ -32,9 +32,18 @@ private slots:
 
     void on_pushButton_inside_del_clicked();
 
+    void on_pushButton_outside_stand_clicked();
+
+    void on_pushButton_inside_stand_clicked();
+
+    void on_pushButton_outside_stand_save_clicked();
+
+    void on_pushButton_inside_stand_save_clicked();
+
 private:
     Ui::CalibrateView *ui;
     QMap<QString,DetectDeclaerParam> cfg_detection_list_;
+    std::pair<double, double> result_param_;
 };
 
 #endif // CALIBRATEVIEW_H

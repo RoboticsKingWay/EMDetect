@@ -11,8 +11,7 @@ public:
     explicit RealTimeChartView(QWidget *parent = nullptr)
         : BaseView(parent)
     {
-        threshold_up_line_.resize(2);
-        threshold_down_line_.resize(2);
+
     }
     virtual ~RealTimeChartView()
     {
@@ -28,6 +27,12 @@ public:
                 delete threshold_serials_[1];
                 threshold_serials_[1] = nullptr;
             }
+        }
+        if(detect_rect_serials_)
+        {
+            detect_rect_serials_->clear();
+            delete detect_rect_serials_;
+            detect_rect_serials_ = nullptr;
         }
     }
     virtual void createChartView() override
@@ -79,24 +84,70 @@ public:
         QPen pen(QColor(255,0,0,255));
         pen.setWidth(2);
         threshold_serials_[0] = new QtCharts::QLineSeries();
-        threshold_serials_[0]->setName(QString("上阈值线"));
-        threshold_serials_[0]->append(0,40000);
-        threshold_serials_[0]->append(200,40000);
+        threshold_serials_[0]->setName(QString("upline"));
+        upline_start_ = 40000;
+        ymax_value_   = upline_start_;
+        threshold_serials_[0]->append(0,upline_start_);
+        threshold_serials_[0]->append(draw_max_size_,upline_start_);
+        threshold_up_line_.append(threshold_serials_[0]->at(0));
+        threshold_up_line_.append(threshold_serials_[0]->at(1));
         threshold_serials_[0]->setPen(pen);
+        threshold_serials_[0]->setVisible(false);
         chart_->addSeries(threshold_serials_[0]);
         chart_->setAxisX(axisX_,threshold_serials_[0]);
         chart_->setAxisY(axisY_,threshold_serials_[0]);
 
         threshold_serials_[1] = new QtCharts::QLineSeries();
-        threshold_serials_[1]->setName(QString("下阈值线"));
-        threshold_serials_[1]->append(0,-40000);
-        threshold_serials_[1]->append(200,-40000);
+        threshold_serials_[1]->setName(QString("downline"));
+        downline_start_ = -40000;
+        ymin_value_     = downline_start_;
+        threshold_serials_[1]->append(0, downline_start_);
+        threshold_serials_[1]->append(draw_max_size_, downline_start_);
+        threshold_down_line_.append(threshold_serials_[1]->at(0));
+        threshold_down_line_.append(threshold_serials_[1]->at(1));
+
         threshold_serials_[1]->setPen(pen);
+        threshold_serials_[1]->setVisible(false);
         chart_->addSeries(threshold_serials_[1]);
         chart_->setAxisX(axisX_,threshold_serials_[1]);
         chart_->setAxisY(axisY_,threshold_serials_[1]);
+
+        detect_rect_serials_ = new QtCharts::QLineSeries();
+        detect_rect_serials_->setName(QString("detect"));
+        detect_rect_serials_->setPen(pen);
+        chart_->addSeries(detect_rect_serials_);
+        chart_->setAxisX(axisX_,detect_rect_serials_);
+        chart_->setAxisY(axisY_,detect_rect_serials_);
+        if(chart_view_)
+        {
+            connect(chart_view_,&ZoomableChartView::selectRect,this,&RealTimeChartView::onSelectRect,Qt::AutoConnection);
+        }
+        showLegend("detect",false);
+        showLegend("upline",false);
+        showLegend("downline",false);
     }
 
+    void showLegend(const QString &legendName, bool visible)
+    {
+        QLegend *legend = chart_->legend();
+        if (legend)
+        {
+            for (QLegendMarker *marker : legend->markers())
+            {
+                if (marker->label() == legendName)
+                {
+                    marker->setVisible(visible);
+                }
+            }
+        }
+    }
+    void setSelectSwitch(bool sw)
+    {
+        if(chart_view_)
+        {
+            chart_view_->b_select_rect_ = sw;
+        }
+    }
     void setChinnelRange(int count)
     {
         qreal ymin = 0.0;
@@ -140,14 +191,47 @@ public:
         int x_to    = count_points_ + draw_add_size_;
         //          axisX_->setTitleText("点数计数10^3");
         //            axisX_->setTitleText("磁场强度nT");
-        updateThresholdLine(x_since,x_to);
+        updateThresholdLine(0,x_to);
         if(is_init)
         {
             axisX_->setRange(x_since, x_to);
             axisY_->setRange(ymin, ymax);
         }
     }
-
+    QVector<QPointF> getThresholdUpline()
+    {
+        return threshold_up_line_;
+    }
+    QVector<QPointF> getThresholdDownline()
+    {
+        return threshold_down_line_;
+    }
+    void getDetectRectData(QVector<QPoint>& ret_points)
+    {
+        QVector<QPoint> points;
+        qreal x_since = detect_rect_.left();
+        qreal x_to    = detect_rect_.right();
+        qreal x_st    = detect_rect_serials_->at(0).x();
+        qreal x_end   = detect_rect_serials_->at(detect_rect_serials_->count()-1).x();
+        if(x_to > x_since)
+        {
+            if(x_st < x_since && x_since < x_end)
+            {
+                for(int x = x_since; x < std::min(x_to,x_end); x++)
+                {
+                    QPoint point;
+                    point.setX(detect_rect_serials_->at(x).x());
+                    point.setY(detect_rect_serials_->at(x).y());
+                    points.append(point);
+                }
+            }
+        }
+        else if(x_since > x_to)
+        {
+            qDebug()<<"detect_rect_ error!!!!";
+        }
+        ret_points = points;
+    }
     void updateChinnelView(QVector<ChinnelData>& draw_list,int ch_num, bool is_on)
     {
         if(draw_add_size_ != draw_list.size())
@@ -201,38 +285,24 @@ public:
     }
     void setUpline(bool show)
     {
-        b_upline_show_ = show;
+        threshold_serials_[0]->setVisible(show);
     }
     void setDownline(bool show)
     {
-        b_downline_show_ = show;
+        threshold_serials_[1]->setVisible(show);
     }
     void updateThresholdLine(qreal x_since, qreal x_to)
     {
-        if(!b_up_move_to_)
-        {
-            move_upline_to_   = ymax_value_;
-        }
-        if(!b_down_move_to_)
-        {
-            move_downline_to_ = ymin_value_;
-        }
-
-        int y_up_value   = move_upline_to_   + move_up_count_   * setp_move_for_line_;
-        int y_down_value = move_downline_to_ + move_down_count_ * setp_move_for_line_;
+        int y_up_value   = upline_start_   + move_up_count_   * setp_move_for_line_;
+        int y_down_value = downline_start_ + move_down_count_ * setp_move_for_line_;
 
         threshold_up_line_[0]   = QPointF(x_since, y_up_value);
         threshold_up_line_[1]   = QPointF(x_to, y_up_value);
         threshold_down_line_[0] = QPointF(x_since, y_down_value);
         threshold_down_line_[1] = QPointF(x_to, y_down_value);
-        if(b_upline_show_)
-        {
-            threshold_serials_[0]->replace(threshold_up_line_);
-        }
-        if(b_downline_show_)
-        {
-            threshold_serials_[1]->replace(threshold_down_line_);
-        }
+
+        threshold_serials_[0]->replace(threshold_up_line_);
+        threshold_serials_[1]->replace(threshold_down_line_);
     }
     /*******************************************************/
     void setViewChinnelRange()
@@ -315,15 +385,13 @@ public slots:
     }
     void on_uplineMoveto(double y_to)
     {
-        move_upline_to_ = y_to;
-        b_up_move_to_ = true;
+        upline_start_ = y_to;
         move_up_count_ = 0;
         updateThresholdLine(threshold_up_line_[0].x(),threshold_up_line_[1].x());
     }
     void on_uplineReset()
     {
-        move_upline_to_ = 0;
-        b_up_move_to_ = false;
+        upline_start_ = ymax_value_;
         move_up_count_ = 0;
         updateThresholdLine(threshold_up_line_[0].x(),threshold_up_line_[1].x());
     }
@@ -339,34 +407,47 @@ public slots:
     }
     void on_downlineMoveto(double y_to)
     {
-        move_downline_to_ = y_to;
-        b_down_move_to_ = true;
+        downline_start_ = y_to;
         move_down_count_ = 0;
         updateThresholdLine(threshold_down_line_[0].x(),threshold_down_line_[1].x());
     }
     void on_downlineReset()
     {
-        move_upline_to_ = 0;
-        b_down_move_to_ = false;
+        downline_start_ = ymin_value_;
         move_down_count_ = 0;
         updateThresholdLine(threshold_down_line_[0].x(),threshold_down_line_[1].x());
+    }
+    void onSelectRect(QPointF start,QPointF end)
+    {
+        if(detect_rect_serials_ && chart_)
+        {
+            detect_rect_serials_->clear();
+            QList<QPointF> rect;
+            rect.append(start);
+            rect.append(QPoint(end.x(), start.y()));
+            rect.append(end);
+            rect.append(QPoint(start.x(),end.y()));
+            rect.append(start);
+            detect_rect_serials_->append(rect);
+            chart_->update();
+            detect_rect_ = QRectF(start,end);
+        }
     }
 private:
     int count_points_ = 0;
     QtCharts::QLineSeries* threshold_serials_[2] = {nullptr};
-    bool b_upline_show_ { false };
-    bool b_downline_show_ { false };
-    bool b_up_move_to_ {false};
-    bool b_down_move_to_ {false};
+    QtCharts::QLineSeries* detect_rect_serials_  = {nullptr};
+    QList<QtCharts::QLineSeries*> auto_detect_rect_list_;
     int move_up_count_  {-1};
     int move_down_count_  {1};
-    int move_upline_to_{0};
-    int move_downline_to_{0};
+    int upline_start_{0};
+    int downline_start_{0};
     QVector<QPointF> threshold_up_line_;
     QVector<QPointF> threshold_down_line_;
     const int setp_move_for_line_ = 100;
     double ymax_value_ {26000};
     double ymin_value_{20000};
+    QRectF detect_rect_;
 };
 
 #endif // REALTIMECHARTVIEW_H

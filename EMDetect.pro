@@ -20,8 +20,6 @@ HEADERS += \
     Chasing.h \
     DataManager.h \
     DetectSettings.h \
-    ExcelHelper.h \
-    ImageViewNew.h \
     QXlsxExcelHelper.h \
     RealTimeChartView.h \
     SafeQueue.h \
@@ -33,8 +31,6 @@ HEADERS += \
     calc/Chasing.h \
     calc/SPLine.h \
     calibrateview.h \
-    chinnelview.h \
-    imageview.h \
     mainwindow.h\
     setupwindow.h \
     sourceview.h

@@ -19,15 +19,71 @@ public:
         : QChartView( chart)
     {
         grabGesture(Qt::PinchGesture);
+        setMouseTracking(true); // 启用鼠标追踪
+//        installEventFilter(this);
     }
     virtual ~ZoomableChartView()
     {
+    }
+    void paint_Event()
+    {
+        //        QChartView::paintEvent(event); // 首先绘制图表
+
+        // 如果选择了矩形区域，则绘制它
+        if (!QRectF(start_point_,end_point_).isEmpty() && b_select_rect_)
+        {
+            QPainter painter(this);
+            painter.begin(this);
+            QPen pen(Qt::red, 1, Qt::DashLine);
+            painter.setPen(pen);
+            painter.drawRect(QRectF(start_point_,end_point_));
+            painter.end();
+        }
+        //        event->accept();
     }
     void setLocationShow(bool show)
     {
         is_localtion_show_ = show;
     }
+signals:
+    void selectRect(QPointF start,QPointF end);
 protected:
+//    bool eventFilter(QObject *watched, QEvent *event)
+//    {
+//        QChartView::eventFilter(watched, event);
+//        if(event->type() == QEvent::Paint)
+//        {
+//            if (!QRectF(start_point_,end_point_).isEmpty() && b_select_rect_)
+//            {
+//                QPainter painter(this);
+//                if(painter.isActive())
+//                {
+//                    qDebug()<<"start:"<<start_point_ <<"   end:"<<end_point_;
+//                    QPen pen(Qt::red, 1, Qt::DashLine);
+//                    painter.setPen(pen);
+//                    painter.drawRect(QRectF(QPointF(225,150),QPointF(325,200)));
+//                    painter.end();
+//                }
+//            }
+//        }
+//        return true;
+//    }
+
+//    virtual void paintEvent(QPaintEvent *event)override
+//    {
+//        if (!QRectF(start_point_,end_point_).isEmpty() && b_select_rect_)
+//        {
+//            QPainter painter(this);
+//            if(painter.isActive())
+//            {
+//                QPen pen(Qt::red, 1, Qt::DashLine);
+//                painter.setPen(pen);
+//                painter.drawRect(QRectF(start_point_,end_point_));
+//                painter.end();
+//            }
+//        }
+//        QChartView::paintEvent(event); // 调用基类的事件处理
+//    }
     virtual void gestureEvent(QGestureEvent *event) //override
     {
         if (event->gesture(Qt::PinchGesture))
@@ -39,6 +95,7 @@ protected:
 
     virtual void wheelEvent(QWheelEvent *event) override
     {
+        QChartView::wheelEvent(event); // 调用基类的事件处理
         if (!event)
             return;
 
@@ -67,6 +124,7 @@ protected:
         // 将鼠标位置转换为图表坐标
         if(is_localtion_show_)
         {
+            QPointF mousePoint = event->pos();
             QPointF point = chart()->mapToValue(event->pos());
             // 找到最接近的点，这里使用简单的方法，实际情况可能需要更复杂的查找逻辑
     //        double minDistance = std::numeric_limits<double>::max();
@@ -85,6 +143,44 @@ protected:
             // 展示鼠标悬停位置的X和Y值
             QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(point.x()).arg(point.y()), this);
         }
+        event->accept();
+    }
+    void mousePressEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton && b_select_rect_)
+        {
+            start_point_ = chart()->mapToValue(event->pos());
+//            start_point_ = event->pos();
+        }
+        else
+        {
+            QChartView::mousePressEvent(event); // 调用基类的事件处理
+        }
+        event->accept();
+    }
+
+    void mouseReleaseEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton && b_select_rect_)
+        {
+            end_point_ = chart()->mapToValue(event->pos());
+            emit selectRect(start_point_,end_point_);
+//            end_point_ = event->pos();
+//            update(); // 触发重绘
+//            QPainter painter(this);
+//            if(painter.isActive())
+//            {
+//                QPen pen(Qt::red, 1, Qt::DashLine);
+//                painter.setPen(pen);
+//                painter.drawRect(QRectF(start_point_,end_point_));
+//                painter.end();
+//            }
+        }
+        else
+        {
+            QChartView::mouseReleaseEvent(event); // 调用基类的事件处理
+        }
+        event->accept();
     }
 private:
     void handlePinchGesture(QPinchGesture *pinchGesture)
@@ -110,8 +206,11 @@ private:
         scale(chart()->size().width() * scaleFactor, chart()->size().height() * scaleFactor);
         centerOn(center);
     }
-private:
+public:
     bool is_localtion_show_{true};
+    bool b_select_rect_    {false};
+    QPointF start_point_;
+    QPointF end_point_;
 };
 
 class BaseView : public QObject
@@ -230,13 +329,15 @@ protected:
     QValueAxis *axisX_ = {nullptr};
     QValueAxis *axisY_ = {nullptr};
 //    ZoomableChartView *chart_view_ = {nullptr};
-    ZoomableChartView *chart_view_ = {nullptr};
+
     QChart* chart_ = {nullptr};
     QVBoxLayout* layout_ = {nullptr};
     QWidget* parent_view_ptr_ {nullptr};
     int count_source_points_ = 0;
     int draw_add_size_ = {20};
     int draw_max_size_ = {300};
+public:
+    ZoomableChartView *chart_view_ = {nullptr};
 };
 
 #endif // ZOOMABLECHARTVIEW_H
