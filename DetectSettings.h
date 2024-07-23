@@ -3,6 +3,7 @@
 
 #include <QSettings>
 #include <QString>
+#include <QTextCodec>
 #include <QVector>
 #include <QDir>
 #include <QFile>
@@ -162,6 +163,7 @@ public:
             return false;
         }
         QSettings settings(config_dir, QSettings::IniFormat);
+        settings.setIniCodec(QTextCodec::codecForName("utf-8")); // 解决乱码
         try
         {
             QString list = settings.value("Settings/sensitivity").toString();
@@ -209,6 +211,7 @@ public:
             return false;
         }
         QSettings settings(config_dir, QSettings::IniFormat);
+        settings.setIniCodec(QTextCodec::codecForName("utf-8"));
         try
         {
             settings.setValue("Settings/upline", upline_);

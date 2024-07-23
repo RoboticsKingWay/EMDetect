@@ -23,7 +23,7 @@
     <normaloff>:/source/title.png</normaloff>:/source/title.png</iconset>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab">
    <attribute name="title">
@@ -43,7 +43,7 @@
       <rect>
        <x>10</x>
        <y>0</y>
-       <width>561</width>
+       <width>551</width>
        <height>117</height>
       </rect>
      </property>
@@ -52,7 +52,7 @@
        <rect>
         <x>9</x>
         <y>9</y>
-        <width>208</width>
+        <width>231</width>
         <height>47</height>
        </rect>
       </property>
@@ -104,7 +104,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>缺陷深度</string>
+          <string>缺陷深度：</string>
          </property>
         </widget>
        </item>
@@ -130,7 +130,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>缺陷幅值</string>
+          <string>缺陷幅值：</string>
          </property>
         </widget>
        </item>
@@ -156,7 +156,7 @@
        <item>
         <widget class="QLabel" name="label_16">
          <property name="text">
-          <string>缺陷宽度</string>
+          <string>缺陷宽度：</string>
          </property>
         </widget>
        </item>
@@ -175,7 +175,7 @@
       <rect>
        <x>10</x>
        <y>130</y>
-       <width>511</width>
+       <width>541</width>
        <height>201</height>
       </rect>
      </property>
@@ -312,7 +312,7 @@
       <rect>
        <x>20</x>
        <y>120</y>
-       <width>521</width>
+       <width>551</width>
        <height>20</height>
       </rect>
      </property>
@@ -380,8 +380,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>471</width>
-      <height>351</height>
+      <width>501</width>
+      <height>371</height>
      </rect>
     </property>
     <widget class="QWidget" name="widget_14" native="true">
@@ -389,7 +389,7 @@
       <rect>
        <x>9</x>
        <y>9</y>
-       <width>231</width>
+       <width>271</width>
        <height>111</height>
       </rect>
      </property>
@@ -423,7 +423,7 @@
          <item>
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>缺陷当量</string>
+            <string>缺陷当量：</string>
            </property>
           </widget>
          </item>
@@ -444,7 +444,7 @@
       <rect>
        <x>10</x>
        <y>130</y>
-       <width>423</width>
+       <width>461</width>
        <height>5</height>
       </rect>
      </property>
@@ -463,7 +463,7 @@
       <rect>
        <x>10</x>
        <y>150</y>
-       <width>423</width>
+       <width>471</width>
        <height>133</height>
       </rect>
      </property>
@@ -492,19 +492,6 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="3">
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>123</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="2" column="3">
           <widget class="QPushButton" name="pushButton_inside_add">
            <property name="text">
@@ -518,6 +505,19 @@
             <string notr="true"/>
            </property>
           </widget>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <spacer name="horizontalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>123</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -573,10 +573,10 @@
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>290</y>
-       <width>261</width>
-       <height>56</height>
+       <x>140</x>
+       <y>300</y>
+       <width>271</width>
+       <height>61</height>
       </rect>
      </property>
      <property name="title">

@@ -97,9 +97,9 @@ public:
     QLabel *label_12;
     QLineEdit *lineEdit_inside_add_num;
     QLabel *label_9;
-    QSpacerItem *horizontalSpacer_7;
     QPushButton *pushButton_inside_add;
     QLineEdit *lineEdit_inside_write;
+    QSpacerItem *horizontalSpacer_7;
     QWidget *widget_7;
     QGridLayout *gridLayout_5;
     QComboBox *comboBox_inside_del;
@@ -130,10 +130,10 @@ public:
         widget_outside->setGeometry(QRect(10, 10, 611, 441));
         widget_2 = new QWidget(widget_outside);
         widget_2->setObjectName(QString::fromUtf8("widget_2"));
-        widget_2->setGeometry(QRect(10, 0, 561, 117));
+        widget_2->setGeometry(QRect(10, 0, 551, 117));
         widget_9 = new QWidget(widget_2);
         widget_9->setObjectName(QString::fromUtf8("widget_9"));
-        widget_9->setGeometry(QRect(9, 9, 208, 47));
+        widget_9->setGeometry(QRect(9, 9, 231, 47));
         horizontalLayout_5 = new QHBoxLayout(widget_9);
         horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         label_3 = new QLabel(widget_9);
@@ -197,7 +197,7 @@ public:
 
         widget = new QWidget(widget_outside);
         widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(10, 130, 511, 201));
+        widget->setGeometry(QRect(10, 130, 541, 201));
         horizontalLayout_3 = new QHBoxLayout(widget);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         widget_12 = new QWidget(widget);
@@ -289,10 +289,10 @@ public:
 
         label_13 = new QLabel(widget_outside);
         label_13->setObjectName(QString::fromUtf8("label_13"));
-        label_13->setGeometry(QRect(20, 120, 521, 20));
+        label_13->setGeometry(QRect(20, 120, 551, 20));
         groupBox = new QGroupBox(widget_outside);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(10, 330, 341, 91));
+        groupBox->setGeometry(QRect(10, 330, 471, 91));
         gridLayout_3 = new QGridLayout(groupBox);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         label_17 = new QLabel(groupBox);
@@ -330,10 +330,10 @@ public:
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
         widget_3 = new QWidget(tab_2);
         widget_3->setObjectName(QString::fromUtf8("widget_3"));
-        widget_3->setGeometry(QRect(10, 10, 471, 351));
+        widget_3->setGeometry(QRect(10, 10, 501, 371));
         widget_14 = new QWidget(widget_3);
         widget_14->setObjectName(QString::fromUtf8("widget_14"));
-        widget_14->setGeometry(QRect(9, 9, 231, 111));
+        widget_14->setGeometry(QRect(9, 9, 271, 111));
         verticalLayout = new QVBoxLayout(widget_14);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         widget_5 = new QWidget(widget_14);
@@ -373,11 +373,11 @@ public:
 
         label_14 = new QLabel(widget_3);
         label_14->setObjectName(QString::fromUtf8("label_14"));
-        label_14->setGeometry(QRect(10, 130, 423, 5));
+        label_14->setGeometry(QRect(10, 130, 461, 5));
         label_14->setMaximumSize(QSize(16777215, 5));
         widget_8 = new QWidget(widget_3);
         widget_8->setObjectName(QString::fromUtf8("widget_8"));
-        widget_8->setGeometry(QRect(10, 150, 423, 133));
+        widget_8->setGeometry(QRect(10, 150, 471, 133));
         horizontalLayout_6 = new QHBoxLayout(widget_8);
         horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
         widget_6 = new QWidget(widget_8);
@@ -400,10 +400,6 @@ public:
 
         gridLayout_6->addWidget(label_9, 1, 0, 1, 1);
 
-        horizontalSpacer_7 = new QSpacerItem(123, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_6->addItem(horizontalSpacer_7, 2, 0, 1, 3);
-
         pushButton_inside_add = new QPushButton(widget_6);
         pushButton_inside_add->setObjectName(QString::fromUtf8("pushButton_inside_add"));
 
@@ -414,6 +410,10 @@ public:
         lineEdit_inside_write->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_6->addWidget(lineEdit_inside_write, 1, 2, 1, 2);
+
+        horizontalSpacer_7 = new QSpacerItem(123, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_6->addItem(horizontalSpacer_7, 2, 0, 1, 2);
 
 
         horizontalLayout_6->addWidget(widget_6);
@@ -448,7 +448,7 @@ public:
 
         groupBox_2 = new QGroupBox(widget_3);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        groupBox_2->setGeometry(QRect(10, 290, 261, 56));
+        groupBox_2->setGeometry(QRect(140, 300, 271, 61));
         horizontalLayout_9 = new QHBoxLayout(groupBox_2);
         horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
         pushButton_inside_stand = new QPushButton(groupBox_2);
@@ -469,7 +469,7 @@ public:
 
         retranslateUi(CalibrateView);
 
-        CalibrateView->setCurrentIndex(0);
+        CalibrateView->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(CalibrateView);
@@ -483,11 +483,11 @@ public:
         comboBox_outside_list->setItemText(1, QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\2672", nullptr));
         comboBox_outside_list->setItemText(2, QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\2673", nullptr));
 
-        label->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\346\267\261\345\272\246", nullptr));
+        label->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\346\267\261\345\272\246\357\274\232", nullptr));
         label_outside_depth_read->setText(QString());
-        label_2->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\271\205\345\200\274", nullptr));
+        label_2->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\271\205\345\200\274\357\274\232", nullptr));
         label_outside_db_read->setText(QString());
-        label_16->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\256\275\345\272\246", nullptr));
+        label_16->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\256\275\345\272\246\357\274\232", nullptr));
         label_outside_width_read->setText(QString());
         label_4->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\346\267\261\345\272\246", nullptr));
         pushButton_outside_add->setText(QCoreApplication::translate("CalibrateView", "\346\226\260\345\242\236\347\274\272\351\231\267", nullptr));
@@ -504,7 +504,7 @@ public:
         pushButton_outside_stand_save->setText(QCoreApplication::translate("CalibrateView", "\346\240\207\345\256\232\344\277\235\345\255\230", nullptr));
         CalibrateView->setTabText(CalibrateView->indexOf(tab), QCoreApplication::translate("CalibrateView", "\345\244\226\351\203\250\347\274\272\351\231\267\346\240\207\345\256\232", nullptr));
         label_7->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
-        label_8->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\275\223\351\207\217", nullptr));
+        label_8->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\275\223\351\207\217\357\274\232", nullptr));
         label_inside_db_read->setText(QString());
         label_14->setText(QCoreApplication::translate("CalibrateView", "-----------------------------------------------------------------------------------", nullptr));
         label_12->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));

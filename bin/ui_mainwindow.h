@@ -133,7 +133,7 @@ public:
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         centralwidget->setMinimumSize(QSize(1000, 670));
-        centralwidget->setStyleSheet(QString::fromUtf8("background-color:#DDDDDD"));
+        centralwidget->setStyleSheet(QString::fromUtf8("/*background-color:#DDDDDD*/"));
         verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         widget_up = new QWidget(centralwidget);

@@ -44,6 +44,11 @@ CalibrateView::CalibrateView(QWidget *parent) :
         ui->comboBox_inside_list->addItem(param.label);
         ui->comboBox_inside_del->addItem(param.label);
     }
+    result_param_.first   = DetectSettings::instance().fitted_param_a();
+    result_param_.second  = DetectSettings::instance().fitted_param_b();
+    QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
+    ui->lineEdit_stand_result->setText(text);
+    ui->lineEdit_stand_result_label->setText(DetectSettings::instance().detect_profile());
 }
 
 CalibrateView::~CalibrateView()
@@ -60,6 +65,12 @@ void CalibrateView::on_comboBox_outside_list_currentIndexChanged(int index)
         ui->label_outside_depth_read->setText(QString::number(it->depth));
         ui->label_outside_width_read->setText(QString::number(it->length));
         ui->label_outside_db_read->setText(QString::number(it->equivalent));
+    }
+    else
+    {
+        ui->label_outside_depth_read->setText("");
+        ui->label_outside_width_read->setText("");
+        ui->label_outside_db_read->setText("");
     }
 }
 
@@ -112,6 +123,8 @@ void CalibrateView::on_comboBox_inside_list_currentIndexChanged(int index)
     {
         ui->label_inside_db_read->setText(QString::number(it->equivalent));
     }
+    else
+        ui->label_inside_db_read->setText("");
 }
 
 
@@ -168,7 +181,7 @@ void CalibrateView::on_pushButton_outside_stand_clicked()
         }
     }
     result_param_ = leastSquares(points);
-    QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
+    QString text = QString("y = %1x + %2").arg(result_param_.first,0,'f',3).arg(result_param_.second,0,'f',3);
     ui->lineEdit_stand_result->setText(text);
 }
 
@@ -180,7 +193,7 @@ void CalibrateView::on_pushButton_inside_stand_clicked()
 void CalibrateView::on_pushButton_outside_stand_save_clicked()
 {
     QString label = ui->lineEdit_stand_result_label->text();
-    DetectSettings::instance().setDetectParam(result_param_.first,result_param_.second,label);
+    DetectSettings::instance().setDetectParam(result_param_.first,result_param_.second, label);
     DetectSettings::instance().saveSetting();
 }
 
