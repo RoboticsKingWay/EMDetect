@@ -28,6 +28,8 @@ signals:
     void downlineDe();
     void downlineMoveto(double y_to);
     void downlineReset();
+    void autoDirectFit(double rad);
+    void manve_Fit(QPointF center, double rad);
 private slots:
 
     void on_pushButton_sure_clicked();
@@ -48,6 +50,10 @@ private slots:
     void on_pushButton_downlinesure_clicked();
 
     void on_pushButton_downlinereset_clicked();
+
+    void on_pushButton_circle_direct_clicked();
+
+    void on_pushButton_circle_input_clicked();
 
 private:
     Ui::SetupWindow *ui;

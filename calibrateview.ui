@@ -488,7 +488,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_9">
            <property name="text">
-            <string>缺陷当量</string>
+            <string>缺陷幅值</string>
            </property>
           </widget>
          </item>

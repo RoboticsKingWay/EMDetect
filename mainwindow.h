@@ -25,7 +25,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void updateData();
-
+public slots:
+    void on_auto_FitDirect(double rad);
+    void on_manve_Fit(QPointF center, double rad);
 //protected:
 
 //    void resizeEvent(QResizeEvent *event) override;
@@ -49,7 +51,7 @@ private slots:
 
     void on_lineEdit_textChanged(const QString &arg1);
 
-    void on_pushButton_SerialSetup_clicked();
+//    void on_pushButton_SerialSetup_clicked();
     void on_checkBox_upline_stateChanged(int arg1);
 
     void on_checkBox_3_stateChanged(int arg1);
@@ -66,6 +68,10 @@ private slots:
 
     void on_pushButton_5_clicked();
 
+    void on_action_fileperview_triggered();
+
+    void on_action_fit_circle_triggered();
+
 signals:
 
 private:
@@ -73,6 +79,7 @@ private:
     void setPushButtonEnable(); //
     void drawFileView();
     void drawImageViewThread();
+    void runThread();
 private:
     Ui::MainWindow *ui {nullptr};
     RealTimeChartView* chartview_ptr_ {nullptr};
@@ -87,7 +94,8 @@ private:
     DataManager* data_manager_ptr_ {nullptr};
     bool is_chinnel_on_ [CH_NUM] = {false};
     QVector<ChinnelData> list_draw_src_data_;
-//    QVector<ChinnelData> list_draw_file_data_;
+    QVector<QPointF> rect_data_list_; // 特征区域的数据
+//    QVector<ChinnelData> list_fitted_data_; // 拟合圆数据
     int action_state_ {E_ACTION_STOP};//操作初始状态
 
     std::shared_ptr<std::thread> thread_calc_ptr_ {nullptr}; // 检测结果计算线程

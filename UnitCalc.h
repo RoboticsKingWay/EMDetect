@@ -5,6 +5,8 @@
 #include <cmath>
 #include <vector>
 #include <utility>
+#include <QPointF>
+#include <QVector>
 
 // 差分
 static void centralDifference(const std::vector<int>& data, std::vector<int>& result,int order = 2)
@@ -111,6 +113,26 @@ static void calcMaxMin(const std::vector<int>& data,int& max_ret,int& min_ret)
     min_ret = min;
 }
 
+static void calcMaxMinPoint(const QVector<QPointF>& data, QPointF& max_point, QPointF& min_point)
+{
+    QPointF max (0,-10000000);
+    QPointF min (0,10000000);
+
+    for(int i = 0; i < data.size(); i++)
+    {
+        if(max.y() < data[i].y())
+        {
+            max = data[i];
+        }
+        if(min.y() > data[i].y())
+        {
+            min = data[i];
+        }
+    }
+    max_point = max;
+    min_point = min;
+}
+
 static void calcThresholdDistance(const std::vector<std::vector<int>>& data,int& max_ret,int& min_ret,std::vector<std::vector<int>>& distance_list)
 {
     int max = -10000000;
@@ -166,5 +188,150 @@ static std::pair<double, double> leastSquares(const std::vector<std::pair<double
     return {slope, intercept};
 }
 
+
+// 拟合圆计算
+// 计算点到直线的距离
+static double pointToLineDistance(const QPointF& p, const QPointF& line1, const QPointF& line2)
+{
+    double dx = line2.x() - line1.x();
+    double dy = line2.y() - line1.y();
+    double numerator = std::abs(dy * p.x() - dx * p.y() + line2.y() * line1.x() - line2.x() * line1.y());
+    double denominator = std::sqrt(dx * dx + dy * dy);
+    return numerator / denominator;
+}
+// 计算圆的中心
+static QPointF calculateCenter(const std::vector<QPointF>& points)
+{
+    double sumX = 0, sumY = 0, sumXX = 0, sumYY = 0, sumXY = 0;
+    for (const auto& p : points)
+    {
+        sumX += p.x();
+        sumY += p.y();
+        sumXX += p.x() * p.x();
+        sumYY += p.y() * p.y();
+        sumXY += p.x() * p.y();
+    }
+
+    double centerX = (sumXX * sumYY - sumXY * sumXY) / (sumXX + sumYY);
+    double centerY = (sumYY * sumX - sumXY * sumX) / (sumXX + sumYY);
+
+    return QPointF(centerX, centerY);
+}
+
+// 计算圆的半径
+static double calculateRadius(const QPointF& center, const std::vector<QPointF>& points)
+{
+    double radius = std::numeric_limits<double>::max();
+    for (const auto& p : points)
+    {
+        radius = std::min(radius, std::sqrt(std::pow(p.x() - center.x(), 2) + std::pow(p.y() - center.y(), 2)));
+    }
+    return radius;
+}
+// RANSAC算法求拟合圆的圆心
+static QPointF fitCircleRANSAC(const std::vector<QPointF>& points,double& radius, double inlierThreshold = 1.0)
+{
+    const int minPoints = 3;
+    const int maxIterations = 100;
+    const double goodEnoughInliers = points.size() * 0.5;
+
+    std::vector<int> bestInliers;
+    QPointF bestCenter;
+    double bestRadius = std::numeric_limits<double>::max();
+
+    for (int iter = 0; iter < maxIterations; ++iter)
+    {
+        std::vector<QPointF> sample;
+        for (int i = 0; i < minPoints; ++i)
+        {
+            int index = rand() % points.size();
+            sample.push_back(points[index]);
+        }
+
+        QPointF center = calculateCenter(sample);
+        double radius = calculateRadius(center, sample);
+
+        std::vector<int> inliers;
+        for (size_t i = 0; i < points.size(); ++i)
+        {
+            if (std::pow(points[i].x() - center.x(), 2) + std::pow(points[i].y() - center.y(), 2) <= std::pow(radius, 2) + inlierThreshold * inlierThreshold)
+            {
+                inliers.push_back(i);
+            }
+        }
+
+        if (inliers.size() > bestInliers.size())
+        {
+            bestInliers = inliers;
+            bestCenter = center;
+            bestRadius = radius;
+        }
+
+        if (inliers.size() > goodEnoughInliers)
+        {
+            break;
+        }
+    }
+
+    return bestCenter;
+}
+// 计算点的均值（中心）
+static QPointF calculatePointsCenter(const std::vector<QPointF>& points)
+{
+    double sumX = 0, sumY = 0;
+
+    for (const QPointF& point : points)
+    {
+        sumX += point.x();
+        sumY += point.y();
+    }
+
+    double centerX = sumX / points.size();
+    double centerY = sumY / points.size();
+
+    return QPointF(centerX, centerY);
+}
+//// 计算平均值
+//static double mean(const std::vector<QPointF>& points)
+//{
+//    double sumX = 0, sumY = 0;
+//    for (const QPointF& p : points) {
+//        sumX += p.x();
+//        sumY += p.y();
+//    }
+//    return points.size() / 2.0;
+//}
+
+//// 计算拟合圆的中心
+//static QPointF calculateCenter(const std::vector<QPointF>& points)
+//{
+//    double xMean = mean(points);
+//    double yMean = mean(points);
+//    double centerX = 0, centerY = 0;
+//    double sumXX = 0, sumYY = 0, sumXY = 0;
+
+//    for (const QPointF& p : points) {
+//        sumXX += (p.x() - xMean) * (p.x() - xMean);
+//        sumYY += (p.y() - yMean) * (p.y() - yMean);
+//        sumXY += (p.x() - xMean) * (p.y() - yMean);
+//    }
+
+//    centerX = xMean - sumXY / sumXX;
+//    centerY = yMean - (sumXX * sumYY - sumXY * sumXY) / (sumXX * sumXX + sumYY * sumYY);
+
+//    return QPointF(centerX, centerY);
+//}
+
+//// 计算拟合圆的半径
+//static double calculateRadius(const QPointF& center, const std::vector<QPointF>& points)
+//{
+//    double minDistance = std::numeric_limits<double>::max();
+//    for (const QPointF& p : points)
+//    {
+//        double distance = std::sqrt((p.x() - center.x()) * (p.x() - center.x()) + (p.y() - center.y()) * (p.y() - center.y()));
+//        minDistance = std::min(minDistance, distance);
+//    }
+//    return minDistance;
+//}
 
 #endif // UNITCALC_H

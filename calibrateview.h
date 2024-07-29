@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QMap>
 #include <QTabWidget>
+#include <functional>
 #include "UnitData.h"
 #include "DetectSettings.h"
 
@@ -18,7 +19,17 @@ class CalibrateView : public QTabWidget
 public:
     explicit CalibrateView(QWidget *parent = nullptr);
     ~CalibrateView();
-
+    std::pair<double, double> getStandarParam()
+    {
+        return result_param_;
+    }
+    double getAmplitude()
+    {
+        return inside_amplitude_;
+    }
+    void initView(std::function<void(QVector<QPointF>&)> getDetectRectData_Func);
+public slots:
+    void on_GetRectData(QVector<QPointF>& points);
 private slots:
     void on_comboBox_outside_list_currentIndexChanged(int index);
 
@@ -44,6 +55,9 @@ private:
     Ui::CalibrateView *ui;
     QMap<QString,DetectDeclaerParam> cfg_detection_list_;
     std::pair<double, double> result_param_;
+//    QVector<double> amplitude_list_;
+    double inside_amplitude_;
+    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
 };
 
 #endif // CALIBRATEVIEW_H

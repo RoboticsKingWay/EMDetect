@@ -480,6 +480,8 @@ release/moc_DataManager.cpp: ../DataManager.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QFile \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QRegExp \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QMessageBox \
@@ -664,6 +666,8 @@ release/moc_QXlsxExcelHelper.cpp: ../QXlsxExcelHelper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -767,6 +771,8 @@ release/moc_RealTimeChartView.cpp: ../RealTimeChartView.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -925,7 +931,6 @@ release/moc_RealTimeChartView.cpp: ../RealTimeChartView.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporarydir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporaryfile.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextboundaryfinder.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthread.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadpool.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadstorage.h \
@@ -1264,9 +1269,10 @@ release/moc_RealTimeChartView.cpp: ../RealTimeChartView.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qvxymodelmapper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qxylegendmarker.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qtchartsversion.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/QWheelEvent \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsObject \
 		release/moc_predefs.h \
 		C:/Qt/5.15.2/mingw81_64/bin/moc.exe
 	'C:\Qt\5.15.2\mingw81_64\bin\moc.exe' $(DEFINES) --include D:/mission/myself/code/git_code/EMDetect/bin/release/moc_predefs.h -IC:/Qt/5.15.2/mingw81_64/mkspecs/win32-g++ -ID:/mission/myself/code/git_code/EMDetect -ID:/mission/myself/code/git_code/EMDetect/src/xlsx -IC:/Qt/5.15.2/mingw81_64/include -IC:/Qt/5.15.2/mingw81_64/include/QtCharts -IC:/Qt/5.15.2/mingw81_64/include/ActiveQt -IC:/Qt/5.15.2/mingw81_64/include/QtWidgets -IC:/Qt/5.15.2/mingw81_64/include/QtGui/5.15.2 -IC:/Qt/5.15.2/mingw81_64/include/QtGui/5.15.2/QtGui -IC:/Qt/5.15.2/mingw81_64/include/QtGui -IC:/Qt/5.15.2/mingw81_64/include/QtANGLE -IC:/Qt/5.15.2/mingw81_64/include/QtSerialPort -IC:/Qt/5.15.2/mingw81_64/include/QtCore/5.15.2 -IC:/Qt/5.15.2/mingw81_64/include/QtCore/5.15.2/QtCore -IC:/Qt/5.15.2/mingw81_64/include/QtCore -I. -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++ -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/Qt/Tools/mingw810_64/lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed -IC:/Qt/Tools/mingw810_64/x86_64-w64-mingw32/include ../RealTimeChartView.h -o release/moc_RealTimeChartView.cpp
@@ -1402,6 +1408,8 @@ release/moc_SerialPortManager.cpp: ../SerialPortManager.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -1970,15 +1978,17 @@ release/moc_ZoomableChartView.cpp: ../ZoomableChartView.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qvxymodelmapper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qxylegendmarker.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qtchartsversion.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/QWheelEvent \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsObject \
 		../UnitData.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDebug \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVector \
 		../DetectSettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QFile \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QRegExp \
@@ -2101,6 +2111,8 @@ release/moc_calibrateview.cpp: ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -2236,6 +2248,8 @@ release/moc_mainwindow.cpp: ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -2367,7 +2381,6 @@ release/moc_mainwindow.cpp: ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporarydir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporaryfile.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextboundaryfinder.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadpool.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadstorage.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtimeline.h \
@@ -2701,9 +2714,10 @@ release/moc_mainwindow.cpp: ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qvxymodelmapper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qxylegendmarker.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qtchartsversion.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/QWheelEvent \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsObject \
 		../sourceview.h \
 		../QXlsxExcelHelper.h \
 		../src/xlsx/xlsxdocument.h \
@@ -2838,6 +2852,8 @@ release/moc_setupwindow.cpp: ../setupwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -3410,15 +3426,17 @@ release/moc_sourceview.cpp: ../sourceview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qvxymodelmapper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qxylegendmarker.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qtchartsversion.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/QWheelEvent \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsObject \
 		../UnitData.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDebug \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVector \
 		../DetectSettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QFile \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QRegExp \
@@ -6388,6 +6406,8 @@ release/calibrateview.o: ../calibrateview.cpp ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -6397,7 +6417,53 @@ release/calibrateview.o: ../calibrateview.cpp ../calibrateview.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qmessagebox.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdialog.h \
 		ui_calibrateview.h \
-		../UnitCalc.h
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVariant \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/QIcon \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qapplication.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qcoreapplication.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qeventloop.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdesktopwidget.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qguiapplication.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qinputmethod.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QComboBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qcombobox.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractitemdelegate.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qstyleoption.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractspinbox.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qvalidator.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qregularexpression.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qslider.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractslider.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qstyle.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtabbar.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qrubberband.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qframe.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qabstractitemmodel.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGridLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgridlayout.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlayout.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlayoutitem.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qboxlayout.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGroupBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgroupbox.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QHBoxLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QLabel \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlabel.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QLineEdit \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlineedit.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtextcursor.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtextformat.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpen.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtextoption.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QPushButton \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qpushbutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractbutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QSpacerItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QWidget \
+		../UnitCalc.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QPointF
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/calibrateview.o ../calibrateview.cpp
 
 release/main.o: ../main.cpp ../mainwindow.h \
@@ -6523,6 +6589,8 @@ release/main.o: ../main.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -6654,7 +6722,6 @@ release/main.o: ../main.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporarydir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporaryfile.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextboundaryfinder.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadpool.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadstorage.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtimeline.h \
@@ -6988,9 +7055,10 @@ release/main.o: ../main.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qvxymodelmapper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qxylegendmarker.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qtchartsversion.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/QWheelEvent \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsObject \
 		../sourceview.h \
 		../QXlsxExcelHelper.h \
 		../src/xlsx/xlsxdocument.h \
@@ -7133,6 +7201,8 @@ release/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -7264,7 +7334,6 @@ release/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporarydir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtemporaryfile.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextboundaryfinder.h \
-		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadpool.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qthreadstorage.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtimeline.h \
@@ -7598,9 +7667,10 @@ release/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qvxymodelmapper.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qxylegendmarker.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCharts/qtchartsversion.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsEllipseItem \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
-		C:/Qt/5.15.2/mingw81_64/include/QtGui/QWheelEvent \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGraphicsObject \
 		../sourceview.h \
 		../QXlsxExcelHelper.h \
 		../src/xlsx/xlsxdocument.h \
@@ -7619,11 +7689,21 @@ release/mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../src/xlsx/xlsxworkbook.h \
 		../DataManager.h \
 		ui_mainwindow.h \
-		../UnitCalc.h \
-		../calc/CFunction.h \
-		../calc/SPLine.h \
-		../calc/Chasing.h \
-		../../../EMDetect/UnitData.h
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/QIcon \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QAction \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QCheckBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QComboBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGridLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGroupBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QHBoxLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QLabel \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QLineEdit \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QMenu \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QMenuBar \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QPushButton \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QSpacerItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QStatusBar \
+		../UnitCalc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/mainwindow.o ../mainwindow.cpp
 
 release/setupwindow.o: ../setupwindow.cpp ../setupwindow.h \
@@ -7739,6 +7819,8 @@ release/setupwindow.o: ../setupwindow.cpp ../setupwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QSettings \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qsettings.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QString \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QTextCodec \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qtextcodec.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/QDir \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qdir.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtCore/qfileinfo.h \
@@ -7747,7 +7829,52 @@ release/setupwindow.o: ../setupwindow.cpp ../setupwindow.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QMessageBox \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qmessagebox.h \
 		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdialog.h \
-		ui_setupwindow.h
+		ui_setupwindow.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/QVariant \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/QIcon \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QApplication \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qapplication.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qcoreapplication.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qeventloop.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qdesktopwidget.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qguiapplication.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qinputmethod.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QComboBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qcombobox.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractitemdelegate.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qstyleoption.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractspinbox.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qvalidator.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qregularexpression.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qslider.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractslider.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qstyle.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qtabbar.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qrubberband.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qframe.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtCore/qabstractitemmodel.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGridLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgridlayout.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlayout.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlayoutitem.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qboxlayout.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QGroupBox \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qgroupbox.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QHBoxLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QLabel \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlabel.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QLineEdit \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qlineedit.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtextcursor.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtextformat.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qpen.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtGui/qtextoption.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QPushButton \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qpushbutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/qabstractbutton.h \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QSpacerItem \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QVBoxLayout \
+		C:/Qt/5.15.2/mingw81_64/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/setupwindow.o ../setupwindow.cpp
 
 release/qrc_resource.o: release/qrc_resource.cpp 

@@ -5,7 +5,6 @@
 #include "ZoomableChartView.h"
 #include "UnitData.h"
 
-//class SourceView : public BaseView
 class SourceView : public BaseView
 {
     Q_OBJECT
@@ -19,8 +18,15 @@ public:
     {
         if(butterfly_serial_ptr_)
         {
+            butterfly_serial_ptr_->clear();
             delete butterfly_serial_ptr_;
             butterfly_serial_ptr_ = nullptr;
+        }
+        if(circle_series_ptr_)
+        {
+            circle_series_ptr_->clear();
+            delete circle_series_ptr_;
+            circle_series_ptr_ = nullptr;
         }
     }
 
@@ -29,30 +35,37 @@ public:
     {
         BaseView::createChartView();
         chart_view_->setLocationShow(false);
-
-//        axisX_->setRange(-30000, 30000);
-//        axisX_->setTickCount(5);
-//        axisX_->setMinorTickCount(2);
-        axisX_->setVisible(false);
-////        axisX_->setLabelsFont(QFont("Arial", 5));
-////        axisX_->setTitleFont(QFont("Arial", 6));
-//        axisX_->setTitleText("磁场强度nT");
-
-//        axisY_->setRange(-30000, 30000);
-//        axisY_->setTickCount(5);
-//        axisY_->setMinorTickCount(2);
-        axisY_->setVisible(false);
         newSerial();
-//        axisY_->setTitleText("磁场强度nT");
-//        butterfly_serial_ptr_ = new QtCharts::QLineSeries();
-//        butterfly_serial_ptr_->setName(QString("蝶形图"));
-//        QPen pen(QColor(255,0,0));
-//        pen.setWidth(1);
-//        butterfly_serial_ptr_->setPen(pen);
-//        chart_->addSeries(butterfly_serial_ptr_);
-//        chart_->setAxisX(axisX_,butterfly_serial_ptr_);//为序列添加坐标轴
-//        chart_->setAxisY(axisY_,butterfly_serial_ptr_);
     }
+
+    void newCircle(QPointF center_point, int radius)
+    {
+        if(!circle_series_ptr_)
+        {
+            circle_series_ptr_ = new QLineSeries();
+            chart_->addSeries(circle_series_ptr_);
+            chart_->setAxisX(axisX_,circle_series_ptr_);//为序列添加坐标轴
+            chart_->setAxisY(axisY_,circle_series_ptr_);
+        }
+        circle_series_ptr_->clear();
+        QVector<QPointF> point_list;
+        for (int angle = 0; angle < 360; angle += 5)
+        {
+            double radians = angle * (M_PI / 180.0);
+            QPointF point(radius * cos(radians) + center_point.x(),
+                          radius * sin(radians) + center_point.y());
+            point_list.append(point);
+        }
+        for (int i = 0; i < point_list.size(); ++i)
+        {
+            circle_series_ptr_->append(point_list[i]);
+            if (i > 0)
+            {
+                circle_series_ptr_->append(point_list[(i + 1) % point_list.size()]);
+            }
+        }
+    }
+
     void newSerial()
     {
         if(butterfly_serial_ptr_)
@@ -79,36 +92,36 @@ public:
         int xmax = x_max_;
         if(ymin < 0)
         {
-            ymin *= ZOOM_NUM;
+            ymin *= ZOOM_NUM_SOURCE_VIEW;
         }
         else
         {
-            ymin /= ZOOM_NUM;
+            ymin /= ZOOM_NUM_SOURCE_VIEW;
         }
         if(ymax < 0)
         {
-            ymax /= ZOOM_NUM;
+            ymax /= ZOOM_NUM_SOURCE_VIEW;
         }
         else
         {
-            ymax *= ZOOM_NUM;
+            ymax *= ZOOM_NUM_SOURCE_VIEW;
         }
 
         if(xmin < 0)
         {
-            xmin *= ZOOM_NUM;
+            xmin *= ZOOM_NUM_SOURCE_VIEW;
         }
         else
         {
-            xmin /= ZOOM_NUM;
+            xmin /= ZOOM_NUM_SOURCE_VIEW;
         }
         if(xmax < 0)
         {
-            xmax /= ZOOM_NUM;
+            xmax /= ZOOM_NUM_SOURCE_VIEW;
         }
         else
         {
-            xmax *= ZOOM_NUM;
+            xmax *= ZOOM_NUM_SOURCE_VIEW;
         }
 
         axisX_->setRange(xmin, xmax);
@@ -130,31 +143,36 @@ public:
             resetSerials();
 
         }
-        int ymin = 1000000;
-        int ymax = -1000000;
-        int xmin = 1000000;
-        int xmax = -1000000;
-        for (int j = 0; j< draw_list.size(); j++)
+//        int ymin = 1000000;
+//        int ymax = -1000000;
+//        int xmin = 1000000;
+//        int xmax = -1000000;
+        for (int j = 0; j< draw_list.size(); j = j+5)
         {
             butterfly_serial_ptr_->append(QPointF(draw_list[j].mag_data.data[1],draw_list[j].mag_data.data[0]));
+            // 直接取极大值 和极小值
+            y_min_ = std::min(y_min_, draw_list[j].mag_data.data[0]);
+            y_max_ = std::max(y_max_, draw_list[j].mag_data.data[0]);
+            x_min_ = std::min(x_min_, draw_list[j].mag_data.data[1]);
+            x_max_ = std::max(x_max_, draw_list[j].mag_data.data[1]);
         }
         if(chart_ && chart_view_)
         {
             chart_->update();
             chart_view_->update();
         }
-        int start = butterfly_serial_ptr_->count() - draw_list.size();
-        for(int i = start; i < butterfly_serial_ptr_->count() ; i++)
-        {
-            ymin = std::min(ymin, (int)butterfly_serial_ptr_->at(i).y());
-            ymax = std::max(ymax, (int)butterfly_serial_ptr_->at(i).y());
-            xmin = std::min(xmin, (int)butterfly_serial_ptr_->at(i).x());
-            xmax = std::max(xmax, (int)butterfly_serial_ptr_->at(i).x());
-        }
-        y_min_ = ymin;
-        y_max_ = ymax;
-        x_min_ = xmin;
-        x_max_ = xmax;
+//        int start = butterfly_serial_ptr_->count() - draw_list.size();
+//        for(int i = start; i < butterfly_serial_ptr_->count() ; i++)
+//        {
+//            ymin = std::min(ymin, (int)butterfly_serial_ptr_->at(i).y());
+//            ymax = std::max(ymax, (int)butterfly_serial_ptr_->at(i).y());
+//            xmin = std::min(xmin, (int)butterfly_serial_ptr_->at(i).x());
+//            xmax = std::max(xmax, (int)butterfly_serial_ptr_->at(i).x());
+//        }
+//        y_min_ = ymin;
+//        y_max_ = ymax;
+//        x_min_ = xmin;
+//        x_max_ = xmax;
         count_source_points_ += draw_list.size();
     }
 
@@ -211,6 +229,7 @@ private:
     int x_min_;
     int x_max_;
     QtCharts::QLineSeries* butterfly_serial_ptr_ {nullptr};
+    QLineSeries* circle_series_ptr_ {nullptr};
 };
 
 #endif // SOURCEVIEW_H

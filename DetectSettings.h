@@ -16,7 +16,10 @@ class DetectSettings
 {
 private:
     DetectSettings() = default;
-    ~DetectSettings() = default;
+    ~DetectSettings()
+    {
+        saveSetting();
+    }
 protected:
     QVector<double> sensitivity_list_;
     int max_points_count_ {12000};
@@ -204,6 +207,7 @@ public:
 
     bool saveSetting()
     {
+        qDebug()<<"save settings";
         QString config_dir = QDir::currentPath() + "//config//detect.ini";
         if(!QFile::exists(config_dir))
         {

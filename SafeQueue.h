@@ -33,7 +33,7 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         if(queue_.size() >= queue_size_max)
         {
-            std::cout<<"queue full"<< queue_.size()<<"\r\n";
+            std::cout<<"queue full,size: "<< queue_.size()<<"\r\n";
             while (!queue_.empty())
             {
                 queue_.pop(); // 移除队列前端的元素，直到队列为空

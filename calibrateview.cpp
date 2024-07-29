@@ -21,29 +21,44 @@ CalibrateView::CalibrateView(QWidget *parent) :
     ui->comboBox_outside_list->clear();
     ui->comboBox_outside_del->clear();
 //    cfg_detection_list_ 读取配置参数
-    for(int i = 0; i < 5; i++)
-    {
-        DetectDeclaerParam param;
-        param.label = QString("缺陷%1").arg(i+1);
-        param.depth = i+1;
-        param.length = i*10+1;
-        param.equivalent = i*2+1;
-        param.dete_type = EMDETECTION_TYPE::E_DETECTION_OUTER;
-        cfg_detection_list_[param.label] = param;
-        ui->comboBox_outside_list->addItem(param.label);
-        ui->comboBox_outside_del->addItem(param.label);
-    }
+//    for(int i = 0; i < 5; i++)
+//    {
+//        DetectDeclaerParam param;
+//        param.label = QString("缺陷%1").arg(i+1);
+//        param.depth = i+1;
+//        param.length = i*10+1;
+//        param.equivalent = i*2+1;
+//        param.dete_type = EMDETECTION_TYPE::E_DETECTION_OUTER;
+//        cfg_detection_list_[param.label] = param;
+//        ui->comboBox_outside_list->addItem(param.label);
+//        ui->comboBox_outside_del->addItem(param.label);
+//    }
 
-    for(int i = 0; i < 5; i++)
-    {
-        DetectDeclaerParam param;
-        param.label = QString("缺陷%1").arg(i+6);
-        param.equivalent = i*2+1;
-        param.dete_type = EMDETECTION_TYPE::E_DETECTION_INNER;
-        cfg_detection_list_[param.label] = param;
-        ui->comboBox_inside_list->addItem(param.label);
-        ui->comboBox_inside_del->addItem(param.label);
-    }
+//    for(int i = 0; i < 5; i++)
+//    {
+//        DetectDeclaerParam param;
+//        param.label = QString("缺陷%1").arg(i+6);
+//        param.equivalent = i*2+1;
+//        param.dete_type = EMDETECTION_TYPE::E_DETECTION_INNER;
+//        cfg_detection_list_[param.label] = param;
+//        ui->comboBox_inside_list->addItem(param.label);
+//        ui->comboBox_inside_del->addItem(param.label);
+//    }
+//    result_param_.first   = DetectSettings::instance().fitted_param_a();
+//    result_param_.second  = DetectSettings::instance().fitted_param_b();
+//    QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
+//    ui->lineEdit_stand_result->setText(text);
+//    ui->lineEdit_stand_result_label->setText(DetectSettings::instance().detect_profile());
+}
+
+CalibrateView::~CalibrateView()
+{
+    delete ui;
+}
+
+void CalibrateView::initView(std::function<void(QVector<QPointF>&)> getDetectRectData_Func)
+{
+    getDetectRectData_Func_ = getDetectRectData_Func;
     result_param_.first   = DetectSettings::instance().fitted_param_a();
     result_param_.second  = DetectSettings::instance().fitted_param_b();
     QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
@@ -51,9 +66,27 @@ CalibrateView::CalibrateView(QWidget *parent) :
     ui->lineEdit_stand_result_label->setText(DetectSettings::instance().detect_profile());
 }
 
-CalibrateView::~CalibrateView()
+void CalibrateView::on_GetRectData(QVector<QPointF>& points)
 {
-    delete ui;
+    if(this->isVisible())
+    {
+        std::vector<int> data;
+        for(auto& point : points)
+        {
+            data.push_back(point.y());
+        }
+        int max,min;
+        calcMaxMin(data,max,min);
+        QString text = QString::number(max - min);
+        if(this->currentIndex() == 1)
+        {
+            ui->lineEdit_inside_write->setText(text);
+        }
+        else
+        {
+            ui->lineEdit_outside_db_set->setText(text);
+        }
+    }
 }
 
 void CalibrateView::on_comboBox_outside_list_currentIndexChanged(int index)
@@ -165,7 +198,6 @@ void CalibrateView::on_pushButton_inside_del_clicked()
         QMessageBox::information(this,"info","删除成功");
     }
 }
-
 
 void CalibrateView::on_pushButton_outside_stand_clicked()
 {

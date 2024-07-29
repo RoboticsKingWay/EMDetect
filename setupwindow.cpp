@@ -129,3 +129,20 @@ void SetupWindow::on_pushButton_downlinereset_clicked()
     emit downlineReset();
 }
 
+
+void SetupWindow::on_pushButton_circle_direct_clicked()
+{
+    double rad = ui->lineEdit_direct_rad->text().toDouble();
+    emit autoDirectFit(rad);
+}
+
+void SetupWindow::on_pushButton_circle_input_clicked()
+{
+    QPointF center = QPointF(0,0);
+    int rad = 0;
+    center.setX(ui->lineEdit_circle_x->text().toDouble());
+    center.setY(ui->lineEdit_circle_y->text().toDouble());
+    rad = ui->lineEdit_rad->text().toInt();
+    emit manve_Fit(center, rad);
+}
+

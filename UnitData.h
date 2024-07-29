@@ -8,8 +8,9 @@
 //#define DRAW_ADD_SIZE 20    // 实时图绘制增量20个数据
 #define DRAW_MAX_SIZE 200   // 实时图绘制最多200个点数据
 //#define SRC_MAX_SIZE 12000   // 最大存储源数据个数
-#define CH_NUM 2
-#define ZOOM_NUM 1.03
+#define CH_NUM 2  // 两通道 通道1：纵坐标Z轴数据  通道2:横轴X数据
+#define ZOOM_NUM 1.1
+#define ZOOM_NUM_SOURCE_VIEW 1.05
 
 #define LENGTH_TO_POINT   40 // 1mm扫查长度对应点数，扫查平均速率
 #define SENSOR_TO_WIDTH   40 // 一组通道的传感器扫查宽度

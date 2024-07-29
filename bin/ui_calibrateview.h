@@ -508,7 +508,7 @@ public:
         label_inside_db_read->setText(QString());
         label_14->setText(QCoreApplication::translate("CalibrateView", "-----------------------------------------------------------------------------------", nullptr));
         label_12->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
-        label_9->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\275\223\351\207\217", nullptr));
+        label_9->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\271\205\345\200\274", nullptr));
         pushButton_inside_add->setText(QCoreApplication::translate("CalibrateView", "\346\226\260\345\242\236\347\274\272\351\231\267", nullptr));
         pushButton_inside_del->setText(QCoreApplication::translate("CalibrateView", "\345\210\240\351\231\244\347\274\272\351\231\267", nullptr));
         label_10->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));

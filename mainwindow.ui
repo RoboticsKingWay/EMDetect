@@ -191,13 +191,145 @@
           <property name="sizeConstraint">
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
           <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
+           <number>4</number>
+          </property>
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>数据处理</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="pushButton_connect_state">
+            <property name="text">
+             <string>串口状态</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resource.qrc">
+              <normaloff>:/source/serial_close.png</normaloff>:/source/serial_close.png</iconset>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="pushButton">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>开始</string>
+            </property>
+            <property name="autoDefault">
+             <bool>true</bool>
+            </property>
+            <property name="default">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="pushButton_5">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>特征区域</string>
+            </property>
+            <property name="autoDefault">
+             <bool>true</bool>
+            </property>
+            <property name="default">
+             <bool>true</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="minimumSize">
+          <size>
+           <width>240</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="leftMargin">
+           <number>2</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
            <number>2</number>
           </property>
           <property name="bottomMargin">
+           <number>4</number>
+          </property>
+          <property name="spacing">
            <number>2</number>
           </property>
-          <item row="1" column="1">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>保存标签</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="styleSheet">
+             <string notr="true">background-color:white</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" colspan="2">
            <widget class="QPushButton" name="pushButton_2">
             <property name="font">
              <font>
@@ -215,118 +347,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_SerialSetup">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">/*QPushButton {
-				border: 4px outset gray;
-                   border-radius: 3px;
-}*/</string>
-            </property>
-            <property name="text">
-             <string>串口</string>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>开始</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QPushButton" name="pushButton_4">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>数据预览</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_connect_state">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="resource.qrc">
-              <normaloff>:/source/serial_close.png</normaloff>:/source/serial_close.png</iconset>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>数据处理</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButton_5">
-            <property name="text">
-             <string>特征区域</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="minimumSize">
-          <size>
-           <width>240</width>
-           <height>120</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>280</width>
-           <height>120</height>
-          </size>
-         </property>
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="topMargin">
-           <number>2</number>
-          </property>
-          <property name="rightMargin">
-           <number>9</number>
-          </property>
-          <property name="bottomMargin">
-           <number>2</number>
-          </property>
-          <item row="1" column="1">
            <widget class="QLabel" name="label_2">
             <property name="font">
              <font>
@@ -338,43 +359,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="lineEdit">
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_scan_length">
             <property name="styleSheet">
-             <string notr="true">background-color:#DDDDD</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>保存标签</string>
+             <string notr="true">background-color:white</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLineEdit" name="lineEdit_2">
-            <property name="styleSheet">
-             <string notr="true">background-color:#DDDDD</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QComboBox" name="comboBox">
-            <property name="styleSheet">
-             <string notr="true">background-color:#DDDDD</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
            <widget class="QLabel" name="label_3">
             <property name="font">
              <font>
@@ -382,8 +374,31 @@
              </font>
             </property>
             <property name="text">
-             <string>灵敏度</string>
+             <string>缺陷类别</string>
             </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QComboBox" name="comboBox">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color:white</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>外部缺陷</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>内部缺陷</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -396,7 +411,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
+           <width>30</width>
            <height>20</height>
           </size>
          </property>
@@ -433,7 +448,7 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color:#DDDDD</string>
+             <string notr="true">background-color:white</string>
             </property>
            </widget>
           </item>
@@ -457,14 +472,14 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color:#DDDDD</string>
+             <string notr="true">background-color:white</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="label_standar_function">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -505,9 +520,9 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QLabel" name="label_13">
+           <widget class="QLabel" name="label_detection_x_scale">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -524,9 +539,9 @@
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QLabel" name="label_12">
+           <widget class="QLabel" name="label_db_eq">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -538,14 +553,14 @@
              </font>
             </property>
             <property name="text">
-             <string>缺陷数量：</string>
+             <string>缺陷长度：</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLabel" name="label_14">
+           <widget class="QLabel" name="label_detection_length">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -562,9 +577,9 @@
            </widget>
           </item>
           <item row="3" column="3">
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="label_detection_y">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -614,6 +629,7 @@
     </property>
     <addaction name="action_serialSetup"/>
     <addaction name="action_thresholdSetup"/>
+    <addaction name="action_fit_circle"/>
    </widget>
    <widget class="QMenu" name="menu_standar">
     <property name="font">
@@ -682,6 +698,11 @@
   <action name="action_fileperview">
    <property name="text">
     <string>数据预览</string>
+   </property>
+  </action>
+  <action name="action_fit_circle">
+   <property name="text">
+    <string>拟合圆设置</string>
    </property>
   </action>
  </widget>

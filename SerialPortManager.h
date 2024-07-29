@@ -387,7 +387,7 @@ private:
                 QThread::msleep(100); // 100ms
                 continue;
             }
-            if (m_serialPort->waitForReadyRead(1000))//1000ms
+            if (m_serialPort->waitForReadyRead(2000))//1000ms
             {
                 QByteArray data = m_serialPort->readAll();
                 if(QString(data) != "")

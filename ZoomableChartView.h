@@ -5,11 +5,55 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QValueAxis>
 #include <QtWidgets>
+#include <QGraphicsEllipseItem>
 #include <QVBoxLayout>
 #include <QtWidgets/QApplication>
-#include <QWheelEvent>
+#include <QGraphicsObject>
 #include <QLegend>
 #include "UnitData.h"
+
+class CircularItem : public QGraphicsObject
+{
+    Q_OBJECT
+public:
+    CircularItem(qreal x, qreal y, qreal radius, QGraphicsItem *parent = nullptr)
+        : QGraphicsObject(parent), m_center(x, y), m_radius(radius) {}
+
+    virtual QRectF boundingRect() const override
+    {
+        return QRectF(m_center - QPointF(m_radius, m_radius), QSizeF(2 * m_radius, 2 * m_radius));
+    }
+
+    virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override
+    {
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(Qt::red, 2)); // 设置圆的颜色和线宽
+        painter->drawEllipse(m_center, m_radius, m_radius);
+//        QGraphicsObject::paint(painter,option, widget);
+    }
+
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override
+    {
+        if (change == ItemPositionHasChanged)
+        {
+            prepareGeometryChange();
+        }
+        return QGraphicsObject::itemChange(change, value);
+    }
+
+public slots:
+    void updateCircle(const QPointF &newCenter, qreal newRadius)
+    {
+        m_center = newCenter;
+        m_radius = newRadius;
+        update();
+    }
+
+public:
+    QPointF m_center;
+    qreal m_radius;
+};
 
 class ZoomableChartView : public QChartView
 {
@@ -20,26 +64,9 @@ public:
     {
         grabGesture(Qt::PinchGesture);
         setMouseTracking(true); // 启用鼠标追踪
-//        installEventFilter(this);
     }
     virtual ~ZoomableChartView()
     {
-    }
-    void paint_Event()
-    {
-        //        QChartView::paintEvent(event); // 首先绘制图表
-
-        // 如果选择了矩形区域，则绘制它
-        if (!QRectF(start_point_,end_point_).isEmpty() && b_select_rect_)
-        {
-            QPainter painter(this);
-            painter.begin(this);
-            QPen pen(Qt::red, 1, Qt::DashLine);
-            painter.setPen(pen);
-            painter.drawRect(QRectF(start_point_,end_point_));
-            painter.end();
-        }
-        //        event->accept();
     }
     void setLocationShow(bool show)
     {
@@ -48,22 +75,20 @@ public:
 signals:
     void selectRect(QPointF start,QPointF end);
 protected:
+//    void resizeEvent(QResizeEvent *event) override
+//    {
+//        QChartView::resizeEvent(event);
+//    }
 //    bool eventFilter(QObject *watched, QEvent *event)
 //    {
 //        QChartView::eventFilter(watched, event);
 //        if(event->type() == QEvent::Paint)
 //        {
-//            if (!QRectF(start_point_,end_point_).isEmpty() && b_select_rect_)
+//            QPainter painter(this);
+//            if(painter.isActive())
 //            {
-//                QPainter painter(this);
-//                if(painter.isActive())
-//                {
-//                    qDebug()<<"start:"<<start_point_ <<"   end:"<<end_point_;
-//                    QPen pen(Qt::red, 1, Qt::DashLine);
-//                    painter.setPen(pen);
-//                    painter.drawRect(QRectF(QPointF(225,150),QPointF(325,200)));
-//                    painter.end();
-//                }
+//                QPointF cencer(0,0);
+//                painter.drawEllipse(cencer, 100, 100);
 //            }
 //        }
 //        return true;
@@ -71,17 +96,6 @@ protected:
 
 //    virtual void paintEvent(QPaintEvent *event)override
 //    {
-//        if (!QRectF(start_point_,end_point_).isEmpty() && b_select_rect_)
-//        {
-//            QPainter painter(this);
-//            if(painter.isActive())
-//            {
-//                QPen pen(Qt::red, 1, Qt::DashLine);
-//                painter.setPen(pen);
-//                painter.drawRect(QRectF(start_point_,end_point_));
-//                painter.end();
-//            }
-//        }
 //        QChartView::paintEvent(event); // 调用基类的事件处理
 //    }
     virtual void gestureEvent(QGestureEvent *event) //override
@@ -95,7 +109,7 @@ protected:
 
     virtual void wheelEvent(QWheelEvent *event) override
     {
-        QChartView::wheelEvent(event); // 调用基类的事件处理
+//        QChartView::wheelEvent(event); // 调用基类的事件处理
         if (!event)
             return;
 
@@ -120,26 +134,10 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event) override
     {
         QChartView::mouseMoveEvent(event); // 调用基类的事件处理
-
-        // 将鼠标位置转换为图表坐标
-        if(is_localtion_show_)
+//        if(is_localtion_show_)
         {
             QPointF mousePoint = event->pos();
             QPointF point = chart()->mapToValue(event->pos());
-            // 找到最接近的点，这里使用简单的方法，实际情况可能需要更复杂的查找逻辑
-    //        double minDistance = std::numeric_limits<double>::max();
-    //        QPointF closestPoint;
-
-    //        for (const QPointF &dataPoint : static_cast<QLineSeries *>(chart()->series().first())->points())
-    //        {
-    //            double distance = std::sqrt((dataPoint.x() - point.x()) * (dataPoint.x() - point.x()) +
-    //                                        (dataPoint.y() - point.y()) * (dataPoint.y() - point.y()));
-    //            if (distance < minDistance)
-    //            {
-    //                minDistance = distance;
-    //                closestPoint = dataPoint;
-    //            }
-    //        }
             // 展示鼠标悬停位置的X和Y值
             QToolTip::showText(event->globalPos(), tr("X: %1, Y: %2").arg(point.x()).arg(point.y()), this);
         }
@@ -150,7 +148,6 @@ protected:
         if (event->button() == Qt::LeftButton && b_select_rect_)
         {
             start_point_ = chart()->mapToValue(event->pos());
-//            start_point_ = event->pos();
         }
         else
         {
@@ -165,16 +162,6 @@ protected:
         {
             end_point_ = chart()->mapToValue(event->pos());
             emit selectRect(start_point_,end_point_);
-//            end_point_ = event->pos();
-//            update(); // 触发重绘
-//            QPainter painter(this);
-//            if(painter.isActive())
-//            {
-//                QPen pen(Qt::red, 1, Qt::DashLine);
-//                painter.setPen(pen);
-//                painter.drawRect(QRectF(start_point_,end_point_));
-//                painter.end();
-//            }
         }
         else
         {
@@ -182,7 +169,6 @@ protected:
         }
         event->accept();
     }
-private:
     void handlePinchGesture(QPinchGesture *pinchGesture)
     {
         if (pinchGesture->state() == Qt::GestureStarted ||
@@ -197,7 +183,6 @@ private:
             Myzoom(scaleFactor, center);
         }
     }
-
     void Myzoom(qreal scaleFactor, const QPointF &center)
     {
         // 根据缩放比例和中心点调整图表的缩放
@@ -288,8 +273,8 @@ public:
         //创建坐标轴
         axisX_ = new QValueAxis;
         axisY_ = new QValueAxis;
-        axisX_->setRange(-80000,80000);
-        axisY_->setRange(-80000,80000);
+        axisX_->setRange(-8000,8000);
+        axisY_->setRange(-8000,8000);
         //创建折线序列
 //        for(int i = 0; i < CH_NUM; i++)
 //        {

@@ -21,6 +21,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -72,21 +73,29 @@ public:
     QPushButton *pushButton_uplinereset;
     QSpacerItem *horizontalSpacer_3;
     QSpacerItem *verticalSpacer_2;
-    QWidget *tab_setup_ip;
+    QWidget *tab_setup_circle;
     QWidget *widget_4;
+    QVBoxLayout *verticalLayout_2;
+    QWidget *widget_5;
+    QVBoxLayout *verticalLayout;
+    QGroupBox *groupBox_3;
     QGridLayout *gridLayout_7;
-    QWidget *widget_6;
+    QSpacerItem *horizontalSpacer_7;
+    QPushButton *pushButton_circle_direct;
+    QLineEdit *lineEdit_direct_rad;
+    QSpacerItem *horizontalSpacer_8;
+    QLabel *label_8;
+    QGroupBox *groupBox_4;
     QGridLayout *gridLayout;
     QLabel *label_5;
-    QLineEdit *lineEdit;
-    QLabel *label_6;
-    QLineEdit *lineEdit_2;
     QSpacerItem *horizontalSpacer_5;
-    QWidget *widget_5;
-    QPushButton *pushButton_3;
-    QPushButton *pushButton_4;
+    QLineEdit *lineEdit_rad;
+    QLabel *label_6;
+    QLineEdit *lineEdit_circle_x;
+    QLabel *label_7;
+    QLineEdit *lineEdit_circle_y;
     QSpacerItem *horizontalSpacer_6;
-    QSpacerItem *verticalSpacer_3;
+    QPushButton *pushButton_circle_input;
 
     void setupUi(QTabWidget *SetupWindow)
     {
@@ -311,70 +320,106 @@ public:
         gridLayout_8->addWidget(widget_7, 0, 0, 1, 1);
 
         SetupWindow->addTab(tab_setup_threshold, QString());
-        tab_setup_ip = new QWidget();
-        tab_setup_ip->setObjectName(QString::fromUtf8("tab_setup_ip"));
-        widget_4 = new QWidget(tab_setup_ip);
+        tab_setup_circle = new QWidget();
+        tab_setup_circle->setObjectName(QString::fromUtf8("tab_setup_circle"));
+        widget_4 = new QWidget(tab_setup_circle);
         widget_4->setObjectName(QString::fromUtf8("widget_4"));
-        widget_4->setGeometry(QRect(20, 30, 371, 361));
-        gridLayout_7 = new QGridLayout(widget_4);
+        widget_4->setGeometry(QRect(30, 20, 331, 341));
+        verticalLayout_2 = new QVBoxLayout(widget_4);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        widget_5 = new QWidget(widget_4);
+        widget_5->setObjectName(QString::fromUtf8("widget_5"));
+        widget_5->setMinimumSize(QSize(150, 120));
+        verticalLayout = new QVBoxLayout(widget_5);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        groupBox_3 = new QGroupBox(widget_5);
+        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
+        gridLayout_7 = new QGridLayout(groupBox_3);
         gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
-        widget_6 = new QWidget(widget_4);
-        widget_6->setObjectName(QString::fromUtf8("widget_6"));
-        widget_6->setMinimumSize(QSize(200, 120));
-        gridLayout = new QGridLayout(widget_6);
+        horizontalSpacer_7 = new QSpacerItem(66, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_7->addItem(horizontalSpacer_7, 0, 1, 1, 1);
+
+        pushButton_circle_direct = new QPushButton(groupBox_3);
+        pushButton_circle_direct->setObjectName(QString::fromUtf8("pushButton_circle_direct"));
+
+        gridLayout_7->addWidget(pushButton_circle_direct, 1, 3, 1, 1);
+
+        lineEdit_direct_rad = new QLineEdit(groupBox_3);
+        lineEdit_direct_rad->setObjectName(QString::fromUtf8("lineEdit_direct_rad"));
+
+        gridLayout_7->addWidget(lineEdit_direct_rad, 0, 3, 1, 1);
+
+        horizontalSpacer_8 = new QSpacerItem(120, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_7->addItem(horizontalSpacer_8, 1, 0, 1, 2);
+
+        label_8 = new QLabel(groupBox_3);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
+
+        gridLayout_7->addWidget(label_8, 0, 0, 1, 1);
+
+
+        verticalLayout->addWidget(groupBox_3);
+
+        groupBox_4 = new QGroupBox(widget_5);
+        groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
+        gridLayout = new QGridLayout(groupBox_4);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        label_5 = new QLabel(widget_6);
+        label_5 = new QLabel(groupBox_4);
         label_5->setObjectName(QString::fromUtf8("label_5"));
 
         gridLayout->addWidget(label_5, 0, 0, 1, 1);
 
-        lineEdit = new QLineEdit(widget_6);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addWidget(lineEdit, 0, 1, 1, 1);
+        gridLayout->addItem(horizontalSpacer_5, 0, 1, 1, 1);
 
-        label_6 = new QLabel(widget_6);
+        lineEdit_rad = new QLineEdit(groupBox_4);
+        lineEdit_rad->setObjectName(QString::fromUtf8("lineEdit_rad"));
+
+        gridLayout->addWidget(lineEdit_rad, 0, 2, 1, 1);
+
+        label_6 = new QLabel(groupBox_4);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
         gridLayout->addWidget(label_6, 1, 0, 1, 1);
 
-        lineEdit_2 = new QLineEdit(widget_6);
-        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
+        lineEdit_circle_x = new QLineEdit(groupBox_4);
+        lineEdit_circle_x->setObjectName(QString::fromUtf8("lineEdit_circle_x"));
 
-        gridLayout->addWidget(lineEdit_2, 1, 1, 1, 1);
+        gridLayout->addWidget(lineEdit_circle_x, 1, 2, 1, 1);
+
+        label_7 = new QLabel(groupBox_4);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        gridLayout->addWidget(label_7, 2, 0, 1, 1);
+
+        lineEdit_circle_y = new QLineEdit(groupBox_4);
+        lineEdit_circle_y->setObjectName(QString::fromUtf8("lineEdit_circle_y"));
+
+        gridLayout->addWidget(lineEdit_circle_y, 2, 2, 1, 1);
+
+        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_6, 3, 0, 1, 1);
+
+        pushButton_circle_input = new QPushButton(groupBox_4);
+        pushButton_circle_input->setObjectName(QString::fromUtf8("pushButton_circle_input"));
+
+        gridLayout->addWidget(pushButton_circle_input, 3, 2, 1, 1);
 
 
-        gridLayout_7->addWidget(widget_6, 0, 0, 1, 1);
+        verticalLayout->addWidget(groupBox_4);
 
-        horizontalSpacer_5 = new QSpacerItem(144, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_7->addItem(horizontalSpacer_5, 0, 1, 1, 1);
+        verticalLayout_2->addWidget(widget_5);
 
-        widget_5 = new QWidget(widget_4);
-        widget_5->setObjectName(QString::fromUtf8("widget_5"));
-        widget_5->setMinimumSize(QSize(150, 120));
-        pushButton_3 = new QPushButton(widget_5);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setGeometry(QRect(10, 20, 80, 24));
-        pushButton_4 = new QPushButton(widget_5);
-        pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
-        pushButton_4->setGeometry(QRect(120, 20, 80, 24));
-
-        gridLayout_7->addWidget(widget_5, 1, 0, 1, 1);
-
-        horizontalSpacer_6 = new QSpacerItem(144, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_7->addItem(horizontalSpacer_6, 1, 1, 1, 1);
-
-        verticalSpacer_3 = new QSpacerItem(18, 88, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout_7->addItem(verticalSpacer_3, 2, 0, 1, 1);
-
-        SetupWindow->addTab(tab_setup_ip, QString());
+        SetupWindow->addTab(tab_setup_circle, QString());
 
         retranslateUi(SetupWindow);
 
-        SetupWindow->setCurrentIndex(0);
+        SetupWindow->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(SetupWindow);
@@ -418,11 +463,17 @@ public:
         pushButton_uplinede->setText(QCoreApplication::translate("SetupWindow", "\344\270\213\347\247\273 -", nullptr));
         pushButton_uplinereset->setText(QCoreApplication::translate("SetupWindow", "\345\244\215\344\275\215", nullptr));
         SetupWindow->setTabText(SetupWindow->indexOf(tab_setup_threshold), QCoreApplication::translate("SetupWindow", "\351\230\210\345\200\274\350\256\276\347\275\256", nullptr));
-        label_5->setText(QCoreApplication::translate("SetupWindow", "\347\253\257\345\217\243", nullptr));
-        label_6->setText(QCoreApplication::translate("SetupWindow", "\345\234\260\345\235\200", nullptr));
-        pushButton_3->setText(QCoreApplication::translate("SetupWindow", "\347\241\256\350\256\244", nullptr));
-        pushButton_4->setText(QCoreApplication::translate("SetupWindow", "\345\217\226\346\266\210", nullptr));
-        SetupWindow->setTabText(SetupWindow->indexOf(tab_setup_ip), QCoreApplication::translate("SetupWindow", "\347\275\221\347\273\234\350\256\276\347\275\256", nullptr));
+        groupBox_3->setTitle(QCoreApplication::translate("SetupWindow", "\350\207\252\345\212\250\346\213\237\345\220\210", nullptr));
+        pushButton_circle_direct->setText(QCoreApplication::translate("SetupWindow", "\347\233\264\346\216\245\346\213\237\345\220\210", nullptr));
+        lineEdit_direct_rad->setText(QCoreApplication::translate("SetupWindow", "1000", nullptr));
+        label_8->setText(QCoreApplication::translate("SetupWindow", "\345\234\206\345\215\212\345\276\204", nullptr));
+        groupBox_4->setTitle(QCoreApplication::translate("SetupWindow", "\346\211\213\345\212\250\346\213\237\345\220\210", nullptr));
+        label_5->setText(QCoreApplication::translate("SetupWindow", "\345\234\206\345\215\212\345\276\204", nullptr));
+        lineEdit_rad->setText(QCoreApplication::translate("SetupWindow", "1000", nullptr));
+        label_6->setText(QCoreApplication::translate("SetupWindow", "\345\234\206\345\277\203\346\250\252\345\235\220\346\240\207", nullptr));
+        label_7->setText(QCoreApplication::translate("SetupWindow", "\345\234\206\345\277\203\347\272\265\345\235\220\346\240\207", nullptr));
+        pushButton_circle_input->setText(QCoreApplication::translate("SetupWindow", "\346\213\237\345\220\210\350\276\223\345\205\245", nullptr));
+        SetupWindow->setTabText(SetupWindow->indexOf(tab_setup_circle), QCoreApplication::translate("SetupWindow", "\346\213\237\345\220\210\345\234\206\350\256\276\347\275\256", nullptr));
     } // retranslateUi
 
 };
