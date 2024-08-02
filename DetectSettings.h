@@ -37,8 +37,17 @@ protected:
     double fitted_param_a_   = -5.1;
     double fitted_param_b_   = -1000.1;
     QString detect_profile_  = "奥氏体钢";
-
+    double zoom_butterfly_view_ = 1.05;
+    double zoom_real_time_view_      = 1.05;
 public:
+    const double& zoom_real_time_view()
+    {
+        return zoom_real_time_view_;
+    }
+    const double& zoom_butterfly_view()
+    {
+        return zoom_butterfly_view_;
+    }
     const QVector<double>& sensitivity_list()
     {
         return sensitivity_list_;
@@ -183,6 +192,8 @@ public:
             auto_save_source_ = settings.value("Settings/auto_save_source", 1).toInt();
             save_scan_length_ = settings.value("Settings/save_scan_length", 120.1).toDouble();
             sensitivity_perview_ = settings.value("Settings/sensitivity_perview", 2.91).toDouble();
+            zoom_real_time_view_ = settings.value("Settings/zoom_real_time_view", 1.05).toDouble();
+            zoom_butterfly_view_ = settings.value("Settings/zoom_butterfly_view", 1.05).toDouble();
             qDebug()<<"config: list"<<list<<" max_points_count_"<<max_points_count_<<" add_point_count_"<<add_point_count_\
                      <<" real_time_rate_"<<real_time_rate_<<" calc_coefficient_"<<calc_coefficient_<<" auto_save_source_"<<auto_save_source_\
                      <<"sensitivity_perview_"<<sensitivity_perview_<<"save_scan_length_"<<save_scan_length_;

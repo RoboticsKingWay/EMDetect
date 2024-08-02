@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         chartview_ptr_ = new RealTimeChartView(ui->widget_real_chat_view);
         chartview_ptr_->createChartView();
+        connect(chartview_ptr_,&RealTimeChartView::rect_Data,this,&MainWindow::on_getRectPoints);
         //        ui->widget_real_chat_view->installEventFilter(this);
     }
     if(setup_win_ptr_)
@@ -41,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     if(calibrate_view_ && chartview_ptr_)
     {
         std::function<void(QVector<QPointF>&)> getDetectRectData_Func = std::bind(&RealTimeChartView::getDetectRectData,chartview_ptr_,std::placeholders::_1);
-        calibrate_view_->initView(getDetectRectData_Func);
-        connect(chartview_ptr_,&RealTimeChartView::rectData, calibrate_view_, &CalibrateView::on_GetRectData);
+        calibrate_view_->initView(/*getDetectRectData_Func*/);
+//        connect(chartview_ptr_,&RealTimeChartView::rectData, calibrate_view_, &CalibrateView::on_GetRectData);
     }
     if(data_manager_ptr_)
     {
@@ -52,7 +53,6 @@ MainWindow::MainWindow(QWidget *parent)
     {
        connect(manager_ptr_,&SerialPortManager::clearRealTimeSerial,chartview_ptr_,&RealTimeChartView::resetSerials,Qt::QueuedConnection);
     }
-
 
     if(chartview_ptr_ && setup_win_ptr_)
     {
@@ -101,6 +101,10 @@ MainWindow::~MainWindow()
     {
         delete setup_win_ptr_;
     }
+    if(calibrate_view_)
+    {
+        delete calibrate_view_;
+    }
     delete ui;
 }
 //bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -116,10 +120,10 @@ void MainWindow::runThread()
 {
     if(is_calc_start_)
     {
-        rect_data_list_.clear();
         double scan_length  = ui->lineEdit_scan_length->text().toDouble();
         if(action_state_ == E_ACTION_REVIEW)
         {
+            rect_data_list_.clear();
             for(int i = 0; i < list_draw_src_data_.size(); i++)
             {
                 rect_data_list_.append(QPointF(list_draw_src_data_[i].index,list_draw_src_data_[i].mag_data.data[0]));
@@ -128,13 +132,13 @@ void MainWindow::runThread()
         }
         else
         {
-            chartview_ptr_->getDetectRectData(rect_data_list_);
+//            chartview_ptr_->getDetectRectData(rect_data_list_);
+//            on_getRectPoints();
         }
         if(rect_data_list_.size() < 4)
         {
             is_calc_start_ = false;
-            action_state_ = E_ACTION_STOP;
-            setPushButtonEnable();
+            setPushButtonEnable(E_ACTION_STOP);
             return;
         }
         qDebug()<<">>> start data handle <<<<"<<QDateTime::currentDateTime();
@@ -185,8 +189,7 @@ void MainWindow::runThread()
         qDebug()<<">>>> new data handle finished.<<<<<"<<QDateTime::currentDateTime();
 
         is_calc_start_ = false;
-        action_state_ = E_ACTION_STOP;
-        setPushButtonEnable();
+        setPushButtonEnable(E_ACTION_STOP);
     }
 }
 // 后台线程计算结果
@@ -203,11 +206,13 @@ void MainWindow::drawImageViewThread()
 
 void MainWindow::updateData()
 {
+
     static int serial_state = E_SERIAL_CLOSE;
     QVector<ChinnelData> draw_list = manager_ptr_->getDrawData();
 
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
     {
+//        qDebug()<<QDateTime::currentDateTime()<<"size:"<<draw_list.size();
         for(int i = 0; i < CH_NUM; i++)
         {
             chartview_ptr_->updateChinnelView(draw_list,i,is_chinnel_on_[i]);
@@ -224,15 +229,17 @@ void MainWindow::updateData()
         serial_state = manager_ptr_->getHeartbeatState();
         onSerialState(serial_state);
     }
+//    qDebug()<<QDateTime::currentDateTime()<<"size:"<<draw_list.size();
 }
 
-void MainWindow::setPushButtonEnable()
+void MainWindow::setPushButtonEnable(int state)
 {
     ui->pushButton->setEnabled(true);
     ui->pushButton_2->setEnabled(true);
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
-//    ui->pushButton_SerialSetup->setEnabled(true);
+//    ui->pushButton_SerialSetup->setEnabled(true);x
+    action_state_ = state;
     switch (action_state_)
     {
     case E_ACTION_ST: // 开始采集
@@ -276,6 +283,12 @@ void MainWindow::setPushButtonEnable()
     {
         break;
     }
+    case E_ACTION_DETECT_RECT:
+    {
+        ui->pushButton->setEnabled(false);
+        ui->pushButton_2->setEnabled(false);
+        ui->pushButton_3->setEnabled(false);
+    }
     default:
         break;
     }
@@ -299,24 +312,22 @@ void MainWindow::on_pushButton_clicked()
     if(action_state_ == E_ACTION_ST)
     {
         // 停止采集数据
-        action_state_ = E_ACTION_STOP;
         manager_ptr_->saveDataToExcelFile();
         manager_ptr_->setSerialPause(true);
         manager_ptr_->getSrcListData(list_draw_src_data_);
         ui->pushButton->setText("开始");
-        setPushButtonEnable();
+        setPushButtonEnable(E_ACTION_STOP);
     }
     else
     {
         // 开始采集
-        action_state_ = E_ACTION_ST;
         list_draw_src_data_.clear();
         manager_ptr_->clearSrcListData();
         chartview_ptr_->resetSerials();
         source_view_ptr_->resetSerials();
         manager_ptr_->setSerialPause(false);
         ui->pushButton->setText("停止");
-        setPushButtonEnable();
+        setPushButtonEnable(E_ACTION_ST);
     }
 }
 
@@ -353,6 +364,29 @@ void MainWindow::on_pushButton_2_clicked()
     }
 }
 
+void MainWindow::on_getRectPoints()
+{
+    int start = chartview_ptr_->getDetectRect().left();
+    int end   = chartview_ptr_->getDetectRect().right();
+    if(list_draw_src_data_.size() < 2)
+    {
+        return;
+    }
+    start = std::max(start,list_draw_src_data_[0].index);
+    end   = std::min(end,list_draw_src_data_.size());
+    if(end > start)
+    {
+        rect_data_list_.clear();
+        for(int i = start; i < end; i++)
+        {
+            QPointF point;
+            point.setX(list_draw_src_data_[i].index);
+            point.setY(list_draw_src_data_[i].mag_data.data[0]);
+            rect_data_list_.append(point);
+        }
+        calibrate_view_->on_GetRectData(rect_data_list_);
+    }
+}
 // 数据处理
 void MainWindow::on_pushButton_3_clicked()
 {
@@ -368,8 +402,7 @@ void MainWindow::on_pushButton_3_clicked()
         QMessageBox::warning(this, "warning", "请先停止采集操作!");
         return;
     }
-    rect_data_list_.clear();
-    chartview_ptr_->getDetectRectData(rect_data_list_);
+    on_getRectPoints();
     if(rect_data_list_.size() <= 4)
     {
         QMessageBox::warning(this, "warning", "请先选择一个特征区域");
@@ -393,8 +426,7 @@ void MainWindow::on_pushButton_3_clicked()
         }
         if(thread_calc_ptr_)
         {
-            action_state_ = E_ACTION_DEAL_DATA;
-            setPushButtonEnable();
+            setPushButtonEnable(E_ACTION_DEAL_DATA);
             is_calc_start_ = true;
         }
     }
@@ -472,11 +504,13 @@ void MainWindow::on_pushButton_5_clicked()
         {
             chartview_ptr_->setSelectSwitch(true);
             ui->pushButton_5->setText("取消");
+            setPushButtonEnable(E_ACTION_DETECT_RECT);
         }
         else if(curr == QString("取消"))
         {
             chartview_ptr_->setSelectSwitch(false);
             ui->pushButton_5->setText("特征区域");
+            setPushButtonEnable(E_ACTION_STOP);
         }
     }
 }
@@ -742,6 +776,21 @@ void MainWindow::on_manve_Fit(QPointF center, double rad)
     if(source_view_ptr_)
     {
         source_view_ptr_->newCircle(center, rad);
+    }
+}
+
+
+void MainWindow::on_lineEdit_2_textChanged(const QString &arg1)
+{
+
+}
+
+
+void MainWindow::on_pushButton_filter_clicked()
+{
+    if(chartview_ptr_)
+    {
+//        chartview_ptr_.get
     }
 }
 

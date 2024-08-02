@@ -14,6 +14,7 @@
 #include "UnitData.h"
 #include "DetectSettings.h"
 #include "SafeQueue.h"
+#include "DynamicFilter.h"
 
 //QT_BEGIN_NAMESPACE
 
@@ -30,10 +31,16 @@ public:
         m_serialPort = nullptr;
         draw_add_size_ = DetectSettings::instance().add_point_count();
         src_max_size_ = DetectSettings::instance().max_points_count();
+        filter_ptr_ = new DynamicFilter(draw_add_size_/2);
     }
 
     ~SerialPortManager()
     {
+        if(filter_ptr_)
+        {
+            delete filter_ptr_;
+            filter_ptr_ = nullptr;
+        }
         stopThread();
         if(m_serialPort)
         {
@@ -195,7 +202,10 @@ public:
                     {
                         data.mag_data.data[j] = data_src_list_[start + i].mag_data.data[j];
                     }
-                    data_add_list_.push_back(data);
+                    if(filter_ptr_->filter(data.mag_data.data[0]))
+                    {
+                        data_add_list_.push_back(data);
+                    }
                 }
                 draw_queue_.enqueue(data_add_list_);
                 data_add_list_.clear();
@@ -253,13 +263,13 @@ public:
     {
         //if(mutex_.try_lock())
         {
-            qDebug()<<"saveDataToExcelFile send:"<<QDateTime::currentDateTime();
+//            qDebug()<<"saveDataToExcelFile send:"<<QDateTime::currentDateTime();
             if(DetectSettings::instance().auto_save_source())
             {
                 // 保存每次采集的原始数据
                 emit SendData(data_src_list_);
             }
-            qDebug()<<"saveDataToExcelFile sendok:"<<QDateTime::currentDateTime();
+//            qDebug()<<"saveDataToExcelFile sendok:"<<QDateTime::currentDateTime();
             //mutex_.unlock();
         }
     }
@@ -433,6 +443,7 @@ private:
     int draw_add_size_ {20};
     int src_max_size_ {12000};
     SafeQueue<QVector<ChinnelData>> draw_queue_;
+    DynamicFilter* filter_ptr_;
 };
 
 // 在你的应用程序中创建SerialPortManager实例并使用

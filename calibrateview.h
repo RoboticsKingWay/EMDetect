@@ -27,7 +27,7 @@ public:
     {
         return inside_amplitude_;
     }
-    void initView(std::function<void(QVector<QPointF>&)> getDetectRectData_Func);
+    void initView(/*std::function<void(QVector<QPointF>&)> getDetectRectData_Func*/);
 public slots:
     void on_GetRectData(QVector<QPointF>& points);
 private slots:
@@ -57,7 +57,7 @@ private:
     std::pair<double, double> result_param_;
 //    QVector<double> amplitude_list_;
     double inside_amplitude_;
-    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
+//    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
 };
 
 #endif // CALIBRATEVIEW_H

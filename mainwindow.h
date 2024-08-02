@@ -28,6 +28,7 @@ public:
 public slots:
     void on_auto_FitDirect(double rad);
     void on_manve_Fit(QPointF center, double rad);
+    void on_getRectPoints();
 //protected:
 
 //    void resizeEvent(QResizeEvent *event) override;
@@ -72,11 +73,14 @@ private slots:
 
     void on_action_fit_circle_triggered();
 
+    void on_lineEdit_2_textChanged(const QString &arg1);
+
+    void on_pushButton_filter_clicked();
+
 signals:
 
 private:
-
-    void setPushButtonEnable(); //
+    void setPushButtonEnable(int state); //
     void drawFileView();
     void drawImageViewThread();
     void runThread();
@@ -107,7 +111,9 @@ private:
     double scan_length_{20}; // mm
     double sensitivity_{0.0};
     QVector<QColor> yellowGradient_;
-    std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据 
+    std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据
 
+    // test
+    int threshhold_value_ {-10000};
 };
 #endif // MAINWINDOW_H

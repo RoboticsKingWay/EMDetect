@@ -20,6 +20,7 @@ HEADERS += \
     Chasing.h \
     DataManager.h \
     DetectSettings.h \
+    DynamicFilter.h \
     QXlsxExcelHelper.h \
     RealTimeChartView.h \
     SafeQueue.h \

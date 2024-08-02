@@ -62,10 +62,10 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_2;
-    QPushButton *pushButton_3;
     QPushButton *pushButton_connect_state;
     QPushButton *pushButton;
     QPushButton *pushButton_5;
+    QPushButton *pushButton_3;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QLabel *label;
@@ -75,23 +75,18 @@ public:
     QLineEdit *lineEdit_scan_length;
     QLabel *label_3;
     QComboBox *comboBox;
-    QSpacerItem *horizontalSpacer_2;
-    QGroupBox *groupBox_4;
+    QGroupBox *groupBox_result;
     QGridLayout *gridLayout_4;
-    QComboBox *comboBox_2;
-    QLabel *label_4;
-    QComboBox *comboBox_3;
-    QLabel *label_standar_function;
-    QLabel *label_10;
-    QLabel *label_11;
-    QLabel *label_9;
-    QLabel *label_detection_x_scale;
-    QLabel *label_7;
-    QLabel *label_db_eq;
-    QLabel *label_6;
+    QLabel *label_detection_y;
     QLabel *label_detection_length;
     QLabel *label_8;
-    QLabel *label_detection_y;
+    QLabel *label_6;
+    QLabel *label_4;
+    QLabel *label_9;
+    QLabel *label_7;
+    QLabel *label_standar_function;
+    QLabel *label_db_eq;
+    QLabel *label_detection_x_scale;
     QStatusBar *statusbar;
     QMenuBar *menuBar;
     QMenu *menu_file;
@@ -224,12 +219,6 @@ public:
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout_2->setSizeConstraint(QLayout::SetDefaultConstraint);
         gridLayout_2->setContentsMargins(4, 4, 4, 4);
-        pushButton_3 = new QPushButton(groupBox_2);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setFont(font);
-
-        gridLayout_2->addWidget(pushButton_3, 3, 1, 1, 1);
-
         pushButton_connect_state = new QPushButton(groupBox_2);
         pushButton_connect_state->setObjectName(QString::fromUtf8("pushButton_connect_state"));
         QIcon icon1;
@@ -253,6 +242,12 @@ public:
         pushButton_5->setFlat(false);
 
         gridLayout_2->addWidget(pushButton_5, 3, 0, 1, 1);
+
+        pushButton_3 = new QPushButton(groupBox_2);
+        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        pushButton_3->setFont(font);
+
+        gridLayout_2->addWidget(pushButton_3, 3, 1, 1, 1);
 
 
         horizontalLayout_3->addWidget(groupBox_2);
@@ -314,100 +309,70 @@ public:
 
         horizontalLayout_3->addWidget(groupBox);
 
-        horizontalSpacer_2 = new QSpacerItem(30, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_3->addItem(horizontalSpacer_2);
-
-        groupBox_4 = new QGroupBox(widget_down);
-        groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
-        groupBox_4->setFont(font);
-        groupBox_4->setAutoFillBackground(false);
-        gridLayout_4 = new QGridLayout(groupBox_4);
+        groupBox_result = new QGroupBox(widget_down);
+        groupBox_result->setObjectName(QString::fromUtf8("groupBox_result"));
+        groupBox_result->setFont(font);
+        groupBox_result->setAutoFillBackground(false);
+        gridLayout_4 = new QGridLayout(groupBox_result);
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         gridLayout_4->setContentsMargins(9, 2, -1, 2);
-        comboBox_2 = new QComboBox(groupBox_4);
-        comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
-        comboBox_2->setFont(font);
-        comboBox_2->setStyleSheet(QString::fromUtf8("background-color:white"));
+        label_detection_y = new QLabel(groupBox_result);
+        label_detection_y->setObjectName(QString::fromUtf8("label_detection_y"));
 
-        gridLayout_4->addWidget(comboBox_2, 0, 1, 1, 1);
+        gridLayout_4->addWidget(label_detection_y, 2, 3, 1, 1);
 
-        label_4 = new QLabel(groupBox_4);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setFont(font);
-
-        gridLayout_4->addWidget(label_4, 2, 0, 1, 1);
-
-        comboBox_3 = new QComboBox(groupBox_4);
-        comboBox_3->setObjectName(QString::fromUtf8("comboBox_3"));
-        comboBox_3->setFont(font);
-        comboBox_3->setStyleSheet(QString::fromUtf8("background-color:white"));
-
-        gridLayout_4->addWidget(comboBox_3, 0, 3, 1, 1);
-
-        label_standar_function = new QLabel(groupBox_4);
-        label_standar_function->setObjectName(QString::fromUtf8("label_standar_function"));
-
-        gridLayout_4->addWidget(label_standar_function, 2, 1, 1, 1);
-
-        label_10 = new QLabel(groupBox_4);
-        label_10->setObjectName(QString::fromUtf8("label_10"));
-        label_10->setFont(font);
-
-        gridLayout_4->addWidget(label_10, 0, 0, 1, 1);
-
-        label_11 = new QLabel(groupBox_4);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setFont(font);
-
-        gridLayout_4->addWidget(label_11, 0, 2, 1, 1);
-
-        label_9 = new QLabel(groupBox_4);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
-        label_9->setFont(font);
-
-        gridLayout_4->addWidget(label_9, 2, 2, 1, 1);
-
-        label_detection_x_scale = new QLabel(groupBox_4);
-        label_detection_x_scale->setObjectName(QString::fromUtf8("label_detection_x_scale"));
-
-        gridLayout_4->addWidget(label_detection_x_scale, 4, 1, 1, 1);
-
-        label_7 = new QLabel(groupBox_4);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
-        label_7->setFont(font);
-
-        gridLayout_4->addWidget(label_7, 4, 0, 1, 1);
-
-        label_db_eq = new QLabel(groupBox_4);
-        label_db_eq->setObjectName(QString::fromUtf8("label_db_eq"));
-
-        gridLayout_4->addWidget(label_db_eq, 2, 3, 1, 1);
-
-        label_6 = new QLabel(groupBox_4);
-        label_6->setObjectName(QString::fromUtf8("label_6"));
-        label_6->setFont(font);
-
-        gridLayout_4->addWidget(label_6, 3, 0, 1, 1);
-
-        label_detection_length = new QLabel(groupBox_4);
+        label_detection_length = new QLabel(groupBox_result);
         label_detection_length->setObjectName(QString::fromUtf8("label_detection_length"));
 
-        gridLayout_4->addWidget(label_detection_length, 3, 1, 1, 1);
+        gridLayout_4->addWidget(label_detection_length, 2, 1, 1, 1);
 
-        label_8 = new QLabel(groupBox_4);
+        label_8 = new QLabel(groupBox_result);
         label_8->setObjectName(QString::fromUtf8("label_8"));
         label_8->setFont(font);
 
-        gridLayout_4->addWidget(label_8, 3, 2, 1, 1);
+        gridLayout_4->addWidget(label_8, 2, 2, 1, 1);
 
-        label_detection_y = new QLabel(groupBox_4);
-        label_detection_y->setObjectName(QString::fromUtf8("label_detection_y"));
+        label_6 = new QLabel(groupBox_result);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setFont(font);
 
-        gridLayout_4->addWidget(label_detection_y, 3, 3, 1, 1);
+        gridLayout_4->addWidget(label_6, 2, 0, 1, 1);
+
+        label_4 = new QLabel(groupBox_result);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setFont(font);
+
+        gridLayout_4->addWidget(label_4, 1, 0, 1, 1);
+
+        label_9 = new QLabel(groupBox_result);
+        label_9->setObjectName(QString::fromUtf8("label_9"));
+        label_9->setFont(font);
+
+        gridLayout_4->addWidget(label_9, 1, 2, 1, 1);
+
+        label_7 = new QLabel(groupBox_result);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setFont(font);
+
+        gridLayout_4->addWidget(label_7, 3, 0, 1, 1);
+
+        label_standar_function = new QLabel(groupBox_result);
+        label_standar_function->setObjectName(QString::fromUtf8("label_standar_function"));
+
+        gridLayout_4->addWidget(label_standar_function, 1, 1, 1, 1);
+
+        label_db_eq = new QLabel(groupBox_result);
+        label_db_eq->setObjectName(QString::fromUtf8("label_db_eq"));
+
+        gridLayout_4->addWidget(label_db_eq, 1, 3, 1, 1);
+
+        label_detection_x_scale = new QLabel(groupBox_result);
+        label_detection_x_scale->setObjectName(QString::fromUtf8("label_detection_x_scale"));
+
+        gridLayout_4->addWidget(label_detection_x_scale, 3, 1, 1, 1);
 
 
-        horizontalLayout_3->addWidget(groupBox_4);
+        horizontalLayout_3->addWidget(groupBox_result);
 
 
         verticalLayout->addWidget(widget_down);
@@ -475,32 +440,30 @@ public:
         checkBox_upline->setText(QCoreApplication::translate("MainWindow", "\344\270\212\351\230\210\345\200\274\347\272\277", nullptr));
         checkBox_3->setText(QCoreApplication::translate("MainWindow", "\344\270\213\351\230\210\345\200\274\347\272\277", nullptr));
         groupBox_2->setTitle(QString());
-        pushButton_3->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\345\244\204\347\220\206", nullptr));
         pushButton_connect_state->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\347\212\266\346\200\201", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213", nullptr));
         pushButton_5->setText(QCoreApplication::translate("MainWindow", "\347\211\271\345\276\201\345\214\272\345\237\237", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\345\244\204\347\220\206", nullptr));
         groupBox->setTitle(QString());
         label->setText(QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230\346\240\207\347\255\276", nullptr));
         lineEdit->setText(QString());
         pushButton_2->setText(QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "\346\265\213\351\207\217\351\225\277\345\272\246", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\347\261\273\345\210\253", nullptr));
+        label_3->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\347\261\273\345\236\213", nullptr));
         comboBox->setItemText(0, QCoreApplication::translate("MainWindow", "\345\244\226\351\203\250\347\274\272\351\231\267", nullptr));
         comboBox->setItemText(1, QCoreApplication::translate("MainWindow", "\345\206\205\351\203\250\347\274\272\351\231\267", nullptr));
 
-        groupBox_4->setTitle(QString());
-        label_4->setText(QCoreApplication::translate("MainWindow", "\347\272\277\346\200\247\346\213\237\345\220\210\345\207\275\346\225\260\357\274\232", nullptr));
-        label_standar_function->setText(QString());
-        label_10->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\347\261\273\345\236\213", nullptr));
-        label_11->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
-        label_9->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\275\223\351\207\217\357\274\232", nullptr));
-        label_detection_x_scale->setText(QString());
-        label_7->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\256\275\346\267\261\346\257\224\357\274\232", nullptr));
-        label_db_eq->setText(QString());
-        label_6->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\351\225\277\345\272\246\357\274\232", nullptr));
+        groupBox_result->setTitle(QString());
+        label_detection_y->setText(QString());
         label_detection_length->setText(QString());
         label_8->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\271\205\345\200\274\357\274\232", nullptr));
-        label_detection_y->setText(QString());
+        label_6->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\351\225\277\345\272\246\357\274\232", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "\347\272\277\346\200\247\346\213\237\345\220\210\345\207\275\346\225\260\357\274\232", nullptr));
+        label_9->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\275\223\351\207\217\357\274\232", nullptr));
+        label_7->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\256\275\346\267\261\346\257\224\357\274\232", nullptr));
+        label_standar_function->setText(QString());
+        label_db_eq->setText(QString());
+        label_detection_x_scale->setText(QString());
         menu_file->setTitle(QCoreApplication::translate("MainWindow", "\346\226\207\344\273\266", nullptr));
         menu_setup->setTitle(QCoreApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
         menu_standar->setTitle(QCoreApplication::translate("MainWindow", "\346\240\207\345\256\232", nullptr));

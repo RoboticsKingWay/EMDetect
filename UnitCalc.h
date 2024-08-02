@@ -7,6 +7,7 @@
 #include <utility>
 #include <QPointF>
 #include <QVector>
+#include <QMessageBox>
 
 // 差分
 static void centralDifference(const std::vector<int>& data, std::vector<int>& result,int order = 2)
@@ -157,7 +158,9 @@ static std::pair<double, double> leastSquares(const std::vector<std::pair<double
 {
     if (points.size() < 3)
     {
-        throw std::invalid_argument("At least two points are required for regression.");
+//        throw std::invalid_argument("At least two points are required for regression.");
+        QMessageBox::information(nullptr,"warning:","拟合缺陷太少");
+        return {0,0};
     }
 
     double n = points.size();
@@ -179,7 +182,9 @@ static std::pair<double, double> leastSquares(const std::vector<std::pair<double
 
     if (denominator == 0)
     {
-        throw std::runtime_error("Denominator is zero, cannot calculate slope.");
+//        throw std::runtime_error("Denominator is zero, cannot calculate slope.");
+        QMessageBox::information(nullptr,"warning:","拟合点偏离");
+        return {0,0};
     }
 
     double slope = numerator / denominator;

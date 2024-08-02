@@ -33,6 +33,7 @@ public:
 
     virtual void createChartView() override
     {
+        ZOOM_NUM_SOURCE_VIEW = DetectSettings::instance().zoom_butterfly_view();
         BaseView::createChartView();
         chart_view_->setLocationShow(false);
         newSerial();
@@ -147,7 +148,7 @@ public:
 //        int ymax = -1000000;
 //        int xmin = 1000000;
 //        int xmax = -1000000;
-        for (int j = 0; j< draw_list.size(); j = j+5)
+        for (int j = 0; j< draw_list.size(); j++)
         {
             butterfly_serial_ptr_->append(QPointF(draw_list[j].mag_data.data[1],draw_list[j].mag_data.data[0]));
             // 直接取极大值 和极小值
@@ -230,6 +231,7 @@ private:
     int x_max_;
     QtCharts::QLineSeries* butterfly_serial_ptr_ {nullptr};
     QLineSeries* circle_series_ptr_ {nullptr};
+    double ZOOM_NUM_SOURCE_VIEW;
 };
 
 #endif // SOURCEVIEW_H

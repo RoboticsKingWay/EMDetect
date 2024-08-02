@@ -11,7 +11,7 @@ public:
     explicit RealTimeChartView(QWidget *parent = nullptr)
         : BaseView(parent)
     {
-
+        ZOOM_NUM = DetectSettings::instance().zoom_real_time_view();
     }
     virtual ~RealTimeChartView()
     {
@@ -218,6 +218,10 @@ public:
     {
         return threshold_down_line_;
     }
+    QRectF getDetectRect()
+    {
+        return detect_rect_;
+    }
     void getDetectRectData(QVector<QPointF>& ret_points)
     {
         QVector<QPointF> points;
@@ -238,11 +242,11 @@ public:
     }
     void updateChinnelView(QVector<ChinnelData>& draw_list,int ch_num, bool is_on)
     {
-        if(draw_add_size_ != draw_list.size())
-        {
-            return;
-        }
-//        count_points_ = draw_list[0].index;
+//        if(draw_add_size_ != draw_list.size())
+//        {
+//            return;
+//        }
+        count_points_ = draw_list[0].index;
         int x = draw_list[0].index;
         if(seriess_[ch_num] && is_on)
         {
@@ -256,6 +260,8 @@ public:
             foreach (auto drawItem, draw_list)
             {
                 seriess_[ch_num]->append(x++, (qreal)drawItem.mag_data.data[ch_num]);
+                ymin_[ch_num] = std::min((int)ymin_[ch_num], drawItem.mag_data.data[ch_num]);
+                ymax_[ch_num] = std::max((int)ymax_[ch_num], drawItem.mag_data.data[ch_num]);
             }
 //            qreal ymin = seriess_[ch_num]->at(0).y();
 //            qreal ymax = seriess_[ch_num]->at(0).y();
@@ -266,6 +272,7 @@ public:
 //                ymax = std::max(ymax, seriess_[ch_num]->at(i).y());
 //            }
 //            int start = seriess_[ch_num]->count() - draw_list.size();
+#if 0
             qreal ymin = 1000000;
             qreal ymax = -1000000;
             int start = seriess_[ch_num]->count() - draw_list.size();
@@ -281,6 +288,7 @@ public:
             }
             ymin_[ch_num] = ymin;
             ymax_[ch_num] = ymax;
+#endif
         }
     }
 
@@ -433,17 +441,18 @@ public slots:
             chart_->update();
             detect_rect_ = QRectF(start,end);
             QVector<QPointF> rect_data;
-            getDetectRectData(rect_data);
-            emit rectData(rect_data);
+            emit rect_Data();
         }
     }
     virtual void resetSerials() override
     {
         count_points_ = 0;
+        detect_rect_ = QRectF(QPointF(0,0),QSizeF(0,0));
+        detect_rect_serials_->clear();
         BaseView::resetSerials();
     }
 signals:
-    void rectData(QVector<QPointF>& rect_data);
+    void rect_Data();
 private:
     int count_points_ = 0;
     QtCharts::QLineSeries* threshold_serials_[2] = {nullptr};
@@ -459,6 +468,7 @@ private:
     double ymax_value_ {26000};
     double ymin_value_{20000};
     QRectF detect_rect_;
+    double ZOOM_NUM;
 };
 
 #endif // REALTIMECHARTVIEW_H
