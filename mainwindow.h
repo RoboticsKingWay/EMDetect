@@ -96,7 +96,6 @@ private:
     int count_size_blk_;
     SerialPortManager* manager_ptr_ {nullptr};//串口操作类指针
     DataManager* data_manager_ptr_ {nullptr};
-    bool is_chinnel_on_ [CH_NUM] = {false};
     QVector<ChinnelData> list_draw_src_data_;
     QVector<QPointF> rect_data_list_; // 特征区域的数据
 //    QVector<ChinnelData> list_fitted_data_; // 拟合圆数据
@@ -114,6 +113,6 @@ private:
     std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据
 
     // test
-    int threshhold_value_ {-10000};
+//    DynamicFilter* filter_ptr_ {nullptr};
 };
 #endif // MAINWINDOW_H

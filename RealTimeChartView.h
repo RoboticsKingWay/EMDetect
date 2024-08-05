@@ -76,6 +76,7 @@ public:
             seriess_[i] = new QtCharts::QLineSeries();
             seriess_[i]->setName(QString("通道%1").arg(i+1));
             seriess_[i]->setColor(serial_color_list[i]);
+            seriess_[i]->setVisible(false);
             QPen pen(serial_color_list[i]);
             pen.setWidth(2);
             seriess_[i]->setPen(pen);
@@ -83,6 +84,7 @@ public:
             chart_->addSeries(seriess_[i]);
             chart_->setAxisX(axisX_,seriess_[i]);//为序列添加坐标轴
             chart_->setAxisY(axisY_,seriess_[i]);
+
         }
 
         QPen pen(QColor(255,0,0,255));
@@ -160,25 +162,17 @@ public:
             }
         }
     }
-    void setChinnelRange(int count)
+    void setChinnelRange()
     {
         qreal ymin = 0.0;
         qreal ymax = 0.0;
-        bool is_init = false;
 
         ymin = 1000000;
         ymax = -1000000;
         for(int i = 0; i < CH_NUM; i++)
         {
-            if(ch_is_on_[i])
-            {
-                if(!is_init)
-                {
-                    is_init = true;
-                }
-                ymin = std::min(ymin_[i],ymin);
-                ymax = std::max(ymax_[i],ymax);
-            }
+            ymin = std::min(ymin_[i],ymin);
+            ymax = std::max(ymax_[i],ymax);
         }
         if(ymin < 0)
         {
@@ -198,17 +192,14 @@ public:
         }
         ymax_value_ = ymax;
         ymin_value_ = ymin;
-        count_points_ += count;
+        count_points_ += draw_add_size_;
         int x_since = count_points_ - draw_max_size_ - draw_add_size_;
         int x_to    = count_points_ + draw_add_size_;
         //          axisX_->setTitleText("点数计数10^3");
         //            axisX_->setTitleText("磁场强度nT");
         updateThresholdLine(0,x_to);
-        if(is_init)
-        {
-            axisX_->setRange(x_since, x_to);
-            axisY_->setRange(ymin, ymax);
-        }
+        axisX_->setRange(x_since, x_to);
+        axisY_->setRange(ymin, ymax);
     }
     QVector<QPointF> getThresholdUpline()
     {
@@ -240,28 +231,23 @@ public:
         }
         ret_points = points;
     }
-    void updateChinnelView(QVector<ChinnelData>& draw_list,int ch_num, bool is_on)
+    void updateChinnelView(QVector<ChinnelData>& draw_list)
     {
-//        if(draw_add_size_ != draw_list.size())
-//        {
-//            return;
-//        }
         count_points_ = draw_list[0].index;
         int x = draw_list[0].index;
-        if(seriess_[ch_num] && is_on)
+        for(int i = 0; i < CH_NUM; i++)
         {
-            ch_is_on_[ch_num] = is_on;
 
-            if (seriess_[ch_num]->count() > DetectSettings::instance().max_points_count())
+            if (seriess_[i]->count() > DetectSettings::instance().max_points_count())
             {
-                seriess_[ch_num]->removePoints(0,draw_list.size());
+                seriess_[i]->removePoints(0,draw_list.size());
             }
 
             foreach (auto drawItem, draw_list)
             {
-                seriess_[ch_num]->append(x++, (qreal)drawItem.mag_data.data[ch_num]);
-                ymin_[ch_num] = std::min((int)ymin_[ch_num], drawItem.mag_data.data[ch_num]);
-                ymax_[ch_num] = std::max((int)ymax_[ch_num], drawItem.mag_data.data[ch_num]);
+                seriess_[i]->append(x++, (qreal)drawItem.mag_data.data[i]);
+                ymin_[i] = std::min((int)ymin_[i], drawItem.mag_data.data[i]);
+                ymax_[i] = std::max((int)ymax_[i], drawItem.mag_data.data[i]);
             }
 //            qreal ymin = seriess_[ch_num]->at(0).y();
 //            qreal ymax = seriess_[ch_num]->at(0).y();
@@ -292,6 +278,10 @@ public:
         }
     }
 
+    void setChinnelVisible(int index,bool show)
+    {
+        seriess_[index]->setVisible(show);
+    }
     void setUpline(bool show)
     {
         threshold_serials_[0]->setVisible(show);
@@ -353,7 +343,7 @@ public:
         axisX_->setRange(x_since, x_to);
         axisY_->setRange(ymin, ymax);
     }
-    void updateChinnelView(QVector<ChinnelData>& draw_list)
+    void updateChinnelView_all(QVector<ChinnelData>& draw_list)
     {
         if(0 >= draw_list.size())
         {

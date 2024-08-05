@@ -212,14 +212,10 @@ void MainWindow::updateData()
 
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
     {
-//        qDebug()<<QDateTime::currentDateTime()<<"size:"<<draw_list.size();
-        for(int i = 0; i < CH_NUM; i++)
-        {
-            chartview_ptr_->updateChinnelView(draw_list,i,is_chinnel_on_[i]);
-        }
-        chartview_ptr_->setChinnelRange(draw_list.size());
+        chartview_ptr_->updateChinnelView(draw_list);
+        chartview_ptr_->setChinnelRange();
     }
-    if(source_view_ptr_ && draw_list.size())
+    if(draw_list.size())
     {
         source_view_ptr_->updateChinnelView(draw_list);
         source_view_ptr_->setViewChinnelRange();
@@ -584,13 +580,16 @@ void MainWindow::on_lineEdit_textChanged(const QString &arg1)
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     qDebug()<<"ch_1 arg1="<<arg1;
-    if(arg1 > 0)
+    if(chartview_ptr_)
     {
-        is_chinnel_on_[0] = true;
-    }
-    else
-    {
-        is_chinnel_on_[0] = false;
+        if(arg1 > 0)
+        {
+            chartview_ptr_->setChinnelVisible(0, true);
+        }
+        else
+        {
+            chartview_ptr_->setChinnelVisible(0, false);
+        }
     }
 }
 
@@ -598,13 +597,16 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 void MainWindow::on_checkBox_2_stateChanged(int arg1)
 {
     qDebug()<<"ch_2 arg1="<<arg1;
-    if(arg1 > 0)
+    if(chartview_ptr_)
     {
-        is_chinnel_on_[1] = true;
-    }
-    else
-    {
-        is_chinnel_on_[1] = false;
+        if(arg1 > 0)
+        {
+            chartview_ptr_->setChinnelVisible(1,true);
+        }
+        else
+        {
+            chartview_ptr_->setChinnelVisible(1,false);
+        }
     }
 }
 

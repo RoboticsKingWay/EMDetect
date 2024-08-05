@@ -31,7 +31,7 @@ public:
         m_serialPort = nullptr;
         draw_add_size_ = DetectSettings::instance().add_point_count();
         src_max_size_ = DetectSettings::instance().max_points_count();
-        filter_ptr_ = new DynamicFilter(draw_add_size_/2);
+        filter_ptr_ = new DynamicFilter(DetectSettings::instance().filter_size());
     }
 
     ~SerialPortManager()
@@ -119,7 +119,6 @@ public:
         {
             startThread();
         }
-        data_add_list_.clear();
         data_src_list_.clear();
         return is_opened_;
     }
@@ -189,56 +188,34 @@ public:
     }
     void setDrawData()
     {
-//        if(mutex_.try_lock())
-//        {
-            if(data_src_list_.size() >= draw_add_size_ && data_src_list_.size()%draw_add_size_ == 0)
+        if(data_src_list_.size() >= draw_add_size_ && data_src_list_.size()%draw_add_size_ == 0)
+        {
+            QVector<ChinnelData> temp;
+            int start = (count_index_ % src_max_size_) - draw_add_size_;
+            for(int i = start; i < (draw_add_size_ + start); i++)
             {
-                int start = (count_index_ % src_max_size_) - draw_add_size_;
-                for(int i = 0; i < draw_add_size_; i++)
+                ChinnelData data;
+                data.index = data_src_list_[i].index;
+                for(int j = 0; j < CH_NUM; j++)
                 {
-                    ChinnelData data;
-                    data.index = data_src_list_[start + i].index;
-                    for(int j = 0; j < CH_NUM; j++)
-                    {
-                        data.mag_data.data[j] = data_src_list_[start + i].mag_data.data[j];
-                    }
-                    if(filter_ptr_->filter(data.mag_data.data[0]))
-                    {
-                        data_add_list_.push_back(data);
-                    }
+                    data.mag_data.data[j] = data_src_list_[i].mag_data.data[j];
                 }
-                draw_queue_.enqueue(data_add_list_);
-                data_add_list_.clear();
+                //if(filter_ptr_->filter(data.mag_data.data[0]))
+                {
+                    temp.push_back(data);
+                }
             }
-//            mutex_.unlock();
-//        }
-//        else
-//        {
-//            qDebug()<<"set draw data mutex_.try_lock() failed"<<"\n";
-//        }
+            if(temp.size())
+            {
+                draw_queue_.enqueue(temp);
+            }
+        }
     }
 
     QVector<ChinnelData> getDrawData()
     {
         QVector<ChinnelData> temp;
         draw_queue_.dequeue(temp);
-        return temp;
-        if(mutex_.tryLock(100))
-        {
-            if(data_add_list_.size() <= 0)
-            {
-                mutex_.unlock();
-                return temp;
-            }
-            temp.resize(data_add_list_.size());
-            temp = data_add_list_;
-            data_add_list_.clear();
-            mutex_.unlock();
-        }
-        else
-        {
-            qDebug()<<"get draw data mutex_.try_lock() failed"<<"\n";
-        }
         return temp;
     }
 
@@ -287,7 +264,6 @@ public:
         {
             clearSerialPort();
             data_src_list_.clear();
-            data_add_list_.clear();
             count_index_ = 0;
            // mutex_.unlock();
         }
@@ -439,7 +415,6 @@ private:
     SerialParam serial_param_;
     QString str_data_;
     QVector<ChinnelData> data_src_list_;
-    QVector<ChinnelData> data_add_list_;
     int draw_add_size_ {20};
     int src_max_size_ {12000};
     SafeQueue<QVector<ChinnelData>> draw_queue_;

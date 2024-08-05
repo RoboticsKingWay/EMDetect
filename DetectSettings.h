@@ -37,9 +37,14 @@ protected:
     double fitted_param_a_   = -5.1;
     double fitted_param_b_   = -1000.1;
     QString detect_profile_  = "奥氏体钢";
-    double zoom_butterfly_view_ = 1.05;
+    double zoom_butterfly_view_      = 1.05;
     double zoom_real_time_view_      = 1.05;
+    int filter_size_         = 10;
 public:
+    const int& filter_size()
+    {
+        return filter_size_;
+    }
     const double& zoom_real_time_view()
     {
         return zoom_real_time_view_;
@@ -134,9 +139,9 @@ public:
 
         // 检查首字符和尾字符是否都是双引号
         QVector<double> results;
-//        if(input.at(0) == '"' && input.at(input.length() - 1) == '"')
+        //        if(input.at(0) == '"' && input.at(input.length() - 1) == '"')
         {
-//            QString str = input.mid(1,input.length()-2);
+            //            QString str = input.mid(1,input.length()-2);
             QStringList parts = input.split(',', QString::SkipEmptyParts);
             for (const QString &part : parts)
             {
@@ -159,10 +164,10 @@ public:
                 }
             }
         }
-//        else
-//        {
-//            return QVector<double>{1.91,2.91,3.91};
-//        }
+        //        else
+        //        {
+        //            return QVector<double>{1.91,2.91,3.91};
+        //        }
         return results;
     }
 
@@ -184,6 +189,7 @@ public:
             max_draw_points_count_ = settings.value("Settings/max_draw_points_count", 300).toInt();
             add_point_count_ = settings.value("Settings/add_point_count", 20).toInt();
             real_time_rate_ = settings.value("Settings/real_time_rate", 5).toInt();
+            filter_size_    = settings.value("Settings/filter_size", 10).toInt();
             if(real_time_rate_ > 10 || real_time_rate_ < 1)
             {
                 real_time_rate_ = 5;
@@ -204,8 +210,8 @@ public:
             fitted_param_a_ = settings.value("Settings/fitted_param_a", 30.0).toDouble();
             fitted_param_b_ = settings.value("Settings/fitted_param_b", 30.0).toDouble();
             detect_profile_ = settings.value("Settings/detect_profile", "奥氏体钢").toString();
-            qDebug()<<"config: scan_speed_"<<scan_speed_<<" upline_"<<upline_<<" downline_"<<downline_\
-                     <<" fitted_param_a_"<<fitted_param_a_<<" fitted_param_b_"<<fitted_param_b_<<" detect_profile_"<<detect_profile_;
+                              qDebug()<<"config: scan_speed_"<<scan_speed_<<" upline_"<<upline_<<" downline_"<<downline_\
+                              <<" fitted_param_a_"<<fitted_param_a_<<" fitted_param_b_"<<fitted_param_b_<<" detect_profile_"<<detect_profile_;
         }
         catch (const std::exception &e)
         {
