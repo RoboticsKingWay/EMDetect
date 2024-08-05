@@ -146,3 +146,18 @@ void SetupWindow::on_pushButton_circle_input_clicked()
     emit manve_Fit(center, rad);
 }
 
+
+void SetupWindow::on_pushButton_filter_clicked()
+{
+    int more_than = ui->lineEdit_morethan->text().toDouble();
+    int less_than = ui->lineEdit_lessthan->text().toDouble();
+    int axes = ui->comboBox_axes->currentIndex();
+    emit butterfly_filter(more_than,less_than,axes);
+}
+
+
+void SetupWindow::on_pushButton_filter_cancle_clicked()
+{
+    this->hide();
+}
+

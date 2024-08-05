@@ -569,6 +569,7 @@
     <addaction name="action_serialSetup"/>
     <addaction name="action_thresholdSetup"/>
     <addaction name="action_fit_circle"/>
+    <addaction name="action_filter"/>
    </widget>
    <widget class="QMenu" name="menu_standar">
     <property name="font">
@@ -642,6 +643,11 @@
   <action name="action_fit_circle">
    <property name="text">
     <string>拟合圆设置</string>
+   </property>
+  </action>
+  <action name="action_filter">
+   <property name="text">
+    <string>滤波设置</string>
    </property>
   </action>
  </widget>

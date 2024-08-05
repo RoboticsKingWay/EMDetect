@@ -6,12 +6,16 @@
 #include <numeric>
 #include <cmath>
 
+#define _THRESHOLD_SUM_  1.1
+#define _THRESHOLD_MEAN_ 1.02
+
 class DynamicFilter
 {
 private:
     std::vector<double> window;
     size_t window_size;
-
+    double mean_ {0.};
+    double sum_  {0.};
 public:
     explicit DynamicFilter(size_t size) : window_size(size) {}
 
@@ -58,6 +62,22 @@ public:
             }
         }
 //        output = value;
+        return true;
+    }
+    bool filter_mean(double value)
+    {
+        if (window.size() < window_size)
+        {
+            window.push_back(value);
+            return false;
+        }
+        double sum = std::accumulate(window.begin(), window.end(), 0.0);
+        double mean = sum / window.size();
+        if(std::abs(sum - sum_) > sum_ * _THRESHOLD_SUM_)
+        {
+            window.erase(window.begin());
+            window.push_back(value);
+        }
         return true;
     }
 };

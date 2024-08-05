@@ -233,8 +233,8 @@ public:
     }
     void updateChinnelView(QVector<ChinnelData>& draw_list)
     {
-        count_points_ = draw_list[0].index;
-        int x = draw_list[0].index;
+//        count_points_ = draw_list[0].index;
+//        int x = draw_list[0].index;
         for(int i = 0; i < CH_NUM; i++)
         {
 
@@ -245,7 +245,7 @@ public:
 
             foreach (auto drawItem, draw_list)
             {
-                seriess_[i]->append(x++, (qreal)drawItem.mag_data.data[i]);
+                seriess_[i]->append(/*x++*/drawItem.index, (qreal)drawItem.mag_data.data[i]);
                 ymin_[i] = std::min((int)ymin_[i], drawItem.mag_data.data[i]);
                 ymax_[i] = std::max((int)ymax_[i], drawItem.mag_data.data[i]);
             }

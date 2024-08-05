@@ -339,4 +339,61 @@ static QPointF calculatePointsCenter(const std::vector<QPointF>& points)
 //    return minDistance;
 //}
 
+#include "UnitData.h"
+static void SeekExtremeValue(QVector<ChinnelData>& source_list, QVector<ChinnelData>& dest_list)
+{
+    int minX = 1000000;
+    int maxX = -1000000;
+    int minY = 1000000;
+    int maxY = -1000000;
+
+    int index[4] = {0};
+    ChinnelData point_minX,point_maxX,point_minY,point_maxY;
+
+    // 寻找x轴和y轴的极值
+    for (const auto& point : source_list)
+    {
+        if (point.mag_data.data[1] < minX)
+        {
+            minX = point.mag_data.data[1];
+            point_minX = point;
+        }
+        else if (point.mag_data.data[1] > maxX)
+        {
+            maxX = point.mag_data.data[1];
+            point_maxX = point;
+        }
+        if (point.mag_data.data[0] < minY && (point.mag_data.data[1] != minX && point.mag_data.data[1] != maxX))
+        {
+            minY = point.mag_data.data[0];
+            point_minY = point;
+        }
+        else if (point.mag_data.data[0] > maxY && (point.mag_data.data[1] != maxX && point.mag_data.data[1] != maxX))
+        {
+            maxY = point.mag_data.data[0];
+            point_maxY = point;
+        }
+    }
+    if(point_minX.index != 0)
+    {
+        dest_list.push_back(point_minX);
+    }
+    if(point_maxX.index != 0)
+    {
+        dest_list.push_back(point_maxX);
+    }
+    if(point_minY.index != 0)
+    {
+        dest_list.push_back(point_minY);
+    }
+    if(point_maxY.index != 0)
+    {
+        dest_list.push_back(point_maxY);
+    }
+    std::sort(dest_list.begin(),dest_list.end(),[=](ChinnelData& a,ChinnelData& b)
+    {
+        return a.index < b.index;
+    });
+}
+
 #endif // UNITCALC_H

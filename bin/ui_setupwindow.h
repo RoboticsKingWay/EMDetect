@@ -96,12 +96,24 @@ public:
     QLineEdit *lineEdit_circle_y;
     QSpacerItem *horizontalSpacer_6;
     QPushButton *pushButton_circle_input;
+    QWidget *tab;
+    QWidget *widget_6;
+    QGridLayout *gridLayout_10;
+    QLabel *label_11;
+    QComboBox *comboBox_axes;
+    QLabel *label_9;
+    QLineEdit *lineEdit_morethan;
+    QLabel *label_10;
+    QLineEdit *lineEdit_lessthan;
+    QPushButton *pushButton_filter;
+    QSpacerItem *horizontalSpacer_9;
+    QPushButton *pushButton_filter_cancle;
 
     void setupUi(QTabWidget *SetupWindow)
     {
         if (SetupWindow->objectName().isEmpty())
             SetupWindow->setObjectName(QString::fromUtf8("SetupWindow"));
-        SetupWindow->resize(436, 432);
+        SetupWindow->resize(431, 432);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -416,10 +428,64 @@ public:
         verticalLayout_2->addWidget(widget_5);
 
         SetupWindow->addTab(tab_setup_circle, QString());
+        tab = new QWidget();
+        tab->setObjectName(QString::fromUtf8("tab"));
+        widget_6 = new QWidget(tab);
+        widget_6->setObjectName(QString::fromUtf8("widget_6"));
+        widget_6->setGeometry(QRect(20, 10, 261, 251));
+        gridLayout_10 = new QGridLayout(widget_6);
+        gridLayout_10->setObjectName(QString::fromUtf8("gridLayout_10"));
+        label_11 = new QLabel(widget_6);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+
+        gridLayout_10->addWidget(label_11, 0, 0, 1, 2);
+
+        comboBox_axes = new QComboBox(widget_6);
+        comboBox_axes->addItem(QString());
+        comboBox_axes->addItem(QString());
+        comboBox_axes->setObjectName(QString::fromUtf8("comboBox_axes"));
+
+        gridLayout_10->addWidget(comboBox_axes, 0, 2, 1, 2);
+
+        label_9 = new QLabel(widget_6);
+        label_9->setObjectName(QString::fromUtf8("label_9"));
+
+        gridLayout_10->addWidget(label_9, 1, 0, 1, 1);
+
+        lineEdit_morethan = new QLineEdit(widget_6);
+        lineEdit_morethan->setObjectName(QString::fromUtf8("lineEdit_morethan"));
+
+        gridLayout_10->addWidget(lineEdit_morethan, 1, 1, 1, 3);
+
+        label_10 = new QLabel(widget_6);
+        label_10->setObjectName(QString::fromUtf8("label_10"));
+
+        gridLayout_10->addWidget(label_10, 2, 0, 1, 1);
+
+        lineEdit_lessthan = new QLineEdit(widget_6);
+        lineEdit_lessthan->setObjectName(QString::fromUtf8("lineEdit_lessthan"));
+
+        gridLayout_10->addWidget(lineEdit_lessthan, 2, 1, 1, 3);
+
+        pushButton_filter = new QPushButton(widget_6);
+        pushButton_filter->setObjectName(QString::fromUtf8("pushButton_filter"));
+
+        gridLayout_10->addWidget(pushButton_filter, 3, 0, 1, 2);
+
+        horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_10->addItem(horizontalSpacer_9, 3, 2, 1, 1);
+
+        pushButton_filter_cancle = new QPushButton(widget_6);
+        pushButton_filter_cancle->setObjectName(QString::fromUtf8("pushButton_filter_cancle"));
+
+        gridLayout_10->addWidget(pushButton_filter_cancle, 3, 3, 1, 1);
+
+        SetupWindow->addTab(tab, QString());
 
         retranslateUi(SetupWindow);
 
-        SetupWindow->setCurrentIndex(2);
+        SetupWindow->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(SetupWindow);
@@ -474,6 +540,15 @@ public:
         label_7->setText(QCoreApplication::translate("SetupWindow", "\345\234\206\345\277\203\347\272\265\345\235\220\346\240\207", nullptr));
         pushButton_circle_input->setText(QCoreApplication::translate("SetupWindow", "\346\213\237\345\220\210\350\276\223\345\205\245", nullptr));
         SetupWindow->setTabText(SetupWindow->indexOf(tab_setup_circle), QCoreApplication::translate("SetupWindow", "\346\213\237\345\220\210\345\234\206\350\256\276\347\275\256", nullptr));
+        label_11->setText(QCoreApplication::translate("SetupWindow", "\345\235\220\346\240\207\347\263\273", nullptr));
+        comboBox_axes->setItemText(0, QCoreApplication::translate("SetupWindow", "\346\250\252\345\235\220\346\240\207", nullptr));
+        comboBox_axes->setItemText(1, QCoreApplication::translate("SetupWindow", "\347\272\265\345\235\220\346\240\207", nullptr));
+
+        label_9->setText(QCoreApplication::translate("SetupWindow", "\345\244\247\344\272\216", nullptr));
+        label_10->setText(QCoreApplication::translate("SetupWindow", "\345\260\217\344\272\216", nullptr));
+        pushButton_filter->setText(QCoreApplication::translate("SetupWindow", "\346\273\244\346\263\242", nullptr));
+        pushButton_filter_cancle->setText(QCoreApplication::translate("SetupWindow", "\345\217\226\346\266\210", nullptr));
+        SetupWindow->setTabText(SetupWindow->indexOf(tab), QCoreApplication::translate("SetupWindow", "\345\233\276\345\275\242\346\273\244\346\263\242", nullptr));
     } // retranslateUi
 
 };

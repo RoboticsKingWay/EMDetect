@@ -43,6 +43,7 @@ public:
     QAction *action_filesave;
     QAction *action_fileperview;
     QAction *action_fit_circle;
+    QAction *action_filter;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     QWidget *widget_up;
@@ -126,6 +127,8 @@ public:
         action_fileperview->setObjectName(QString::fromUtf8("action_fileperview"));
         action_fit_circle = new QAction(MainWindow);
         action_fit_circle->setObjectName(QString::fromUtf8("action_fit_circle"));
+        action_filter = new QAction(MainWindow);
+        action_filter->setObjectName(QString::fromUtf8("action_filter"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         centralwidget->setMinimumSize(QSize(1000, 670));
@@ -408,6 +411,7 @@ public:
         menu_setup->addAction(action_serialSetup);
         menu_setup->addAction(action_thresholdSetup);
         menu_setup->addAction(action_fit_circle);
+        menu_setup->addAction(action_filter);
         menu_standar->addAction(action_outside);
         menu_standar->addAction(action_inside);
         menu_software->addAction(action_version);
@@ -435,6 +439,7 @@ public:
         action_filesave->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\345\217\246\345\255\230\344\270\272", nullptr));
         action_fileperview->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\351\242\204\350\247\210", nullptr));
         action_fit_circle->setText(QCoreApplication::translate("MainWindow", "\346\213\237\345\220\210\345\234\206\350\256\276\347\275\256", nullptr));
+        action_filter->setText(QCoreApplication::translate("MainWindow", "\346\273\244\346\263\242\350\256\276\347\275\256", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "\351\200\232\351\201\2231", nullptr));
         checkBox_2->setText(QCoreApplication::translate("MainWindow", "\351\200\232\351\201\2232", nullptr));
         checkBox_upline->setText(QCoreApplication::translate("MainWindow", "\344\270\212\351\230\210\345\200\274\347\272\277", nullptr));

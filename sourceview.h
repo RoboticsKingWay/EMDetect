@@ -206,6 +206,41 @@ public:
             chart_view_->update();
         }
     }
+    void on_FilterView(int more, int less,int axes)
+    {
+        if(more > less)
+        {
+            return;
+        }
+        if(butterfly_serial_ptr_->count() > 0)
+        {
+            if(axes == 0) //横坐标
+            {
+                for(int i = 0; i < butterfly_serial_ptr_->count(); i++)
+                {
+                    if(butterfly_serial_ptr_->at(i).x() > more && butterfly_serial_ptr_->at(i).x() < less)
+                    {
+                        butterfly_serial_ptr_->remove(i);
+                    }
+                }
+            }
+            else
+            {// 纵坐标
+                for(int i = 0; i < butterfly_serial_ptr_->count(); i++)
+                {
+                    if(butterfly_serial_ptr_->at(i).y() > more && butterfly_serial_ptr_->at(i).y() < less)
+                    {
+                        butterfly_serial_ptr_->remove(i);
+                    }
+                }
+            }
+            if(chart_ && chart_view_)
+            {
+                chart_->update();
+                chart_view_->update();
+            }
+        }
+    }
     virtual void resetSerials() override
     {
         if(butterfly_serial_ptr_)

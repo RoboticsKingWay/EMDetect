@@ -29,8 +29,9 @@ public slots:
     void on_auto_FitDirect(double rad);
     void on_manve_Fit(QPointF center, double rad);
     void on_getRectPoints();
-//protected:
-
+    void on_butterfly_Filter(int more,int less,int axes);
+protected:
+    void closeEvent(QCloseEvent *event) override;
 //    void resizeEvent(QResizeEvent *event) override;
 //    void paintEvent(QPaintEvent *event)override;
 //    bool eventFilter(QObject *watched, QEvent *event) override;
@@ -76,6 +77,8 @@ private slots:
     void on_lineEdit_2_textChanged(const QString &arg1);
 
     void on_pushButton_filter_clicked();
+
+    void on_action_filter_triggered();
 
 signals:
 

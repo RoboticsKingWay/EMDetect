@@ -30,6 +30,7 @@ signals:
     void downlineReset();
     void autoDirectFit(double rad);
     void manve_Fit(QPointF center, double rad);
+    void butterfly_filter(int more_than,int less_than,int axes);
 private slots:
 
     void on_pushButton_sure_clicked();
@@ -54,6 +55,10 @@ private slots:
     void on_pushButton_circle_direct_clicked();
 
     void on_pushButton_circle_input_clicked();
+
+    void on_pushButton_filter_clicked();
+
+    void on_pushButton_filter_cancle_clicked();
 
 private:
     Ui::SetupWindow *ui;

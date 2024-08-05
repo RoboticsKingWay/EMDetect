@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         connect(setup_win_ptr_,&SetupWindow::autoDirectFit ,this,&MainWindow::on_auto_FitDirect,Qt::AutoConnection);
         connect(setup_win_ptr_,&SetupWindow::manve_Fit ,this,&MainWindow::on_manve_Fit,Qt::AutoConnection);
+        connect(setup_win_ptr_,&SetupWindow::butterfly_filter ,this,&MainWindow::on_butterfly_Filter,Qt::AutoConnection);
     }
 
     if(setup_win_ptr_ && manager_ptr_)
@@ -100,13 +101,32 @@ MainWindow::~MainWindow()
     if(setup_win_ptr_)
     {
         delete setup_win_ptr_;
+        setup_win_ptr_ = nullptr;
     }
     if(calibrate_view_)
     {
         delete calibrate_view_;
+        calibrate_view_ = nullptr;
     }
     delete ui;
 }
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if(setup_win_ptr_)
+    {
+        setup_win_ptr_->close();
+    }
+    if(calibrate_view_)
+    {
+        calibrate_view_->close();
+    }
+    event->accept();
+
+    // 如果你想要阻止窗口关闭，可以调用以下代码：
+    // event->ignore();
+}
+
 //bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 //{
 //    if (watched == ui->widget_real_chat_view && event->type() == QEvent::Paint)
@@ -208,8 +228,12 @@ void MainWindow::updateData()
 {
 
     static int serial_state = E_SERIAL_CLOSE;
-    QVector<ChinnelData> draw_list = manager_ptr_->getDrawData();
-
+    QVector<ChinnelData> src_list  = manager_ptr_->getDrawData();
+    QVector<ChinnelData> draw_list;
+    if(src_list.size() > 0)
+    {
+        SeekExtremeValue(src_list, draw_list);
+    }
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
     {
         chartview_ptr_->updateChinnelView(draw_list);
@@ -768,6 +792,15 @@ void MainWindow::on_auto_FitDirect(double rad)
     }
 }
 
+void MainWindow::on_action_filter_triggered()
+{
+    if(setup_win_ptr_)
+    {
+        setup_win_ptr_->setCurrentIndex(3);
+        setup_win_ptr_->showNormal();
+    }
+}
+
 void MainWindow::on_manve_Fit(QPointF center, double rad)
 {
     if(action_state_ == E_ACTION_ST)
@@ -781,6 +814,13 @@ void MainWindow::on_manve_Fit(QPointF center, double rad)
     }
 }
 
+void MainWindow::on_butterfly_Filter(int more,int less,int axes)
+{
+    if(source_view_ptr_)
+    {
+        source_view_ptr_->on_FilterView(more, less, axes);
+    }
+}
 
 void MainWindow::on_lineEdit_2_textChanged(const QString &arg1)
 {
@@ -795,4 +835,5 @@ void MainWindow::on_pushButton_filter_clicked()
 //        chartview_ptr_.get
     }
 }
+
 
