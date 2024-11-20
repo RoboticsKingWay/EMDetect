@@ -154,13 +154,13 @@ static double distance(const std::pair<double, double>& p1, const std::pair<doub
 }
 
 // 最小二乘法线性回归
-static std::pair<double, double> leastSquares(const std::vector<std::pair<double, double>>& points)
+static  bool leastSquares(const std::vector<std::pair<double, double>>& points,std::pair<double, double>& result)
 {
     if (points.size() < 3)
     {
 //        throw std::invalid_argument("At least two points are required for regression.");
         QMessageBox::information(nullptr,"warning:","拟合缺陷太少");
-        return {0,0};
+        return false;
     }
 
     double n = points.size();
@@ -184,13 +184,14 @@ static std::pair<double, double> leastSquares(const std::vector<std::pair<double
     {
 //        throw std::runtime_error("Denominator is zero, cannot calculate slope.");
         QMessageBox::information(nullptr,"warning:","拟合点偏离");
-        return {0,0};
+        return false;
     }
 
     double slope = numerator / denominator;
     double intercept = y_mean - (slope * x_mean);
 
-    return {slope, intercept};
+    result = std::pair<double,double>({slope, intercept});
+    return true;
 }
 
 

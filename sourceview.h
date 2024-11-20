@@ -48,6 +48,7 @@ public:
             chart_->setAxisX(axisX_,circle_series_ptr_);//为序列添加坐标轴
             chart_->setAxisY(axisY_,circle_series_ptr_);
         }
+
         circle_series_ptr_->clear();
         QVector<QPointF> point_list;
         for (int angle = 0; angle < 360; angle += 5)
@@ -83,6 +84,8 @@ public:
         chart_->setAxisX(axisX_,butterfly_serial_ptr_);//为序列添加坐标轴
         chart_->setAxisY(axisY_,butterfly_serial_ptr_);
         chart_->legend()->hide();
+        axisX_->setVisible(false);
+        axisY_->setVisible(false);
     }
 
     void setViewChinnelRange()
@@ -214,15 +217,24 @@ public:
         }
         if(butterfly_serial_ptr_->count() > 0)
         {
+            QList<QPointF> list;
             if(axes == 0) //横坐标
             {
+                qDebug()<<"butterfly_serial_ptr_->count()="<<butterfly_serial_ptr_->count();
                 for(int i = 0; i < butterfly_serial_ptr_->count(); i++)
                 {
                     if(butterfly_serial_ptr_->at(i).x() > more && butterfly_serial_ptr_->at(i).x() < less)
                     {
-                        butterfly_serial_ptr_->remove(i);
+//                        qDebug()<<"i="<<i;
+//                        butterfly_serial_ptr_->remove(i);
+                    }
+                    else
+                    {
+                        list.push_back(butterfly_serial_ptr_->at(i));
                     }
                 }
+                butterfly_serial_ptr_->clear();
+                butterfly_serial_ptr_->replace(list);
             }
             else
             {// 纵坐标
@@ -230,8 +242,14 @@ public:
                 {
                     if(butterfly_serial_ptr_->at(i).y() > more && butterfly_serial_ptr_->at(i).y() < less)
                     {
-                        butterfly_serial_ptr_->remove(i);
+//                        butterfly_serial_ptr_->remove(i);
                     }
+                    else
+                    {
+                        list.push_back(butterfly_serial_ptr_->at(i));
+                    }
+                    butterfly_serial_ptr_->clear();
+                    butterfly_serial_ptr_->replace(list);
                 }
             }
             if(chart_ && chart_view_)

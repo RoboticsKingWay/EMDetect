@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[34];
-    char stringdata0[680];
+    QByteArrayData data[43];
+    char stringdata0[898];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -65,7 +65,16 @@ QT_MOC_LITERAL(29, 535, 31), // "on_action_fileperview_triggered"
 QT_MOC_LITERAL(30, 567, 30), // "on_action_fit_circle_triggered"
 QT_MOC_LITERAL(31, 598, 25), // "on_lineEdit_2_textChanged"
 QT_MOC_LITERAL(32, 624, 28), // "on_pushButton_filter_clicked"
-QT_MOC_LITERAL(33, 653, 26) // "on_action_filter_triggered"
+QT_MOC_LITERAL(33, 653, 26), // "on_action_filter_triggered"
+QT_MOC_LITERAL(34, 680, 31), // "on_update_inside_detection_list"
+QT_MOC_LITERAL(35, 712, 32), // "QMap<QString,InsideDetectParam>&"
+QT_MOC_LITERAL(36, 745, 11), // "inside_list"
+QT_MOC_LITERAL(37, 757, 32), // "on_update_outside_detection_list"
+QT_MOC_LITERAL(38, 790, 33), // "QMap<QString,OutsideDetectPar..."
+QT_MOC_LITERAL(39, 824, 8), // "out_list"
+QT_MOC_LITERAL(40, 833, 25), // "on_update_function_result"
+QT_MOC_LITERAL(41, 859, 25), // "std::pair<double,double>&"
+QT_MOC_LITERAL(42, 885, 12) // "result_param"
 
     },
     "MainWindow\0on_auto_FitDirect\0\0rad\0"
@@ -88,7 +97,13 @@ QT_MOC_LITERAL(33, 653, 26) // "on_action_filter_triggered"
     "on_action_fit_circle_triggered\0"
     "on_lineEdit_2_textChanged\0"
     "on_pushButton_filter_clicked\0"
-    "on_action_filter_triggered"
+    "on_action_filter_triggered\0"
+    "on_update_inside_detection_list\0"
+    "QMap<QString,InsideDetectParam>&\0"
+    "inside_list\0on_update_outside_detection_list\0"
+    "QMap<QString,OutsideDetectParam>&\0"
+    "out_list\0on_update_function_result\0"
+    "std::pair<double,double>&\0result_param"
 };
 #undef QT_MOC_LITERAL
 
@@ -98,7 +113,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      25,   14, // methods
+      28,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -106,31 +121,34 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  139,    2, 0x0a /* Public */,
-       4,    2,  142,    2, 0x0a /* Public */,
-       6,    0,  147,    2, 0x0a /* Public */,
-       7,    3,  148,    2, 0x0a /* Public */,
-      11,    1,  155,    2, 0x08 /* Private */,
-      13,    1,  158,    2, 0x08 /* Private */,
-      15,    1,  161,    2, 0x08 /* Private */,
-      16,    0,  164,    2, 0x08 /* Private */,
-      17,    0,  165,    2, 0x08 /* Private */,
-      18,    0,  166,    2, 0x08 /* Private */,
-      19,    0,  167,    2, 0x08 /* Private */,
-      20,    1,  168,    2, 0x08 /* Private */,
-      21,    1,  171,    2, 0x08 /* Private */,
-      22,    1,  174,    2, 0x08 /* Private */,
-      23,    0,  177,    2, 0x08 /* Private */,
-      24,    0,  178,    2, 0x08 /* Private */,
-      25,    0,  179,    2, 0x08 /* Private */,
-      26,    0,  180,    2, 0x08 /* Private */,
-      27,    0,  181,    2, 0x08 /* Private */,
-      28,    0,  182,    2, 0x08 /* Private */,
-      29,    0,  183,    2, 0x08 /* Private */,
-      30,    0,  184,    2, 0x08 /* Private */,
-      31,    1,  185,    2, 0x08 /* Private */,
-      32,    0,  188,    2, 0x08 /* Private */,
-      33,    0,  189,    2, 0x08 /* Private */,
+       1,    1,  154,    2, 0x0a /* Public */,
+       4,    2,  157,    2, 0x0a /* Public */,
+       6,    0,  162,    2, 0x0a /* Public */,
+       7,    3,  163,    2, 0x0a /* Public */,
+      11,    1,  170,    2, 0x08 /* Private */,
+      13,    1,  173,    2, 0x08 /* Private */,
+      15,    1,  176,    2, 0x08 /* Private */,
+      16,    0,  179,    2, 0x08 /* Private */,
+      17,    0,  180,    2, 0x08 /* Private */,
+      18,    0,  181,    2, 0x08 /* Private */,
+      19,    0,  182,    2, 0x08 /* Private */,
+      20,    1,  183,    2, 0x08 /* Private */,
+      21,    1,  186,    2, 0x08 /* Private */,
+      22,    1,  189,    2, 0x08 /* Private */,
+      23,    0,  192,    2, 0x08 /* Private */,
+      24,    0,  193,    2, 0x08 /* Private */,
+      25,    0,  194,    2, 0x08 /* Private */,
+      26,    0,  195,    2, 0x08 /* Private */,
+      27,    0,  196,    2, 0x08 /* Private */,
+      28,    0,  197,    2, 0x08 /* Private */,
+      29,    0,  198,    2, 0x08 /* Private */,
+      30,    0,  199,    2, 0x08 /* Private */,
+      31,    1,  200,    2, 0x08 /* Private */,
+      32,    0,  203,    2, 0x08 /* Private */,
+      33,    0,  204,    2, 0x08 /* Private */,
+      34,    1,  205,    2, 0x08 /* Private */,
+      37,    1,  208,    2, 0x08 /* Private */,
+      40,    1,  211,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Double,    3,
@@ -158,6 +176,9 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString,   14,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 35,   36,
+    QMetaType::Void, 0x80000000 | 38,   39,
+    QMetaType::Void, 0x80000000 | 41,   42,
 
        0        // eod
 };
@@ -193,6 +214,9 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 22: _t->on_lineEdit_2_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 23: _t->on_pushButton_filter_clicked(); break;
         case 24: _t->on_action_filter_triggered(); break;
+        case 25: _t->on_update_inside_detection_list((*reinterpret_cast< QMap<QString,InsideDetectParam>(*)>(_a[1]))); break;
+        case 26: _t->on_update_outside_detection_list((*reinterpret_cast< QMap<QString,OutsideDetectParam>(*)>(_a[1]))); break;
+        case 27: _t->on_update_function_result((*reinterpret_cast< std::pair<double,double>(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -227,13 +251,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 25)
+        if (_id < 28)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 25;
+        _id -= 28;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 25)
+        if (_id < 28)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 25;
+        _id -= 28;
     }
     return _id;
 }

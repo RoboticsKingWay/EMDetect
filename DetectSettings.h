@@ -250,6 +250,7 @@ public:
         }
         return true;
     }
+
 };
 
 #endif // DETECTSETTINGS_H

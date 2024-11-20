@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
+    <width>450</width>
     <height>432</height>
    </rect>
   </property>
@@ -15,6 +15,12 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>450</width>
+    <height>300</height>
+   </size>
   </property>
   <property name="font">
    <font>
@@ -566,6 +572,12 @@
    </widget>
   </widget>
   <widget class="QWidget" name="tab">
+   <property name="minimumSize">
+    <size>
+     <width>420</width>
+     <height>280</height>
+    </size>
+   </property>
    <attribute name="title">
     <string>图形滤波</string>
    </attribute>

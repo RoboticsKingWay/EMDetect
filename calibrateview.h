@@ -1,12 +1,19 @@
 #ifndef CALIBRATEVIEW_H
 #define CALIBRATEVIEW_H
 
-#include <QDebug>
+#include <QSettings>
+#include <QString>
+#include <QTextCodec>
+#include <QVector>
+#include <QDir>
+#include <QFile>
+#include <QRegExp>
+#include <QMessageBox>
 #include <QMap>
+#include <QVector>
 #include <QTabWidget>
 #include <functional>
 #include "UnitData.h"
-#include "DetectSettings.h"
 
 namespace Ui {
 class CalibrateView;
@@ -23,9 +30,9 @@ public:
     {
         return result_param_;
     }
-    double getAmplitude()
+    QVector<double> getAmplitude()
     {
-        return inside_amplitude_;
+        return amplitude_list_;
     }
     void initView(/*std::function<void(QVector<QPointF>&)> getDetectRectData_Func*/);
 public slots:
@@ -45,18 +52,28 @@ private slots:
 
     void on_pushButton_outside_stand_clicked();
 
-    void on_pushButton_inside_stand_clicked();
-
     void on_pushButton_outside_stand_save_clicked();
 
     void on_pushButton_inside_stand_save_clicked();
 
+    void on_pushButton_inside_import_clicked();
+
+    void on_pushButton_outside_import_clicked();
+
+signals:
+    void update_inside_detection_list(QMap<QString,InsideDetectParam>& inside_list);
+    void update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list);
+    void update_function_result(std::pair<double, double>& result_param);
+private:
+    bool saveSetting(QString dir,bool outside = true);
+    bool importSetting(QString dir,bool outside = true);
 private:
     Ui::CalibrateView *ui;
-    QMap<QString,DetectDeclaerParam> cfg_detection_list_;
-    std::pair<double, double> result_param_;
-//    QVector<double> amplitude_list_;
-    double inside_amplitude_;
+    QMap<QString,OutsideDetectParam> cfg_detection_outside_list_;
+    QMap<QString,InsideDetectParam> cfg_detection_inside_list_;
+    std::pair<double, double> result_param_{0,0};
+    QVector<double> amplitude_list_;
+//    double inside_amplitude_;
 //    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
 };
 

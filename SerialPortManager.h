@@ -106,7 +106,7 @@ public:
         m_serialPort->setParity(QSerialPort::NoParity);
         m_serialPort->setStopBits((QSerialPort::StopBits)serial_param_.stopbit);
         m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-        m_serialPort->setReadBufferSize(128);
+        m_serialPort->setReadBufferSize(64);
         qDebug()<<"serial buf_size="<<m_serialPort->readBufferSize()<<"\r\n";
         // 连接信号和槽
         //connect(m_serialPort, &QSerialPort::readyRead, this, &SerialPortManager::readData);
@@ -135,15 +135,82 @@ public:
             is_opened_ = false;
         }
     }
-
+#if 0
     void readData(const QByteArray &data)
     {
-        // 读取串口数据
+        if(m_serialPort->isOpen())
+        {
+            static QString _last_str_ = "";
+            _last_str_ += QString(data);
+            QString current_str = _last_str_;
+            int lastPosition = 0; // 记录最后一个字符串 A 出现的位置
+            while (1)
+            {
+//                int index1 = current_str.indexOf("DATA: ");
+//                int index2 = current_str.indexOf("\r\n");
+                int index1 = current_str.indexOf("[");
+                int index2 = current_str.indexOf("]\r\n");
+                if(index1 != -1 && index2 != -1)
+                {
+                    if(index1 > index2)
+                    {
+                        qDebug()<<"error string:"<<current_str;
+                        current_str = current_str.mid(index1);
+                        continue;
+                    }
+//                    index1 = index1 + 6;
+                    index1 = index1 + 1;
+                    QString stringA = current_str.mid(index1,index2 - index1);
+                    current_str = current_str.mid(index2 + 2);
+
+                    QStringList list = stringA.split(",");
+                    if(list.size() == CH_NUM || list.size() == 8 || list.size() == 6)
+                    {
+                        ChinnelMagData ch_data;
+                        for(int i = 0; i < CH_NUM; i++)
+                        {
+                            ch_data.data[i] = list.at(i).toInt()/SCALE_SIZE;
+                        }
+                        data_src_list_.push_back(ChinnelData(count_index_++,ch_data));
+                    }
+                    else
+                    {
+                        qDebug()<<"ch_data size != "<<CH_NUM<<" size = "<<list.size();
+                        qDebug()<<"err_str:"<<stringA;
+                    }
+                    if(data_src_list_.size() >= src_max_size_)
+                    {
+                        qDebug()<<"size >= "<<src_max_size_;
+                        saveDataToExcelFile();
+                        //emit clearRealTimeSerial();
+                        //                        count_index_ = 0;
+                        data_src_list_.clear();
+                    }
+                    if(count_index_ % draw_add_size_ == 0)
+                    {
+                        setDrawData();
+                    }
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+            _last_str_ = current_str;
+        }
+    }
+#endif
+
+#if 1
+    void readData(const QByteArray &data)
+    {
         if(m_serialPort->isOpen())
         {
             static QByteArray last_str = "";
             last_str += data;
             QRegularExpression regex("\\[(.*?)\\]"); // 匹配以 '[' 开头，以 ']' 结尾的字符串
+
             QRegularExpressionMatchIterator iter = regex.globalMatch(last_str);
 
             int lastPosition = 0; // 记录最后一个字符串 A 出现的位置
@@ -154,7 +221,7 @@ public:
                 {
                     QString stringA = match.captured(1); // 获取匹配到的字符串 A
                     QStringList list = stringA.split(",");
-                    if(list.size() == CH_NUM || list.size() == 6)
+                    if(list.size() == CH_NUM || list.size() == 6 ||list.size() == 8)
                     {
                         ChinnelMagData ch_data;
                         for(int i = 0; i < CH_NUM; i++)
@@ -186,6 +253,7 @@ public:
             last_str = last_str.mid(lastPosition);
         }
     }
+#endif
     void setDrawData()
     {
         if(data_src_list_.size() >= draw_add_size_ && data_src_list_.size()%draw_add_size_ == 0)

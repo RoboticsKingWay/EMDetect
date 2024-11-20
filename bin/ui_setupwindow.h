@@ -113,12 +113,13 @@ public:
     {
         if (SetupWindow->objectName().isEmpty())
             SetupWindow->setObjectName(QString::fromUtf8("SetupWindow"));
-        SetupWindow->resize(431, 432);
+        SetupWindow->resize(450, 432);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(SetupWindow->sizePolicy().hasHeightForWidth());
         SetupWindow->setSizePolicy(sizePolicy);
+        SetupWindow->setMinimumSize(QSize(450, 300));
         QFont font;
         font.setPointSize(12);
         SetupWindow->setFont(font);
@@ -430,6 +431,7 @@ public:
         SetupWindow->addTab(tab_setup_circle, QString());
         tab = new QWidget();
         tab->setObjectName(QString::fromUtf8("tab"));
+        tab->setMinimumSize(QSize(420, 280));
         widget_6 = new QWidget(tab);
         widget_6->setObjectName(QString::fromUtf8("widget_6"));
         widget_6->setGeometry(QRect(20, 10, 261, 251));

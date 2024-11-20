@@ -40,9 +40,11 @@ public:
     virtual void createChartView() override
     {
         chart_ = new QChart();
+        chart_->setBackgroundBrush(QBrush(Qt::black));
 //        chart_->setTitle(QStringLiteral("实时曲线"));
         //创建图表
         chart_view_ = new ZoomableChartView(chart_);
+        chart_view_->setStyleSheet("background-color: black;");
         chart_view_->setChart(chart_);//将chart添加到chartview中
         chart_view_->setRenderHint(QPainter::Antialiasing);
         chart_view_->setRubberBand(QChartView::RectangleRubberBand); // 用于选择图表区域
@@ -63,18 +65,21 @@ public:
         downline_start_ = DetectSettings::instance().downline();
         axisX_->setRange(0,200);
         axisX_->setTitleText("点数计数");
-        axisX_->setTickCount(5);
+        axisX_->setTickCount(2);
         axisX_->setMinorTickCount(2);
 
         axisY_->setRange(downline_start_ - 1000, upline_start_ + 1000);
         axisY_->setTitleText("磁场强度nT");
-        axisY_->setTickCount(5);
+        axisY_->setTickCount(4);
         axisY_->setMinorTickCount(2);
+        axisX_->setLabelFormat("%d"); // X轴不显示小数点后的数据
+        axisY_->setLabelFormat("%d"); // Y轴不显示小数点后的数据
         //创建折线序列
         for(int i = 0; i < CH_NUM; i++)
         {
             seriess_[i] = new QtCharts::QLineSeries();
             seriess_[i]->setName(QString("通道%1").arg(i+1));
+            seriess_[i]->setPointLabelsColor(Qt::white);
             seriess_[i]->setColor(serial_color_list[i]);
             seriess_[i]->setVisible(false);
             QPen pen(serial_color_list[i]);
@@ -86,6 +91,15 @@ public:
             chart_->setAxisY(axisY_,seriess_[i]);
 
         }
+        // 设置轴的标题颜色
+        axisX_->setTitleBrush(Qt::white);
+        axisY_->setTitleBrush(Qt::white);
+        // 设置轴的标签颜色
+        axisX_->setLabelsColor(Qt::white);
+        axisY_->setLabelsColor(Qt::white);
+        // 设置轴的网格线颜色
+        axisX_->setGridLineColor(Qt::white);
+        axisY_->setGridLineColor(Qt::white);
 
         QPen pen(QColor(255,0,0,255));
         pen.setWidth(2);
@@ -99,6 +113,7 @@ public:
         threshold_up_line_.append(threshold_serials_[0]->at(1));
         threshold_serials_[0]->setPen(pen);
         threshold_serials_[0]->setVisible(false);
+        threshold_serials_[0]->setPointLabelsColor(Qt::white);
         chart_->addSeries(threshold_serials_[0]);
         chart_->setAxisX(axisX_,threshold_serials_[0]);
         chart_->setAxisY(axisY_,threshold_serials_[0]);
@@ -114,6 +129,7 @@ public:
 
         threshold_serials_[1]->setPen(pen);
         threshold_serials_[1]->setVisible(false);
+        threshold_serials_[1]->setPointLabelsColor(Qt::white);
         chart_->addSeries(threshold_serials_[1]);
         chart_->setAxisX(axisX_,threshold_serials_[1]);
         chart_->setAxisY(axisY_,threshold_serials_[1]);
@@ -158,6 +174,7 @@ public:
             }
             else
             {
+//                resetSelectRect();
                 chart_view_->setRubberBand(QChartView::RectangleRubberBand);
             }
         }
@@ -432,6 +449,13 @@ public slots:
             detect_rect_ = QRectF(start,end);
             QVector<QPointF> rect_data;
             emit rect_Data();
+        }
+    }
+    void resetSelectRect()
+    {
+        if(detect_rect_serials_ && chart_)
+        {
+            detect_rect_serials_->clear();
         }
     }
     virtual void resetSerials() override

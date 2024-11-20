@@ -51,13 +51,18 @@ enum EMDETECTION_TYPE:int
     E_DETECTION_INNER
 };
 
-struct DetectDeclaerParam
+struct OutsideDetectParam
 {
     QString label; // 缺陷编号
-    int dete_type; // 缺陷类型
     double length; // 缺陷宽度
     double depth;  // 缺陷深度
-    double equivalent; // 缺陷当量
+    double equivalent; // 缺陷幅值
+};
+
+struct InsideDetectParam
+{
+    QString label; // 缺陷编号
+    double equivalent; // 缺陷幅值
 };
 
 struct ScanThreshold

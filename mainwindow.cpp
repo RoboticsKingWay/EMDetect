@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
         std::function<void(QVector<QPointF>&)> getDetectRectData_Func = std::bind(&RealTimeChartView::getDetectRectData,chartview_ptr_,std::placeholders::_1);
         calibrate_view_->initView(/*getDetectRectData_Func*/);
 //        connect(chartview_ptr_,&RealTimeChartView::rectData, calibrate_view_, &CalibrateView::on_GetRectData);
+        connect(calibrate_view_,&CalibrateView::update_inside_detection_list,this,&MainWindow::on_update_inside_detection_list,Qt::AutoConnection);
+        connect(calibrate_view_,&CalibrateView::update_outside_detection_list,this,&MainWindow::on_update_outside_detection_list,Qt::AutoConnection);
+        connect(calibrate_view_,&CalibrateView::update_function_result,this,&MainWindow::on_update_function_result,Qt::AutoConnection);
     }
     if(data_manager_ptr_)
     {
@@ -72,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent)
       //ui->comboBox->addItem(QString::number(sensitive));
     }
     list_draw_src_data_.clear();
+    ui->checkBox_3->hide();
+    ui->checkBox_upline->hide();
 }
 
 MainWindow::~MainWindow()
@@ -185,11 +190,21 @@ void MainWindow::runThread()
         double total_points = list_draw_src_data_.size();
 //        double scan_length  = ui->lineEdit_scan_length->text().toDouble();
         double detec_length = scan_length * rect_points / total_points;
-        double db           = 10 * std::log10((max.y() - min.y()) / calibrate_view_->getAmplitude());
-        ui->label_detection_x_scale->setText(QString::number(x));
-        ui->label_detection_y->setText(QString::number(y));
-        ui->label_detection_length->setText(QString::number(detec_length));
-        ui->label_db_eq->setText(QString::number(db));
+        if(ui->comboBox->currentText() == "外部缺陷")
+        {
+            // 外部缺陷
+            ui->label_detection_xy->setText(QString::number(x));
+            ui->label_detection_fuzhi->setText(QString::number(y));
+            ui->label_detection_length->setText(QString::number(detec_length));
+        }
+        else
+        {
+            // 内部缺陷
+            QVector<double> db_list = calibrate_view_->getAmplitude();
+            double db = 10 * std::log10((max.y() - min.y()) / db_list[0]);
+            ui->label_db_equal->setText(QString::number(db));
+        }
+
 
         //            std::vector<QPoint> chinnel_1_data;
         //            std::vector<QPoint> chinnel_2_data;
@@ -228,11 +243,11 @@ void MainWindow::updateData()
 {
 
     static int serial_state = E_SERIAL_CLOSE;
-    QVector<ChinnelData> src_list  = manager_ptr_->getDrawData();
-    QVector<ChinnelData> draw_list;
-    if(src_list.size() > 0)
+    QVector<ChinnelData> draw_list  = manager_ptr_->getDrawData();
+//    QVector<ChinnelData> draw_list;
+    //if(src_list.size() > 0)
     {
-        SeekExtremeValue(src_list, draw_list);
+        //SeekExtremeValue(src_list, draw_list);
     }
     if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
     {
@@ -258,6 +273,10 @@ void MainWindow::setPushButtonEnable(int state)
     ui->pushButton_2->setEnabled(true);
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
+//    ui->pushButton->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
+//    ui->pushButton_2->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
+//    ui->pushButton_3->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
+//    ui->pushButton_5->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
 //    ui->pushButton_SerialSetup->setEnabled(true);x
     action_state_ = state;
     switch (action_state_)
@@ -312,6 +331,22 @@ void MainWindow::setPushButtonEnable(int state)
     default:
         break;
     }
+//    if(!ui->pushButton->isEnabled())
+//    {
+//        ui->pushButton->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
+//    }
+//    if(!ui->pushButton_2->isEnabled())
+//    {
+//        ui->pushButton_2->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
+//    }
+//    if(!ui->pushButton_3->isEnabled())
+//    {
+//        ui->pushButton_3->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
+//    }
+//    if(!ui->pushButton_5->isEnabled())
+//    {
+//        ui->pushButton_5->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
+//    }
 }
 // 开始采集 和 结束采集
 void MainWindow::on_pushButton_clicked()
@@ -836,4 +871,21 @@ void MainWindow::on_pushButton_filter_clicked()
     }
 }
 
+void MainWindow::on_update_inside_detection_list(QMap<QString,InsideDetectParam>& inside_list)
+{
+    ui->comboBox_2->clear();
+    for(auto& it : inside_list)
+        ui->comboBox_2->addItem(it.label);
+}
+
+void MainWindow::on_update_function_result(std::pair<double, double>& result_param)
+{
+    QString text = QString("y = %1x + %2").arg(result_param.first,0,'f',2).arg(result_param.second,0,'f',2);
+    ui->label_standar_function->setText(text);
+}
+
+void MainWindow::on_update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list)
+{
+
+}
 

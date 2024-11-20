@@ -134,7 +134,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event) override
     {
         QChartView::mouseMoveEvent(event); // 调用基类的事件处理
-//        if(is_localtion_show_)
+        if(is_localtion_show_)
         {
             QPointF mousePoint = event->pos();
             QPointF point = chart()->mapToValue(event->pos());
@@ -253,6 +253,7 @@ public:
     virtual void createChartView()
     {
         chart_ = new QChart();
+        chart_->setBackgroundBrush(QBrush(Qt::black));
 //        chart_->setTheme(QChart::ChartThemeLight);
         chart_->setAnimationOptions(QChart::AllAnimations);
 //        chart_->setAnimationOptions(QChart::NoAnimation); // 禁用图表动画
@@ -275,6 +276,18 @@ public:
         axisY_ = new QValueAxis;
         axisX_->setRange(-8000,8000);
         axisY_->setRange(-8000,8000);
+        axisX_->setLabelFormat("%d"); // X轴不显示小数点后的数据
+        axisY_->setLabelFormat("%d"); // Y轴不显示小数点后的数据
+
+        // 设置轴的标题颜色
+        axisX_->setTitleBrush(Qt::white);
+        axisY_->setTitleBrush(Qt::white);
+        // 设置轴的标签颜色
+        axisX_->setLabelsColor(Qt::white);
+        axisY_->setLabelsColor(Qt::white);
+        // 设置轴的网格线颜色
+        axisX_->setGridLineColor(Qt::white);
+        axisY_->setGridLineColor(Qt::white);
         //创建折线序列
 //        for(int i = 0; i < CH_NUM; i++)
 //        {
@@ -306,7 +319,7 @@ public slots:
         count_source_points_ = 0;
     }
 protected:
-    QColor serial_color_list[CH_NUM] = {QColor(0,0,0),QColor(0,100,0)};
+    QColor serial_color_list[CH_NUM] = {QColor(255,200,100),QColor(128,0,128)};
     QtCharts::QLineSeries* seriess_[CH_NUM] = {nullptr};
     bool ch_is_on_[CH_NUM] = {false};
     double ymin_[CH_NUM];

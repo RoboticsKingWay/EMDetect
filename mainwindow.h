@@ -80,6 +80,11 @@ private slots:
 
     void on_action_filter_triggered();
 
+    //
+    void on_update_inside_detection_list(QMap<QString,InsideDetectParam>& inside_list);
+    void on_update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list);
+    void on_update_function_result(std::pair<double, double>& result_param);
+
 signals:
 
 private:
