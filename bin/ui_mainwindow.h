@@ -63,19 +63,16 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_2;
-    QLabel *label;
     QPushButton *pushButton_connect_state;
-    QLineEdit *lineEdit;
+    QPushButton *pushButton_5;
     QPushButton *pushButton;
-    QPushButton *pushButton_2;
+    QPushButton *pushButton_3;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QLabel *label_2;
-    QComboBox *comboBox;
     QLineEdit *lineEdit_scan_length;
     QLabel *label_3;
-    QPushButton *pushButton_3;
-    QPushButton *pushButton_5;
+    QComboBox *comboBox;
     QSpacerItem *horizontalSpacer_2;
     QGroupBox *groupBox_result_outside;
     QGridLayout *gridLayout_3;
@@ -143,11 +140,8 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/source/title.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
-        MainWindow->setStyleSheet(QString::fromUtf8("QMainWindow\n"
-"{\n"
-"    /*background-color: black;\n"
-"	color: white*/\n"
-"}"));
+        MainWindow->setAutoFillBackground(true);
+        MainWindow->setStyleSheet(QString::fromUtf8(""));
         action_version = new QAction(MainWindow);
         action_version->setObjectName(QString::fromUtf8("action_version"));
         action_readme = new QAction(MainWindow);
@@ -171,18 +165,16 @@ public:
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         centralwidget->setMinimumSize(QSize(1000, 670));
-        centralwidget->setStyleSheet(QString::fromUtf8("/*background-color:#DDDDDD*/"));
+        centralwidget->setStyleSheet(QString::fromUtf8("QWidget{\n"
+"background-color:white\n"
+"}"));
         verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         widget_up = new QWidget(centralwidget);
         widget_up->setObjectName(QString::fromUtf8("widget_up"));
         widget_up->setMinimumSize(QSize(920, 0));
         widget_up->setAutoFillBackground(false);
-        widget_up->setStyleSheet(QString::fromUtf8("QWidget\n"
-"{\n"
-"    background-color: black;\n"
-"	color: white\n"
-"}"));
+        widget_up->setStyleSheet(QString::fromUtf8(""));
         horizontalLayout = new QHBoxLayout(widget_up);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         widget_upleft = new QWidget(widget_up);
@@ -207,10 +199,11 @@ public:
         font.setPointSize(12);
         widget_chinnel->setFont(font);
         widget_chinnel->setAutoFillBackground(false);
-        widget_chinnel->setStyleSheet(QString::fromUtf8("\n"
-"/*background-color: white;*/"));
+        widget_chinnel->setStyleSheet(QString::fromUtf8(""));
         horizontalLayout_2 = new QHBoxLayout(widget_chinnel);
+        horizontalLayout_2->setSpacing(3);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setContentsMargins(-1, 5, 5, 3);
         checkBox = new QCheckBox(widget_chinnel);
         checkBox->setObjectName(QString::fromUtf8("checkBox"));
 
@@ -255,39 +248,37 @@ public:
         widget_down->setMinimumSize(QSize(780, 100));
         widget_down->setMaximumSize(QSize(16777215, 150));
         QPalette palette1;
-        palette1.setBrush(QPalette::Active, QPalette::WindowText, brush);
-        palette1.setBrush(QPalette::Active, QPalette::Button, brush1);
-        palette1.setBrush(QPalette::Active, QPalette::Text, brush);
-        palette1.setBrush(QPalette::Active, QPalette::ButtonText, brush);
-        palette1.setBrush(QPalette::Active, QPalette::Base, brush1);
-        palette1.setBrush(QPalette::Active, QPalette::Window, brush1);
+        palette1.setBrush(QPalette::Active, QPalette::WindowText, brush1);
+        palette1.setBrush(QPalette::Active, QPalette::Button, brush);
+        palette1.setBrush(QPalette::Active, QPalette::Text, brush1);
+        palette1.setBrush(QPalette::Active, QPalette::ButtonText, brush1);
+        palette1.setBrush(QPalette::Active, QPalette::Base, brush);
+        palette1.setBrush(QPalette::Active, QPalette::Window, brush);
+        QBrush brush3(QColor(0, 0, 0, 128));
+        brush3.setStyle(Qt::SolidPattern);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette1.setBrush(QPalette::Active, QPalette::PlaceholderText, brush2);
+        palette1.setBrush(QPalette::Active, QPalette::PlaceholderText, brush3);
 #endif
-        palette1.setBrush(QPalette::Inactive, QPalette::WindowText, brush);
-        palette1.setBrush(QPalette::Inactive, QPalette::Button, brush1);
-        palette1.setBrush(QPalette::Inactive, QPalette::Text, brush);
-        palette1.setBrush(QPalette::Inactive, QPalette::ButtonText, brush);
-        palette1.setBrush(QPalette::Inactive, QPalette::Base, brush1);
-        palette1.setBrush(QPalette::Inactive, QPalette::Window, brush1);
+        palette1.setBrush(QPalette::Inactive, QPalette::WindowText, brush1);
+        palette1.setBrush(QPalette::Inactive, QPalette::Button, brush);
+        palette1.setBrush(QPalette::Inactive, QPalette::Text, brush1);
+        palette1.setBrush(QPalette::Inactive, QPalette::ButtonText, brush1);
+        palette1.setBrush(QPalette::Inactive, QPalette::Base, brush);
+        palette1.setBrush(QPalette::Inactive, QPalette::Window, brush);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette1.setBrush(QPalette::Inactive, QPalette::PlaceholderText, brush2);
+        palette1.setBrush(QPalette::Inactive, QPalette::PlaceholderText, brush3);
 #endif
-        palette1.setBrush(QPalette::Disabled, QPalette::WindowText, brush);
-        palette1.setBrush(QPalette::Disabled, QPalette::Button, brush1);
-        palette1.setBrush(QPalette::Disabled, QPalette::Text, brush);
-        palette1.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        palette1.setBrush(QPalette::Disabled, QPalette::Base, brush1);
-        palette1.setBrush(QPalette::Disabled, QPalette::Window, brush1);
+        palette1.setBrush(QPalette::Disabled, QPalette::WindowText, brush1);
+        palette1.setBrush(QPalette::Disabled, QPalette::Button, brush);
+        palette1.setBrush(QPalette::Disabled, QPalette::Text, brush1);
+        palette1.setBrush(QPalette::Disabled, QPalette::ButtonText, brush1);
+        palette1.setBrush(QPalette::Disabled, QPalette::Base, brush);
+        palette1.setBrush(QPalette::Disabled, QPalette::Window, brush);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette1.setBrush(QPalette::Disabled, QPalette::PlaceholderText, brush2);
+        palette1.setBrush(QPalette::Disabled, QPalette::PlaceholderText, brush3);
 #endif
         widget_down->setPalette(palette1);
-        widget_down->setStyleSheet(QString::fromUtf8("QWidget\n"
-"{\n"
-"    background-color: black;\n"
-"	color: white\n"
-"}"));
+        widget_down->setStyleSheet(QString::fromUtf8(""));
         horizontalLayout_3 = new QHBoxLayout(widget_down);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         groupBox_2 = new QGroupBox(widget_down);
@@ -296,19 +287,9 @@ public:
         groupBox_2->setMaximumSize(QSize(360, 120));
         gridLayout_2 = new QGridLayout(groupBox_2);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        label = new QLabel(groupBox_2);
-        label->setObjectName(QString::fromUtf8("label"));
-        label->setFont(font);
-
-        gridLayout_2->addWidget(label, 1, 0, 1, 1);
-
         pushButton_connect_state = new QPushButton(groupBox_2);
         pushButton_connect_state->setObjectName(QString::fromUtf8("pushButton_connect_state"));
-        pushButton_connect_state->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"        border: 3px outset gray;\n"
-"        background-color: #D8D8D8;\n"
-"         color: black;\n"
-"        }"));
+        pushButton_connect_state->setStyleSheet(QString::fromUtf8(""));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/source/serial_close.png"), QSize(), QIcon::Normal, QIcon::Off);
         pushButton_connect_state->setIcon(icon1);
@@ -316,62 +297,84 @@ public:
 
         gridLayout_2->addWidget(pushButton_connect_state, 0, 0, 1, 1);
 
-        lineEdit = new QLineEdit(groupBox_2);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
-        lineEdit->setAutoFillBackground(false);
-        lineEdit->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"        border: 1px outset gray;\n"
-"        background-color: white;\n"
+        pushButton_5 = new QPushButton(groupBox_2);
+        pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
+        pushButton_5->setFont(font);
+        pushButton_5->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"        border: 3px outset gray;\n"
+"        background-color: #D8D8D8;\n"
 "         color: black;\n"
 "        }\n"
-""));
-        lineEdit->setDragEnabled(false);
+" QPushButton:disabled {\n"
+"         background-color: #F1F1F1;\n"
+"         color: white;\n"
+"        }\n"
+" QPushButton:pressed {\n"
+"        border: 1px inset gray;\n"
+"         background-color: #11FF11;\n"
+"         color: white;\n"
+"        }\n"
+"    QPushButton:hover {\n"
+"         background-color: #13B3B3;\n"
+"        }"));
+        pushButton_5->setAutoDefault(true);
+        pushButton_5->setFlat(false);
 
-        gridLayout_2->addWidget(lineEdit, 1, 1, 1, 1);
+        gridLayout_2->addWidget(pushButton_5, 1, 0, 1, 1);
 
         pushButton = new QPushButton(groupBox_2);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
         pushButton->setFont(font);
         pushButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "        border: 3px outset gray;\n"
-"        background-color: #FFFFD8;\n"
+"        background-color: #D8D8D8;\n"
 "         color: black;\n"
 "        }\n"
-"        QPushButton:pressed {\n"
+" QPushButton:disabled {\n"
+"         background-color: #F1F1F1;\n"
+"         color: white;\n"
+"        }\n"
+" QPushButton:pressed {\n"
 "        border: 1px inset gray;\n"
 "         background-color: #11FF11;\n"
-"         color: white;\"\n"
+"         color: white;\n"
 "        }\n"
-"        QPushButton:hover {\n"
-"         background-color: blue;\n"
+"    QPushButton:hover {\n"
+"         background-color: #13B3B3;\n"
 "        }"));
         pushButton->setAutoDefault(true);
 
-        gridLayout_2->addWidget(pushButton, 0, 1, 1, 2);
+        gridLayout_2->addWidget(pushButton, 0, 1, 1, 1);
 
-        pushButton_2 = new QPushButton(groupBox_2);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setFont(font);
-        pushButton_2->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_3 = new QPushButton(groupBox_2);
+        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        pushButton_3->setFont(font);
+        pushButton_3->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "        border: 3px outset gray;\n"
-"        background-color: #FFFFD8;\n"
+"        background-color: #D8D8D8;\n"
 "         color: black;\n"
 "        }\n"
-"        QPushButton:pressed {\n"
+" QPushButton:disabled {\n"
+"         background-color: #F1F1F1;\n"
+"         color: white;\n"
+"        }\n"
+" QPushButton:pressed {\n"
 "        border: 1px inset gray;\n"
-"         background-color: #989898;\n"
-"         color: white;\"\n"
+"         background-color: #11FF11;\n"
+"         color: white;\n"
+"        }\n"
+"    QPushButton:hover {\n"
+"         background-color: #13B3B3;\n"
 "        }"));
-        pushButton_2->setAutoDefault(false);
 
-        gridLayout_2->addWidget(pushButton_2, 1, 2, 1, 1);
+        gridLayout_2->addWidget(pushButton_3, 1, 1, 1, 1);
 
 
         horizontalLayout_3->addWidget(groupBox_2);
 
         groupBox = new QGroupBox(widget_down);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setMinimumSize(QSize(240, 120));
+        groupBox->setMinimumSize(QSize(220, 120));
         groupBox->setMaximumSize(QSize(350, 120));
         gridLayout = new QGridLayout(groupBox);
         gridLayout->setSpacing(2);
@@ -383,28 +386,9 @@ public:
 
         gridLayout->addWidget(label_2, 2, 0, 1, 1);
 
-        comboBox = new QComboBox(groupBox);
-        comboBox->addItem(QString());
-        comboBox->addItem(QString());
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
-        comboBox->setMinimumSize(QSize(80, 26));
-        QFont font1;
-        font1.setPointSize(9);
-        comboBox->setFont(font1);
-        comboBox->setStyleSheet(QString::fromUtf8("background-color:white;\n"
-"color: black;\n"
-"border: 2px solid white"));
-
-        gridLayout->addWidget(comboBox, 2, 3, 1, 1);
-
         lineEdit_scan_length = new QLineEdit(groupBox);
         lineEdit_scan_length->setObjectName(QString::fromUtf8("lineEdit_scan_length"));
-        lineEdit_scan_length->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"        border: 1px outset gray;\n"
-"        background-color: white;\n"
-"         color: black;\n"
-"        }\n"
-""));
+        lineEdit_scan_length->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout->addWidget(lineEdit_scan_length, 2, 1, 1, 1);
 
@@ -412,41 +396,17 @@ public:
         label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setFont(font);
 
-        gridLayout->addWidget(label_3, 2, 2, 1, 1);
+        gridLayout->addWidget(label_3, 3, 0, 1, 1);
 
-        pushButton_3 = new QPushButton(groupBox);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setFont(font);
-        pushButton_3->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"        border: 3px outset gray;\n"
-"        background-color: #FFFFD8;\n"
-"         color: black;\n"
-"        }\n"
-"        QPushButton:pressed {\n"
-"        border: 1px inset gray;\n"
-"         background-color: #989898;\n"
-"         color: white;\"\n"
-"        }"));
+        comboBox = new QComboBox(groupBox);
+        comboBox->addItem(QString());
+        comboBox->addItem(QString());
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        comboBox->setMinimumSize(QSize(80, 26));
+        comboBox->setFont(font);
+        comboBox->setStyleSheet(QString::fromUtf8(""));
 
-        gridLayout->addWidget(pushButton_3, 1, 2, 1, 2);
-
-        pushButton_5 = new QPushButton(groupBox);
-        pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
-        pushButton_5->setFont(font);
-        pushButton_5->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"        border: 3px outset gray;\n"
-"        background-color: #FFFFD8;\n"
-"         color: black;\n"
-"        }\n"
-"        QPushButton:pressed {\n"
-"        border: 1px inset gray;\n"
-"         background-color: #989898;\n"
-"         color: white;\"\n"
-"        }"));
-        pushButton_5->setAutoDefault(true);
-        pushButton_5->setFlat(false);
-
-        gridLayout->addWidget(pushButton_5, 1, 0, 1, 2);
+        gridLayout->addWidget(comboBox, 3, 1, 1, 1);
 
 
         horizontalLayout_3->addWidget(groupBox);
@@ -497,6 +457,8 @@ public:
 
         groupBox_result_inside = new QGroupBox(widget_down);
         groupBox_result_inside->setObjectName(QString::fromUtf8("groupBox_result_inside"));
+        QFont font1;
+        font1.setPointSize(9);
         groupBox_result_inside->setFont(font1);
         groupBox_result_inside->setAutoFillBackground(false);
         gridLayout_4 = new QGridLayout(groupBox_result_inside);
@@ -528,9 +490,7 @@ public:
         comboBox_2->addItem(QString());
         comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
         comboBox_2->setFont(font);
-        comboBox_2->setStyleSheet(QString::fromUtf8("background-color:white;\n"
-"color: black;\n"
-"border: 2px solid white"));
+        comboBox_2->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_4->addWidget(comboBox_2, 0, 1, 1, 1);
 
@@ -546,25 +506,35 @@ public:
         MainWindow->setStatusBar(statusbar);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1200, 26));
+        menuBar->setGeometry(QRect(0, 0, 1200, 31));
         menuBar->setFont(font);
-        menuBar->setStyleSheet(QString::fromUtf8("\n"
-"\n"
-"    background-color: black;\n"
-"	color: white\n"
-""));
+        menuBar->setStyleSheet(QString::fromUtf8("QMenu{\n"
+"	color:black\n"
+"}"));
         menu_file = new QMenu(menuBar);
         menu_file->setObjectName(QString::fromUtf8("menu_file"));
         menu_file->setFont(font);
+        menu_file->setStyleSheet(QString::fromUtf8("    QMenu:hover {\n"
+"         background-color: #13B3B3;\n"
+"        }"));
         menu_setup = new QMenu(menuBar);
         menu_setup->setObjectName(QString::fromUtf8("menu_setup"));
         menu_setup->setFont(font);
+        menu_setup->setStyleSheet(QString::fromUtf8("    QMenu:hover {\n"
+"         background-color: #13B3B3;\n"
+"        }"));
         menu_standar = new QMenu(menuBar);
         menu_standar->setObjectName(QString::fromUtf8("menu_standar"));
         menu_standar->setFont(font);
+        menu_standar->setStyleSheet(QString::fromUtf8("    QMenu:hover {\n"
+"         background-color: #13B3B3;\n"
+"        }"));
         menu_software = new QMenu(menuBar);
         menu_software->setObjectName(QString::fromUtf8("menu_software"));
         menu_software->setFont(font);
+        menu_software->setStyleSheet(QString::fromUtf8("    QMenu:hover {\n"
+"         background-color: #13B3B3;\n"
+"        }"));
         MainWindow->setMenuBar(menuBar);
 
         menuBar->addAction(menu_file->menuAction());
@@ -584,9 +554,8 @@ public:
 
         retranslateUi(MainWindow);
 
-        pushButton->setDefault(true);
-        pushButton_2->setDefault(false);
         pushButton_5->setDefault(true);
+        pushButton->setDefault(true);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -610,31 +579,22 @@ public:
         checkBox_upline->setText(QCoreApplication::translate("MainWindow", "\344\270\212\351\230\210\345\200\274\347\272\277", nullptr));
         checkBox_3->setText(QCoreApplication::translate("MainWindow", "\344\270\213\351\230\210\345\200\274\347\272\277", nullptr));
         groupBox_2->setTitle(QString());
-        label->setText(QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230\346\240\207\347\255\276", nullptr));
         pushButton_connect_state->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\347\212\266\346\200\201", nullptr));
-#if QT_CONFIG(whatsthis)
-        lineEdit->setWhatsThis(QString());
-#endif // QT_CONFIG(whatsthis)
-#if QT_CONFIG(accessibility)
-        lineEdit->setAccessibleDescription(QString());
-#endif // QT_CONFIG(accessibility)
-        lineEdit->setText(QString());
+        pushButton_5->setText(QCoreApplication::translate("MainWindow", "\347\211\271\345\276\201\345\214\272\345\237\237", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("MainWindow", "\344\277\235\345\255\230", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\345\244\204\347\220\206", nullptr));
         groupBox->setTitle(QString());
         label_2->setText(QCoreApplication::translate("MainWindow", "\346\265\213\351\207\217\351\225\277\345\272\246", nullptr));
+        label_3->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\347\261\273\345\236\213", nullptr));
         comboBox->setItemText(0, QCoreApplication::translate("MainWindow", "\345\244\226\351\203\250\347\274\272\351\231\267", nullptr));
         comboBox->setItemText(1, QCoreApplication::translate("MainWindow", "\345\206\205\351\203\250\347\274\272\351\231\267", nullptr));
 
-        label_3->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\347\261\273\345\236\213", nullptr));
-        pushButton_3->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\345\244\204\347\220\206", nullptr));
-        pushButton_5->setText(QCoreApplication::translate("MainWindow", "\347\211\271\345\276\201\345\214\272\345\237\237", nullptr));
         groupBox_result_outside->setTitle(QCoreApplication::translate("MainWindow", "\345\244\226\351\203\250\347\274\272\351\231\267", nullptr));
         label_func->setText(QCoreApplication::translate("MainWindow", "\347\272\277\346\200\247\346\213\237\345\220\210\345\207\275\346\225\260\357\274\232", nullptr));
         label_standar_function->setText(QString());
         label_7->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\256\275\346\267\261\346\257\224\357\274\232", nullptr));
         label_detection_xy->setText(QString());
-        label_6->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\351\225\277\345\272\246\357\274\232", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "\347\274\272\351\231\267\345\256\275\345\272\246\357\274\232", nullptr));
         label_detection_length->setText(QString());
         groupBox_result_inside->setTitle(QCoreApplication::translate("MainWindow", "\345\206\205\351\203\250\347\274\272\351\231\267", nullptr));
         label_detection_fuzhi->setText(QString());

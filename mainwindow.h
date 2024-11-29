@@ -85,7 +85,7 @@ private slots:
     void on_update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list);
     void on_update_function_result(std::pair<double, double>& result_param);
 
-signals:
+    void on_comboBox_2_currentIndexChanged(int index);
 
 private:
     void setPushButtonEnable(int state); //
@@ -120,6 +120,8 @@ private:
     QVector<QColor> yellowGradient_;
     std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据
 
+    //
+    double y_max_am_; // 选中缺陷幅值
     // test
 //    DynamicFilter* filter_ptr_ {nullptr};
 };

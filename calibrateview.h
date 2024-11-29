@@ -30,9 +30,9 @@ public:
     {
         return result_param_;
     }
-    QVector<double> getAmplitude()
+    QMap<QString,InsideDetectParam>& getInsideAmplitudeList()
     {
-        return amplitude_list_;
+        return cfg_detection_inside_list_;
     }
     void initView(/*std::function<void(QVector<QPointF>&)> getDetectRectData_Func*/);
 public slots:
@@ -72,8 +72,6 @@ private:
     QMap<QString,OutsideDetectParam> cfg_detection_outside_list_;
     QMap<QString,InsideDetectParam> cfg_detection_inside_list_;
     std::pair<double, double> result_param_{0,0};
-    QVector<double> amplitude_list_;
-//    double inside_amplitude_;
 //    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
 };
 

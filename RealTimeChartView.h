@@ -79,7 +79,7 @@ public:
         {
             seriess_[i] = new QtCharts::QLineSeries();
             seriess_[i]->setName(QString("通道%1").arg(i+1));
-            seriess_[i]->setPointLabelsColor(Qt::white);
+            seriess_[i]->setPointLabelsColor(Qt::yellow);
             seriess_[i]->setColor(serial_color_list[i]);
             seriess_[i]->setVisible(false);
             QPen pen(serial_color_list[i]);

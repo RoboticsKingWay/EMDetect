@@ -10,47 +10,12 @@ CalibrateView::CalibrateView(QWidget *parent) :
     ui(new Ui::CalibrateView)
 {
     ui->setupUi(this);
-//    ui->lineEdit_outside_addnum->setInputMask("000000");
-//    ui->lineEdit_width_set->setInputMask("000000");
-//    ui->lineEdit_deep_set->setInputMask("000000");
-
-//    ui->lineEdit_inside_add_num->setInputMask("000000");
-//    ui->lineEdit_inside_write->setInputMask("000000");
     cfg_detection_outside_list_.clear();
     cfg_detection_inside_list_.clear();
     ui->comboBox_inside_list->clear();
     ui->comboBox_inside_del->clear();
     ui->comboBox_outside_list->clear();
     ui->comboBox_outside_del->clear();
-//    cfg_detection_list_ 读取配置参数
-//    for(int i = 0; i < 5; i++)
-//    {
-//        DetectDeclaerParam param;
-//        param.label = QString("缺陷%1").arg(i+1);
-//        param.depth = i+1;
-//        param.length = i*10+1;
-//        param.equivalent = i*2+1;
-//        param.dete_type = EMDETECTION_TYPE::E_DETECTION_OUTER;
-//        cfg_detection_list_[param.label] = param;
-//        ui->comboBox_outside_list->addItem(param.label);
-//        ui->comboBox_outside_del->addItem(param.label);
-//    }
-
-//    for(int i = 0; i < 5; i++)
-//    {
-//        DetectDeclaerParam param;
-//        param.label = QString("缺陷%1").arg(i+6);
-//        param.equivalent = i*2+1;
-//        param.dete_type = EMDETECTION_TYPE::E_DETECTION_INNER;
-//        cfg_detection_list_[param.label] = param;
-//        ui->comboBox_inside_list->addItem(param.label);
-//        ui->comboBox_inside_del->addItem(param.label);
-//    }
-//    result_param_.first   = DetectSettings::instance().fitted_param_a();
-//    result_param_.second  = DetectSettings::instance().fitted_param_b();
-//    QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
-//    ui->lineEdit_stand_result->setText(text);
-//    ui->lineEdit_stand_result_label->setText(DetectSettings::instance().detect_profile());
 }
 
 CalibrateView::~CalibrateView()

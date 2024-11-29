@@ -145,9 +145,10 @@ void MainWindow::runThread()
 {
     if(is_calc_start_)
     {
+        // 1、获取选中区域的扫描数据
         double scan_length  = ui->lineEdit_scan_length->text().toDouble();
         if(action_state_ == E_ACTION_REVIEW)
-        {
+        {//预览数据时
             rect_data_list_.clear();
             for(int i = 0; i < list_draw_src_data_.size(); i++)
             {
@@ -161,38 +162,30 @@ void MainWindow::runThread()
 //            on_getRectPoints();
         }
         if(rect_data_list_.size() < 4)
-        {
+        {//选中区域计算点太少
             is_calc_start_ = false;
             setPushButtonEnable(E_ACTION_STOP);
             return;
         }
         qDebug()<<">>> start data handle <<<<"<<QDateTime::currentDateTime();
-        //            QVector<QPointF> upline = chartview_ptr_->getThresholdUpline();
-        //            QVector<QPointF> downline = chartview_ptr_->getThresholdDownline();
-        //            if(upline.size() <= 0 || downline.size() <= 0)
-        //            {
-        //                break;
-        //            }
-        //            int up   = upline[0].y();
-        //            int down = downline[0].y();
 
-        std::pair<double,double> standar_param = calibrate_view_->getStandarParam();
-        QString text_standar = QString("y = %1x + %2").arg(standar_param.first,0,'f',3).arg(standar_param.second,0,'f',3);
-        ui->label_standar_function->setText(text_standar);
-
+        // 2、计算选择区域内极值---当前幅值
         QPointF max(0,0),min(0,0);
         calcMaxMinPoint(rect_data_list_, max, min);
-        double y = max.y() - min.y();
-        double a = standar_param.first;
-        double b = standar_param.second;
-        double x = (y - b) / a;
-        double rect_points  = std::abs(max.x() - min.x());
-        double total_points = list_draw_src_data_.size();
-//        double scan_length  = ui->lineEdit_scan_length->text().toDouble();
-        double detec_length = scan_length * rect_points / total_points;
+
         if(ui->comboBox->currentText() == "外部缺陷")
         {
+            // 3、读取标定结果
+            std::pair<double,double> standar_param = calibrate_view_->getStandarParam();
             // 外部缺陷
+            double y = max.y() - min.y(); // 缺陷幅值
+            y_max_am_ = y;
+            double a = standar_param.first;
+            double b = standar_param.second;
+            double x = (y - b) / a; // 缺陷宽深比
+            double rect_points  = rect_data_list_.size();//std::abs(max.x() - min.x()); // 选中数据点数
+            double total_points = list_draw_src_data_.size(); // 所有扫描点数
+            double detec_length = scan_length * rect_points / total_points; // 缺陷的宽度
             ui->label_detection_xy->setText(QString::number(x));
             ui->label_detection_fuzhi->setText(QString::number(y));
             ui->label_detection_length->setText(QString::number(detec_length));
@@ -200,26 +193,15 @@ void MainWindow::runThread()
         else
         {
             // 内部缺陷
-            QVector<double> db_list = calibrate_view_->getAmplitude();
-            double db = 10 * std::log10((max.y() - min.y()) / db_list[0]);
-            ui->label_db_equal->setText(QString::number(db));
+            QMap<QString,InsideDetectParam>& list = calibrate_view_->getInsideAmplitudeList();
+            auto it = list.find(ui->comboBox_2->currentText());
+            if(it != list.end())
+            {
+                double db = 10 * std::log10((max.y() - min.y()) / it->equivalent);
+                ui->label_db_equal->setText(QString::number(db));
+                ui->label_detection_fuzhi->setText(QString::number(y_max_am_));
+            }
         }
-
-
-        //            std::vector<QPoint> chinnel_1_data;
-        //            std::vector<QPoint> chinnel_2_data;
-        //            for(int i = 0; i < list_draw_src_data_.size(); i++)
-        //            {
-        //                QPoint point;
-        //                int dis_1 = list_draw_src_data_[i].mag_data.data[0] - up;
-        //                int dis_2 = list_draw_src_data_[i].mag_data.data[0] - down;
-        //                if(dis_1 > 0 || dis_2 < 0)
-        //                {
-        //                    point.setX(list_draw_src_data_[i].index);
-        //                    point.setY(list_draw_src_data_[i].mag_data.data[0]);
-        //                    chinnel_1_data.push_back(point);
-        //                }
-        //            }
 
         qDebug()<<">>>> new data handle finished.<<<<<"<<QDateTime::currentDateTime();
 
@@ -270,7 +252,7 @@ void MainWindow::updateData()
 void MainWindow::setPushButtonEnable(int state)
 {
     ui->pushButton->setEnabled(true);
-    ui->pushButton_2->setEnabled(true);
+//    ui->pushButton_2->setEnabled(true);
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
 //    ui->pushButton->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
@@ -283,7 +265,7 @@ void MainWindow::setPushButtonEnable(int state)
     {
     case E_ACTION_ST: // 开始采集
     {
-        ui->pushButton_2->setEnabled(false);
+//        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_5->setEnabled(false);
 //        ui->pushButton_SerialSetup->setEnabled(false);
@@ -291,7 +273,7 @@ void MainWindow::setPushButtonEnable(int state)
     }
     case E_ACTION_STOP:  // 停止采集
     {
-        ui->pushButton_2->setEnabled(true);
+//        ui->pushButton_2->setEnabled(true);
         ui->pushButton_3->setEnabled(true);
         ui->pushButton_5->setEnabled(true);
 //        ui->pushButton_SerialSetup->setEnabled(true);
@@ -300,7 +282,7 @@ void MainWindow::setPushButtonEnable(int state)
     case E_ACTION_DEAL_DATA:// 数据处理
     {
         ui->pushButton->setEnabled(false);
-        ui->pushButton_2->setEnabled(false);
+//        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_5->setEnabled(false);
 //        ui->pushButton_SerialSetup->setEnabled(false);
@@ -308,7 +290,7 @@ void MainWindow::setPushButtonEnable(int state)
     case E_ACTION_REVIEW: // 预览数据
     {
         ui->pushButton->setEnabled(false);
-        ui->pushButton_2->setEnabled(false);
+//        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_5->setEnabled(false);
 //        ui->pushButton_SerialSetup->setEnabled(false);
@@ -325,7 +307,7 @@ void MainWindow::setPushButtonEnable(int state)
     case E_ACTION_DETECT_RECT:
     {
         ui->pushButton->setEnabled(false);
-        ui->pushButton_2->setEnabled(false);
+//        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
     }
     default:
@@ -389,6 +371,7 @@ void MainWindow::on_pushButton_clicked()
 // 数据默认保存在程序路径下 data文件夹，并以时间戳保存,另存数据
 void MainWindow::on_pushButton_2_clicked()
 {
+    /*
     if(action_state_ == E_ACTION_ST)
     {
         QMessageBox::warning(this, "warning", "请先停止采集操作!");
@@ -417,6 +400,7 @@ void MainWindow::on_pushButton_2_clicked()
            QMessageBox::information(this,"info:","保存失败");
         }
     }
+    */
 }
 
 void MainWindow::on_getRectPoints()
@@ -515,7 +499,7 @@ void MainWindow::on_pushButton_4_clicked()
         QXlsxExcelHelper::getInstance().readDataFromExcel(sensitivity, file_label, scan_length,list_draw_src_data_,filePath);
         scan_length_ = scan_length;
         sensitivity_ = sensitivity;
-        ui->lineEdit->setText(file_label);
+//        ui->lineEdit->setText(file_label);
         ui->lineEdit_scan_length->setText(QString::number(scan_length));
         qDebug()<<"read file ok."<<QDateTime::currentDateTime();
         if(chartview_ptr_)
@@ -631,7 +615,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &arg1)
 {
     if(data_manager_ptr_)
     {
-        qDebug()<<"save as label:"<<ui->lineEdit->text();
+//        qDebug()<<"save as label:"<<ui->lineEdit->text();
 //        data_manager_ptr_->setLabel(ui->lineEdit->text());
     }
 }
@@ -760,10 +744,10 @@ void MainWindow::on_action_filesave_triggered()
         return;
     }
 
-    if(ui->lineEdit->text() == ""||ui->lineEdit_scan_length->text() == "")
+    if(/*ui->lineEdit->text() == ""||*/ui->lineEdit_scan_length->text() == "")
     {
 
-        QMessageBox::warning(this, "warning", "请设置保存标签或扫查长度!");
+        QMessageBox::warning(this, "warning", "请设置保存数据的扫查长度!");
         return;
     }
     if(list_draw_src_data_.size() <= 0)
@@ -780,7 +764,7 @@ void MainWindow::on_action_filesave_triggered()
 
     if (!fileName.isEmpty())
     {
-        bool ret = data_manager_ptr_->saveDataToFile(sensitivity_, ui->lineEdit->text(),\
+        bool ret = data_manager_ptr_->saveDataToFile(sensitivity_, "save_file"/*ui->lineEdit->text()*/,\
                                             ui->lineEdit_scan_length->text().toDouble(), list_draw_src_data_,fileName);
         if(ret)
         {
@@ -887,5 +871,18 @@ void MainWindow::on_update_function_result(std::pair<double, double>& result_par
 void MainWindow::on_update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list)
 {
 
+}
+
+// 内部缺陷当量匹配
+void MainWindow::on_comboBox_2_currentIndexChanged(int index)
+{
+    QMap<QString,InsideDetectParam>& list = calibrate_view_->getInsideAmplitudeList();
+    auto it = list.find(ui->comboBox_2->currentText());
+    if(it != list.end() && y_max_am_ > 1)
+    {
+        double db = 10 * std::log10(y_max_am_ / it->equivalent);
+        ui->label_db_equal->setText(QString::number(db));
+        ui->label_detection_fuzhi->setText(QString::number(y_max_am_));
+    }
 }
 
