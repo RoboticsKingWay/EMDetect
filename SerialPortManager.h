@@ -66,7 +66,7 @@ public:
             qDebug() << "Vendor Identifier:" << port.vendorIdentifier();
             qDebug() << "Product Identifier:" << port.productIdentifier();
             qDebug() << "Busy:" << port.isBusy();
-//            if(!port.isBusy())
+           if(!port.isBusy())
             {
                 port_list.append(port.portName());
             }
@@ -109,7 +109,7 @@ public:
         m_serialPort->setParity(QSerialPort::NoParity);
         m_serialPort->setStopBits((QSerialPort::StopBits)serial_param_.stopbit);
         m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-        m_serialPort->setReadBufferSize(1024);
+        m_serialPort->setReadBufferSize(64);
         qDebug()<<"serial buf_size="<<m_serialPort->readBufferSize()<<"\r\n";
         // 连接信号和槽
         //connect(m_serialPort, &QSerialPort::readyRead, this, &SerialPortManager::readData);
@@ -126,100 +126,9 @@ public:
         return is_opened_;
     }
 
-    // 打开串口
-    void ConnectCom(LPCTSTR ComName)
-    {
-        COMMTIMEOUTS TimeOuts; //串口设置超时结构体
-        DCB		dcb;
-
-        //打开一个串口设备
-        h_Com = CreateFile(ComName, GENERIC_READ | GENERIC_WRITE, 0, NULL,OPEN_EXISTING, NULL, NULL);
-
-        if (h_Com == INVALID_HANDLE_VALUE)
-        {
-            std::cout << "串口无法打开" << std::endl;
-            return;
-        }
-
-        SetupComm(h_Com, 4096, 4096); //设置输入输出缓冲
-        // 超时设置
-        TimeOuts.ReadIntervalTimeout = 100;
-        TimeOuts.ReadTotalTimeoutMultiplier = 500;
-        TimeOuts.ReadTotalTimeoutConstant = 0;
-
-        TimeOuts.WriteTotalTimeoutMultiplier = 0;
-        TimeOuts.WriteTotalTimeoutConstant = 0;
-
-        SetCommTimeouts(h_Com, &TimeOuts);
-        // 设置串口属性
-        GetCommState(h_Com, &dcb); //串口属性配置
-        dcb.BaudRate = 115200;
-        dcb.ByteSize = 8;
-        dcb.StopBits = ONESTOPBIT;
-        dcb.Parity = NOPARITY;
-
-        if (!SetCommState(h_Com, &dcb))
-        {
-            CloseHandle(h_Com);
-            std::cout << "串口配置失败" << std::endl;
-            return ;
-        }
-        PurgeComm(h_Com, PURGE_TXCLEAR | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_RXABORT);//清空串口缓冲区
-    }
-
-    void SerialClose()
-    {
-        if(h_Com)
-        {
-            CloseHandle(h_Com);
-            h_Com = nullptr;
-        }
-    }
-
-    int test_comm()
-    {
-        ConnectCom(L"COM7"); // 打开指定串口并进行配置
-
-        // 发送
-        DWORD dwError;
-        DWORD dwSend = 0;
-        const char* pSendBuf = "test send";
-
-        if (ClearCommError(h_Com, &dwError, NULL))
-        {
-            PurgeComm(h_Com, PURGE_TXABORT | PURGE_TXCLEAR);
-        }
-        if (!WriteFile(h_Com, pSendBuf, strlen(pSendBuf), &dwSend,NULL))
-        {
-            std::cout << "发送失败" << std::endl;
-        }
-
-        std::cout << "已发送: ";
-        std::cout << dwSend << "个字节" << std::endl;
-
-        // 数据接收
-        DWORD dwWantRead = 100;
-        DWORD dwRead = 0;
-        char* pReadBuf = new char[100];
-        memset(pReadBuf, 0, 100);
-
-        if (ClearCommError(h_Com, &dwError, NULL))
-        {
-            PurgeComm(h_Com, PURGE_RXABORT | PURGE_RXCLEAR);
-        }
-
-        if (!ReadFile(h_Com, pReadBuf, dwWantRead, &dwRead, NULL))
-        {
-            std::cout << "读取失败" << std::endl;
-        }
-        std::cout << "读取的内容: ";
-        std::cout << pReadBuf << std::endl;
-        delete[] pReadBuf;
-    }
-
     void openPort()
     {
-        if (m_serialPort->open(QIODevice::ReadWrite))
+        if (m_serialPort && m_serialPort->open(QIODevice::ReadWrite))
         {
             qDebug() << "port:"<<serial_param_.port<<"opened.";
             is_opened_ = true;
@@ -230,7 +139,8 @@ public:
             is_opened_ = false;
         }
     }
-#if 0
+#if 1
+// 学校探头 data:数据格式
     void readData(const QByteArray &data)
     {
         if(m_serialPort->isOpen())
@@ -297,6 +207,7 @@ public:
     }
 
 #else
+    //我的探头的数据格式
     void readData(const QByteArray &data)
     {
         if(m_serialPort->isOpen())
@@ -444,6 +355,8 @@ public:
                 m_serialPort->close();
                 qDebug() << "close port success.";
                 is_opened_ = false;
+                delete m_serialPort;
+                m_serialPort = nullptr;
             }
         }
     }
@@ -456,29 +369,17 @@ public:
         }
         return false;
     }
-    void startReconnectTimer()
-    {
-        if (!m_reconnectTimer.isActive())
-        {
-            m_reconnectTimer.start(5000); // 5秒后尝试重连
-        }
-    }
 
-    void stopReconnectTimer()
-    {
-        if (m_reconnectTimer.isActive())
-        {
-            m_reconnectTimer.stop(); // 5秒后尝试重连
-        }
-    }
     void setSerialPause(bool action)
     {
         is_pause_ = action;
     }
+
     int getHeartbeatState()
     {
         return heart_beat_state_;
     }
+
 public slots:
     void handleError(QSerialPort::SerialPortError error)
     {
@@ -489,6 +390,10 @@ public slots:
             {
                 m_serialPort->open(QIODevice::ReadWrite);
             }
+        }
+        else if (error == QSerialPort::TimeoutError)
+        {
+            serial_time_out_ += 10;
         }
     }
     void getSerialParam(SerialParam& param)
@@ -531,32 +436,11 @@ private:
             }
             if(!is_opened_)
             {
-                openPort();
+                connectSerial();
                 QThread::msleep(100); // 100ms
                 continue;
             }
-#if 0
-            // 数据接收
-            DWORD dwError;
-            DWORD dwWantRead = 100;
-            DWORD dwRead = 0;
-            char* pReadBuf = new char[100];
-            memset(pReadBuf, 0, 100);
-
-            if (ClearCommError(h_Com, &dwError, NULL))
-            {
-                PurgeComm(h_Com, PURGE_RXABORT | PURGE_RXCLEAR);
-            }
-
-            if (!ReadFile(h_Com, pReadBuf, dwWantRead, &dwRead, NULL))
-            {
-                std::cout << "读取失败" << std::endl;
-            }
-            std::cout << "读取的内容: ";
-            std::cout << pReadBuf << std::endl;
-            delete[] pReadBuf;
-#else
-            if (m_serialPort->waitForReadyRead(2000))//1000ms
+            if (m_serialPort->waitForReadyRead(serial_time_out_))//ms
             {
                 QByteArray data = m_serialPort->readAll();
                 if(QString(data) != "")
@@ -573,25 +457,22 @@ private:
 
             else
             {
-                heart_beat_count++;
-                if(heart_beat_count > 10)
+                QThread::msleep(10);
+                if(serial_time_out_ > 1000)
                 {
-                    heart_beat_count = 0;
+                    serial_time_out_ = 10;
                     heart_beat_state_ = E_SERIAL_CLOSE;
-                    closePort();
+                    // closePort();
+                    // QMessageBox::critical(nullptr, "Error", "串口已断开,请检查重连");
                 }
             }
-#endif
         }
         qDebug()<<"serial thread exit.";
     }
 
 private:
 
-    //
-    // 全局变量
-    HANDLE h_Com; // 串口句柄
-
+    int serial_time_out_ {20};
     QMutex mutex_;
     int count_index_ {0};
     int count_size_  {0};
