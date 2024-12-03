@@ -34,6 +34,7 @@ public:
         m_serialPort = nullptr;
         draw_add_size_ = DetectSettings::instance().add_point_count();
         src_max_size_ = DetectSettings::instance().max_points_count();
+        serial_time_out_ = DetectSettings::instance().get_time_out();
         filter_ptr_ = new DynamicFilter(DetectSettings::instance().filter_size());
     }
 
@@ -109,7 +110,7 @@ public:
         m_serialPort->setParity(QSerialPort::NoParity);
         m_serialPort->setStopBits((QSerialPort::StopBits)serial_param_.stopbit);
         m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-        m_serialPort->setReadBufferSize(64);
+        m_serialPort->setReadBufferSize(128);
         qDebug()<<"serial buf_size="<<m_serialPort->readBufferSize()<<"\r\n";
         // 连接信号和槽
         //connect(m_serialPort, &QSerialPort::readyRead, this, &SerialPortManager::readData);
@@ -394,6 +395,7 @@ public slots:
         else if (error == QSerialPort::TimeoutError)
         {
             serial_time_out_ += 10;
+            DetectSettings::instance().set_time_out(serial_time_out_);
         }
     }
     void getSerialParam(SerialParam& param)
@@ -460,7 +462,7 @@ private:
                 QThread::msleep(10);
                 if(serial_time_out_ > 1000)
                 {
-                    serial_time_out_ = 10;
+                    serial_time_out_ = DetectSettings::instance().get_time_out();
                     heart_beat_state_ = E_SERIAL_CLOSE;
                     // closePort();
                     // QMessageBox::critical(nullptr, "Error", "串口已断开,请检查重连");

@@ -26,10 +26,10 @@ CalibrateView::~CalibrateView()
 void CalibrateView::initView(/*std::function<void(QVector<QPointF>&)> getDetectRectData_Func*/)
 {
 //    getDetectRectData_Func_ = getDetectRectData_Func;
-    result_param_.first   = DetectSettings::instance().fitted_param_a();
-    result_param_.second  = DetectSettings::instance().fitted_param_b();
-    QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
-    ui->lineEdit_stand_result->setText(text);
+    // result_param_.first   = DetectSettings::instance().fitted_param_a();
+    // result_param_.second  = DetectSettings::instance().fitted_param_b();
+    // QString text = QString("y = %1x + %2").arg(result_param_.first).arg(result_param_.second);
+    // ui->lineEdit_stand_result->setText(text);
 //    ui->lineEdit_stand_result_label->setText(DetectSettings::instance().detect_profile());
 }
 

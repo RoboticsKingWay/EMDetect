@@ -30,13 +30,14 @@ protected:
     int auto_save_source_ {1};
     double save_scan_length_{100.1};
     double sensitivity_perview_{1.91};
+    int time_out_ {20};
 
     int scan_speed_          = 40;
     int upline_              = 68000;
     int downline_            = 49000;
-    double fitted_param_a_   = -5.1;
-    double fitted_param_b_   = -1000.1;
-    QString detect_profile_  = "奥氏体钢";
+    // double fitted_param_a_   = -5.1;
+    // double fitted_param_b_   = -1000.1;
+    // QString detect_profile_  = "奥氏体钢";
     double zoom_butterfly_view_      = 1.05;
     double zoom_real_time_view_      = 1.05;
     int filter_size_         = 10;
@@ -101,28 +102,36 @@ public:
     {
         return downline_;
     }
-    const double& fitted_param_a()
-    {
-        return fitted_param_a_;
-    }
-    const double& fitted_param_b()
-    {
-        return fitted_param_b_;
-    }
-    QString& detect_profile()
-    {
-        return detect_profile_;
-    }
+    // const double& fitted_param_a()
+    // {
+    //     return fitted_param_a_;
+    // }
+    // const double& fitted_param_b()
+    // {
+    //     return fitted_param_b_;
+    // }
+    // QString& detect_profile()
+    // {
+    //     return detect_profile_;
+    // }
     void setline(int upline,int downline)
     {
         upline_ = upline;
         downline_ = downline;
     }
-    void setDetectParam(double a, double b, QString label)
+    // void setDetectParam(double a, double b, QString label)
+    // {
+    //     fitted_param_a_ = a;
+    //     fitted_param_b_ = b;
+    //     detect_profile_ = label;
+    // }
+    int get_time_out()
     {
-        fitted_param_a_ = a;
-        fitted_param_b_ = b;
-        detect_profile_ = label;
+        return time_out_;
+    }
+    void set_time_out(int time)
+    {
+        time_out_ = time;
     }
 public:
     static DetectSettings& instance()
@@ -200,6 +209,7 @@ public:
             sensitivity_perview_ = settings.value("Settings/sensitivity_perview", 2.91).toDouble();
             zoom_real_time_view_ = settings.value("Settings/zoom_real_time_view", 1.05).toDouble();
             zoom_butterfly_view_ = settings.value("Settings/zoom_butterfly_view", 1.05).toDouble();
+            time_out_   = settings.value("Settings/time_out",20).toInt();
             qDebug()<<"config: list"<<list<<" max_points_count_"<<max_points_count_<<" add_point_count_"<<add_point_count_\
                      <<" real_time_rate_"<<real_time_rate_<<" calc_coefficient_"<<calc_coefficient_<<" auto_save_source_"<<auto_save_source_\
                      <<"sensitivity_perview_"<<sensitivity_perview_<<"save_scan_length_"<<save_scan_length_;
@@ -207,11 +217,11 @@ public:
             scan_speed_ = settings.value("Settings/scan_speed", 40.0).toInt();
             upline_ = settings.value("Settings/upline", 30000.0).toInt();
             downline_ = settings.value("Settings/downline", -30000.0).toInt();
-            fitted_param_a_ = settings.value("Settings/fitted_param_a", 30.0).toDouble();
-            fitted_param_b_ = settings.value("Settings/fitted_param_b", 30.0).toDouble();
-            detect_profile_ = settings.value("Settings/detect_profile", "奥氏体钢").toString();
+            // fitted_param_a_ = settings.value("Settings/fitted_param_a", 30.0).toDouble();
+            // fitted_param_b_ = settings.value("Settings/fitted_param_b", 30.0).toDouble();
+            // detect_profile_ = settings.value("Settings/detect_profile", "奥氏体钢").toString();
                               qDebug()<<"config: scan_speed_"<<scan_speed_<<" upline_"<<upline_<<" downline_"<<downline_\
-                              <<" fitted_param_a_"<<fitted_param_a_<<" fitted_param_b_"<<fitted_param_b_<<" detect_profile_"<<detect_profile_;
+                              <<" fitted_param_a_"<<" fitted_param_b_"<<" detect_profile_";
         }
         catch (const std::exception &e)
         {
@@ -237,9 +247,10 @@ public:
         {
             settings.setValue("Settings/upline", upline_);
             settings.setValue("Settings/downline", downline_);
-            settings.setValue("Settings/fitted_param_a", fitted_param_a_);
-            settings.setValue("Settings/fitted_param_b", fitted_param_b_);
-            settings.setValue("Settings/detect_profile", detect_profile_);
+            settings.setValue("Settings/time_out", time_out_);
+            // settings.setValue("Settings/fitted_param_a", fitted_param_a_);
+            // settings.setValue("Settings/fitted_param_b", fitted_param_b_);
+            // settings.setValue("Settings/detect_profile", detect_profile_);
             settings.sync();
         }
         catch (const std::exception &e)
