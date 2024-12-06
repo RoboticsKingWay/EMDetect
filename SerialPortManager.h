@@ -140,7 +140,7 @@ public:
             is_opened_ = false;
         }
     }
-#if 1
+#if 0
 // 学校探头 data:数据格式
     void readData(const QByteArray &data)
     {
@@ -165,7 +165,7 @@ public:
                         continue;
                     }
 //                    index1 = index1 + 6;
-                    index1 = index1 + 1;
+                    index1 = index1 + 5;
                     QString stringA = current_str.mid(index1,index2 - index1);
                     current_str = current_str.mid(index2 + 2);
 
@@ -215,8 +215,11 @@ public:
         {
             static QByteArray last_str = "";
             last_str += data;
+#if 0    //我的探头
             QRegularExpression regex("\\[(.*?)\\]"); // 匹配以 '[' 开头，以 ']' 结尾的字符串
-
+#else    //学校探头数据格式
+            QRegularExpression regex("\\DATA:(.*?)\\r\\n");//以 'DATA:' 开头，后跟任意数量的非换行字符，以 '\r\n' 结尾
+#endif
             QRegularExpressionMatchIterator iter = regex.globalMatch(last_str);
 
             int lastPosition = 0; // 记录最后一个字符串 A 出现的位置
