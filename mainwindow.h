@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -12,6 +12,7 @@
 #include "sourceview.h"
 #include "QXlsxExcelHelper.h"
 #include "DataManager.h"
+#include "widget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -87,6 +88,8 @@ private slots:
 
     void on_comboBox_2_currentIndexChanged(int index);
 
+    void on_action_magstimulate_triggered();
+
 private:
     void setPushButtonEnable(int state); //
     void drawFileView();
@@ -98,6 +101,7 @@ private:
     SourceView* source_view_ptr_ {nullptr};
     SetupWindow* setup_win_ptr_ {nullptr};
     CalibrateView* calibrate_view_ {nullptr};
+    Widget* mag_widget_ptr_{nullptr};
 
     QTimer timer_;
     QTimer timer_draw_total_;

@@ -996,7 +996,7 @@ background-color:white
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -1079,9 +1079,16 @@ background-color:white
     <addaction name="action_version"/>
     <addaction name="action_readme"/>
    </widget>
+   <widget class="QMenu" name="menu_magsetup">
+    <property name="title">
+     <string>磁激励</string>
+    </property>
+    <addaction name="action_magstimulate"/>
+   </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_setup"/>
    <addaction name="menu_standar"/>
+   <addaction name="menu_magsetup"/>
    <addaction name="menu_software"/>
   </widget>
   <action name="action_version">
@@ -1132,6 +1139,11 @@ background-color:white
   <action name="action_filter">
    <property name="text">
     <string>滤波设置</string>
+   </property>
+  </action>
+  <action name="action_magstimulate">
+   <property name="text">
+    <string>激励设置</string>
    </property>
   </action>
  </widget>

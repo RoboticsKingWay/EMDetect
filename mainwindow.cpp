@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "setupwindow.h"
 #include "UnitCalc.h"
@@ -108,6 +108,11 @@ MainWindow::~MainWindow()
         delete setup_win_ptr_;
         setup_win_ptr_ = nullptr;
     }
+    if(mag_widget_ptr_)
+    {
+        delete mag_widget_ptr_;
+        mag_widget_ptr_ = nullptr;
+    }
     if(calibrate_view_)
     {
         delete calibrate_view_;
@@ -125,6 +130,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if(calibrate_view_)
     {
         calibrate_view_->close();
+    }
+    if(mag_widget_ptr_)
+    {
+        mag_widget_ptr_->close();
     }
     event->accept();
 
@@ -884,5 +893,17 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
         ui->label_db_equal->setText(QString::number(db));
         ui->label_detection_fuzhi->setText(QString::number(y_max_am_));
     }
+}
+
+// 磁激励设置功能
+void MainWindow::on_action_magstimulate_triggered()
+{
+#ifdef magstimulate_enable
+    if(!mag_widget_ptr_)
+    {
+        mag_widget_ptr_ = new Widget();
+    }
+    mag_widget_ptr_->showNormal();
+#endif
 }
 

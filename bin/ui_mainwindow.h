@@ -44,6 +44,7 @@ public:
     QAction *action_fileperview;
     QAction *action_fit_circle;
     QAction *action_filter;
+    QAction *action_magstimulate;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     QWidget *widget_up;
@@ -95,6 +96,7 @@ public:
     QMenu *menu_setup;
     QMenu *menu_standar;
     QMenu *menu_software;
+    QMenu *menu_magsetup;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -162,6 +164,8 @@ public:
         action_fit_circle->setObjectName(QString::fromUtf8("action_fit_circle"));
         action_filter = new QAction(MainWindow);
         action_filter->setObjectName(QString::fromUtf8("action_filter"));
+        action_magstimulate = new QAction(MainWindow);
+        action_magstimulate->setObjectName(QString::fromUtf8("action_magstimulate"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         centralwidget->setMinimumSize(QSize(1000, 670));
@@ -506,7 +510,7 @@ public:
         MainWindow->setStatusBar(statusbar);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1200, 31));
+        menuBar->setGeometry(QRect(0, 0, 1200, 26));
         menuBar->setFont(font);
         menuBar->setStyleSheet(QString::fromUtf8("QMenu{\n"
 "	color:black\n"
@@ -535,11 +539,14 @@ public:
         menu_software->setStyleSheet(QString::fromUtf8("    QMenu:hover {\n"
 "         background-color: #13B3B3;\n"
 "        }"));
+        menu_magsetup = new QMenu(menuBar);
+        menu_magsetup->setObjectName(QString::fromUtf8("menu_magsetup"));
         MainWindow->setMenuBar(menuBar);
 
         menuBar->addAction(menu_file->menuAction());
         menuBar->addAction(menu_setup->menuAction());
         menuBar->addAction(menu_standar->menuAction());
+        menuBar->addAction(menu_magsetup->menuAction());
         menuBar->addAction(menu_software->menuAction());
         menu_file->addAction(action_filesave);
         menu_file->addAction(action_fileperview);
@@ -551,6 +558,7 @@ public:
         menu_standar->addAction(action_inside);
         menu_software->addAction(action_version);
         menu_software->addAction(action_readme);
+        menu_magsetup->addAction(action_magstimulate);
 
         retranslateUi(MainWindow);
 
@@ -574,6 +582,7 @@ public:
         action_fileperview->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\351\242\204\350\247\210", nullptr));
         action_fit_circle->setText(QCoreApplication::translate("MainWindow", "\346\213\237\345\220\210\345\234\206\350\256\276\347\275\256", nullptr));
         action_filter->setText(QCoreApplication::translate("MainWindow", "\346\273\244\346\263\242\350\256\276\347\275\256", nullptr));
+        action_magstimulate->setText(QCoreApplication::translate("MainWindow", "\346\277\200\345\212\261\350\256\276\347\275\256", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "\351\200\232\351\201\2231", nullptr));
         checkBox_2->setText(QCoreApplication::translate("MainWindow", "\351\200\232\351\201\2232", nullptr));
         checkBox_upline->setText(QCoreApplication::translate("MainWindow", "\344\270\212\351\230\210\345\200\274\347\272\277", nullptr));
@@ -607,6 +616,7 @@ public:
         menu_setup->setTitle(QCoreApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
         menu_standar->setTitle(QCoreApplication::translate("MainWindow", "\346\240\207\345\256\232", nullptr));
         menu_software->setTitle(QCoreApplication::translate("MainWindow", "\345\205\263\344\272\216", nullptr));
+        menu_magsetup->setTitle(QCoreApplication::translate("MainWindow", "\347\243\201\346\277\200\345\212\261", nullptr));
     } // retranslateUi
 
 };

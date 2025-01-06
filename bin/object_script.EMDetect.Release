@@ -33,6 +33,7 @@ release/calibrateview.o
 release/main.o
 release/mainwindow.o
 release/setupwindow.o
+release/widget.o
 release/qrc_resource.o
 release/moc_xlsxdocument.o
 release/moc_DataManager.o
@@ -44,3 +45,4 @@ release/moc_calibrateview.o
 release/moc_mainwindow.o
 release/moc_setupwindow.o
 release/moc_sourceview.o
+release/moc_widget.o
