@@ -97,33 +97,29 @@ private:
     void runThread();
 private:
     Ui::MainWindow *ui {nullptr};
-    RealTimeChartView* chartview_ptr_ {nullptr};
-    SourceView* source_view_ptr_ {nullptr};
-    SetupWindow* setup_win_ptr_ {nullptr};
-    CalibrateView* calibrate_view_ {nullptr};
-    Widget* mag_widget_ptr_{nullptr};
+    RealTimeChartView* chartview_ptr_ {nullptr};  //实时扫查图像实例
+    SourceView* source_view_ptr_ {nullptr};       // 蝶形图功能实例
+    SetupWindow* setup_win_ptr_ {nullptr};        // 软件设置子窗口
+    CalibrateView* calibrate_view_ {nullptr};     //标定功能子窗口
+    Widget* mag_widget_ptr_{nullptr};             // 磁激励功能子窗口
 
-    QTimer timer_;
-    QTimer timer_draw_total_;
+    QTimer timer_;                                //扫查实时图定时器  周期绘制图像
+    QTimer timer_draw_total_;                     //预览文件定时器 周期绘制图像
     int count_size_blk_;
-    SerialPortManager* manager_ptr_ {nullptr};//串口操作类指针
-    DataManager* data_manager_ptr_ {nullptr};
-    QVector<ChinnelData> list_draw_src_data_;
-    QVector<QPointF> rect_data_list_; // 特征区域的数据
+    SerialPortManager* manager_ptr_ {nullptr};    //扫查串口操作类指针
+    DataManager* data_manager_ptr_ {nullptr};     //数据管理类操作execl表格
+    QVector<ChinnelData> list_draw_src_data_;     //一次扫查启动到停止过程中读取到的数据并暂存后续数据处理，
+                                                  // 数据预览也暂存在该结构中
+    QVector<QPointF> rect_data_list_;             // 带处理分析的特征区域的数据
 //    QVector<ChinnelData> list_fitted_data_; // 拟合圆数据
-    int action_state_ {E_ACTION_STOP};//操作初始状态
+    int action_state_ {E_ACTION_STOP};            //操作初始状态
 
     std::shared_ptr<std::thread> thread_calc_ptr_ {nullptr}; // 检测结果计算线程
     bool is_calc_thread_start_ {true};
     bool is_calc_start_ {false};
-    std::condition_variable wait_event_;
-    std::mutex wait_mutex_;
 
     double scan_length_{20}; // mm
     double sensitivity_{0.0};
-    QVector<QColor> yellowGradient_;
-    std::vector<std::vector<double>> draw_image_data_;    // 差分计算得到的结果数据,距离数据
-
     //
     double y_max_am_; // 选中缺陷幅值
     // test
