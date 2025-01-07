@@ -253,9 +253,13 @@ public:
     {
 //        count_points_ = draw_list[0].index;
 //        int x = draw_list[0].index;
+
         for(int i = 0; i < 1/*CH_NUM*/; i++)
         {
-
+            if (seriess_[i]->count() >= DetectSettings::instance().max_points_count())
+            {
+                resetSerials();
+            }
             if (seriess_[i]->count() > DetectSettings::instance().max_points_count())
             {
                 seriess_[i]->removePoints(0,draw_list.size());

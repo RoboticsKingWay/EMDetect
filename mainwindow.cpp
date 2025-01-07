@@ -12,12 +12,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     timer_.start(1000/DetectSettings::instance().real_time_rate()); // 每100m秒更新一次
-    connect(&timer_, &QTimer::timeout, this, &MainWindow::updateData);
+    // connect(&timer_, &QTimer::timeout, this, &MainWindow::updateData);
+
+    // thread_ptr_ = new QThread(this);
+    // this->moveToThread();
     connect(&timer_draw_total_, &QTimer::timeout, this, &MainWindow::drawFileView);
     manager_ptr_ = new SerialPortManager(this);
     data_manager_ptr_ = new DataManager(this);
     setup_win_ptr_  = new SetupWindow();
     calibrate_view_ = new CalibrateView();
+    connect(manager_ptr_, &SerialPortManager::drawData, this, &MainWindow::onDrawData,Qt::QueuedConnection);
     if(ui->widget_upright)
     {
         source_view_ptr_ = new SourceView(ui->widget_upright);
@@ -246,6 +250,30 @@ void MainWindow::drawImageViewThread()
     }
     qDebug()<<"calc thread exit.";
 }
+void MainWindow::onDrawData(QVector<ChinnelData> draw_list)
+{
+    static int serial_state = E_SERIAL_CLOSE;
+    if(chartview_ptr_ && draw_list.size() && action_state_ == E_ACTION_ST)
+    {
+        chartview_ptr_->updateChinnelView(draw_list);
+        chartview_ptr_->setChinnelRange();
+    }
+    if(chartview_ptr_2_ && draw_list.size() && action_state_ == E_ACTION_ST)
+    {
+        chartview_ptr_2_->updateChinnelView(draw_list);
+        chartview_ptr_2_->setChinnelRange();
+    }
+    if(draw_list.size())
+    {
+        source_view_ptr_->updateChinnelView(draw_list);
+        source_view_ptr_->setViewChinnelRange();
+    }
+    if(manager_ptr_ && serial_state != manager_ptr_->getHeartbeatState())
+    {
+        serial_state = manager_ptr_->getHeartbeatState();
+        onSerialState(serial_state);
+    }
+}
 
 void MainWindow::updateData()
 {
@@ -444,6 +472,8 @@ void MainWindow::on_getRectPoints(int channel_id)
     // 边界处理
     start = std::max(start,list_draw_src_data_[0].index);
     end   = std::min(end,list_draw_src_data_.size());
+    // start = start % DetectSettings::instance().max_points_count();
+    // end   = end % DetectSettings::instance().max_points_count();
     if(end > start)
     {
         // 获取到当前特征区域的数据

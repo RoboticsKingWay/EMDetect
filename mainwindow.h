@@ -85,7 +85,7 @@ public slots:
     void on_comboBox_2_currentIndexChanged(int index);
     // 磁激励设置
     void on_action_magstimulate_triggered();
-
+    void onDrawData(QVector<ChinnelData> data);
 private:
     void setPushButtonEnable(int state); //
     void drawFileView();
@@ -121,5 +121,6 @@ private:
     double y_max_am_; // 选中缺陷幅值
     // test
 //    DynamicFilter* filter_ptr_ {nullptr};
+    QThread* thread_ptr_;
 };
 #endif // MAINWINDOW_H

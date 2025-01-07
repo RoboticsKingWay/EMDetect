@@ -250,6 +250,7 @@ public:
                         qDebug()<<"size >= "<<src_max_size_;
                         saveDataToExcelFile();
                         data_src_list_.clear();// 重置清零
+                        count_index_ = 0;      // 计数清零
                     }
                     if(count_index_ % draw_add_size_ == 0)
                     {//设置每次绘图的长度，从串口读取上来的数据刚好等于需要绘制的长度则保存到队列中
@@ -283,7 +284,8 @@ public:
             }
             if(temp.size())
             {
-                draw_queue_.enqueue(temp);
+                emit drawData(temp);
+                // draw_queue_.enqueue(temp);
             }
         }
     }
@@ -417,6 +419,7 @@ public slots:
 signals:
     void SendData(QVector<ChinnelData> list);
     void clearRealTimeSerial();
+    void drawData(QVector<ChinnelData> data);
 private:
     void startThread()
     {

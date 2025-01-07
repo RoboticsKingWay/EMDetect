@@ -1,4 +1,4 @@
-#ifndef DATAMANAGER_H
+﻿#ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
 #include <QThread>
@@ -125,7 +125,7 @@ private:
                 file_dir += file_name;
                 double sensitivity = DetectSettings::instance().sensitivity_perview();
                 double scan_length = DetectSettings::instance().save_scan_length();
-//                qDebug()<<"save to "<<file_dir<<" "<<QDateTime::currentDateTime()<<"\n";
+               qDebug()<<"save to "<<file_dir<<" "<<QDateTime::currentDateTime()<<"\n";
                 QXlsxExcelHelper::getInstance().saveDataToExcel(list.size(),sensitivity,QString(""),scan_length,list,file_dir);
             }
             QThread::msleep(100);
