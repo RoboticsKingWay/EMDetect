@@ -1,4 +1,4 @@
-#ifndef UNITDATA_H
+﻿#ifndef UNITDATA_H
 #define UNITDATA_H
 
 #include <QDebug>
@@ -27,13 +27,13 @@ enum E_SERIAL_ACTION:int
 enum E_ACTION_UI
 {
     E_ACTION_INVAL = -1,
-    E_ACTION_ST  = 0, // 开始采集
-    E_ACTION_STOP,  // 停止采集
-    E_ACTION_DEAL_DATA,// 数据处理
-    E_ACTION_REVIEW, // 预览数据
-    E_ACTION_SAVEAS, // 数据保存
+    E_ACTION_ST  = 0,     // 开始采集
+    E_ACTION_STOP,        // 停止采集
+    E_ACTION_DEAL_DATA,   // 数据处理
+    E_ACTION_REVIEW,      // 预览数据
+    E_ACTION_SAVEAS,      // 数据保存
     E_ACTION_CTRL_SERIAL, // 串口操作
-    E_ACTION_DETECT_RECT
+    E_ACTION_DETECT_RECT  //获取缺陷特征区域
 };
 
 struct SerialParam

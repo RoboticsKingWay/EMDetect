@@ -11,6 +11,7 @@ CONFIG += c++17
 
 #磁激励宏开关 注释掉该行磁激励功能关闭
 DEFINES += magstimulate_enable
+DEFINES += MY_PROBE
 
 include(./src/xlsx/qtxlsx.pri)
 SOURCES += \

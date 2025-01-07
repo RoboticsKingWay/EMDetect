@@ -1,4 +1,4 @@
-#ifndef CALIBRATEVIEW_H
+﻿#ifndef CALIBRATEVIEW_H
 #define CALIBRATEVIEW_H
 
 #include <QSettings>
@@ -65,13 +65,15 @@ signals:
     void update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list);
     void update_function_result(std::pair<double, double>& result_param);
 private:
+    // 保存标定结果 outside==true默认外部缺陷保存
     bool saveSetting(QString dir,bool outside = true);
+    // 导入标定结果
     bool importSetting(QString dir,bool outside = true);
 private:
     Ui::CalibrateView *ui;
     QMap<QString,OutsideDetectParam> cfg_detection_outside_list_;
-    QMap<QString,InsideDetectParam> cfg_detection_inside_list_;
-    std::pair<double, double> result_param_{0,0};
+    QMap<QString,InsideDetectParam> cfg_detection_inside_list_; // 内部缺陷直接用当前标定当量表示
+    std::pair<double, double> result_param_{0,0};//标定结果的线性函数：y=ax+b,result_param_.first=x,result_param_.second=y
 //    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
 };
 

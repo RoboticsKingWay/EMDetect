@@ -5,6 +5,7 @@
 
 #include <functional>
 
+int static current_channel_id = 0; // 切换为两个图像显示，用于区分哪个实时图的特征区域被选中
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -24,10 +25,16 @@ MainWindow::MainWindow(QWidget *parent)
     }
     if(ui->widget_real_chat_view)
     {
-        chartview_ptr_ = new RealTimeChartView(ui->widget_real_chat_view);
+        chartview_ptr_ = new RealTimeChartView(0,ui->widget_real_chat_view);
         chartview_ptr_->createChartView();
         connect(chartview_ptr_,&RealTimeChartView::rect_Data,this,&MainWindow::on_getRectPoints);
         //        ui->widget_real_chat_view->installEventFilter(this);
+    }
+    if(ui->widget_real_chat_view_2)
+    {
+        chartview_ptr_2_ = new RealTimeChartView(1,ui->widget_real_chat_view_2);
+        chartview_ptr_2_->createChartView();
+        connect(chartview_ptr_2_,&RealTimeChartView::rect_Data,this,&MainWindow::on_getRectPoints);
     }
     if(setup_win_ptr_)
     {
@@ -44,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         std::function<void(QVector<QPointF>&)> getDetectRectData_Func = std::bind(&RealTimeChartView::getDetectRectData,chartview_ptr_,std::placeholders::_1);
         calibrate_view_->initView(/*getDetectRectData_Func*/);
-//        connect(chartview_ptr_,&RealTimeChartView::rectData, calibrate_view_, &CalibrateView::on_GetRectData);
+        // 标定结果显示到主界面
         connect(calibrate_view_,&CalibrateView::update_inside_detection_list,this,&MainWindow::on_update_inside_detection_list,Qt::AutoConnection);
         connect(calibrate_view_,&CalibrateView::update_outside_detection_list,this,&MainWindow::on_update_outside_detection_list,Qt::AutoConnection);
         connect(calibrate_view_,&CalibrateView::update_function_result,this,&MainWindow::on_update_function_result,Qt::AutoConnection);
@@ -53,13 +60,14 @@ MainWindow::MainWindow(QWidget *parent)
     {
         connect(manager_ptr_,&SerialPortManager::SendData,data_manager_ptr_,&DataManager::DataHandle,Qt::QueuedConnection);
     }
-    if(chartview_ptr_ && manager_ptr_)
+    if(chartview_ptr_ && chartview_ptr_2_ && manager_ptr_)
     {
        connect(manager_ptr_,&SerialPortManager::clearRealTimeSerial,chartview_ptr_,&RealTimeChartView::resetSerials,Qt::QueuedConnection);
+       connect(manager_ptr_,&SerialPortManager::clearRealTimeSerial,chartview_ptr_2_,&RealTimeChartView::resetSerials,Qt::QueuedConnection);
     }
 
     if(chartview_ptr_ && setup_win_ptr_)
-    {
+    {//弃用功能
         connect(setup_win_ptr_,&SetupWindow::uplinePlus, chartview_ptr_, &RealTimeChartView::on_uplinePlus,Qt::AutoConnection);
         connect(setup_win_ptr_,&SetupWindow::uplineDe, chartview_ptr_, &RealTimeChartView::on_uplineDe,Qt::AutoConnection);
         connect(setup_win_ptr_,&SetupWindow::uplineMoveto, chartview_ptr_, &RealTimeChartView::on_uplineMoveto,Qt::AutoConnection);
@@ -75,8 +83,8 @@ MainWindow::MainWindow(QWidget *parent)
       //ui->comboBox->addItem(QString::number(sensitive));
     }
     list_draw_src_data_.clear();
-    ui->checkBox_3->hide();
-    ui->checkBox_upline->hide();
+    // ui->checkBox_3->hide();
+    // ui->checkBox_upline->hide();
 }
 
 MainWindow::~MainWindow()
@@ -90,18 +98,27 @@ MainWindow::~MainWindow()
     if(manager_ptr_)
     {
         delete manager_ptr_;
+        manager_ptr_ = nullptr;
     }
     if(data_manager_ptr_)
     {
         delete data_manager_ptr_;
+        data_manager_ptr_ = nullptr;
     }
     if(chartview_ptr_)
     {
         delete chartview_ptr_;
+        chartview_ptr_ = nullptr;
+    }
+    if(chartview_ptr_2_)
+    {
+        delete chartview_ptr_2_;
+        chartview_ptr_2_ = nullptr;
     }
     if(source_view_ptr_)
     {
         delete source_view_ptr_;
+        source_view_ptr_ = nullptr;
     }
     if(setup_win_ptr_)
     {
@@ -245,6 +262,11 @@ void MainWindow::updateData()
         chartview_ptr_->updateChinnelView(draw_list);
         chartview_ptr_->setChinnelRange();
     }
+    if(chartview_ptr_2_ && draw_list.size() && action_state_ == E_ACTION_ST)
+    {
+        chartview_ptr_2_->updateChinnelView(draw_list);
+        chartview_ptr_2_->setChinnelRange();
+    }
     if(draw_list.size())
     {
         source_view_ptr_->updateChinnelView(draw_list);
@@ -264,11 +286,7 @@ void MainWindow::setPushButtonEnable(int state)
 //    ui->pushButton_2->setEnabled(true);
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
-//    ui->pushButton->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
-//    ui->pushButton_2->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
-//    ui->pushButton_3->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
-//    ui->pushButton_5->setStyleSheet("QPushButton { background-color: #FFFFD8; }");
-//    ui->pushButton_SerialSetup->setEnabled(true);x
+    ui->pushButton_detect_area2->setEnabled(true);
     action_state_ = state;
     switch (action_state_)
     {
@@ -277,7 +295,7 @@ void MainWindow::setPushButtonEnable(int state)
 //        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_5->setEnabled(false);
-//        ui->pushButton_SerialSetup->setEnabled(false);
+        ui->pushButton_detect_area2->setEnabled(false);
         break;
     }
     case E_ACTION_STOP:  // 停止采集
@@ -285,7 +303,7 @@ void MainWindow::setPushButtonEnable(int state)
 //        ui->pushButton_2->setEnabled(true);
         ui->pushButton_3->setEnabled(true);
         ui->pushButton_5->setEnabled(true);
-//        ui->pushButton_SerialSetup->setEnabled(true);
+        ui->pushButton_detect_area2->setEnabled(true);
         break;
     }
     case E_ACTION_DEAL_DATA:// 数据处理
@@ -294,7 +312,7 @@ void MainWindow::setPushButtonEnable(int state)
 //        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_5->setEnabled(false);
-//        ui->pushButton_SerialSetup->setEnabled(false);
+        ui->pushButton_detect_area2->setEnabled(false);
     }
     case E_ACTION_REVIEW: // 预览数据
     {
@@ -302,7 +320,7 @@ void MainWindow::setPushButtonEnable(int state)
 //        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_5->setEnabled(false);
-//        ui->pushButton_SerialSetup->setEnabled(false);
+        ui->pushButton_detect_area2->setEnabled(false);
         break;
     }
     case E_ACTION_SAVEAS: // 数据保存
@@ -313,31 +331,22 @@ void MainWindow::setPushButtonEnable(int state)
     {
         break;
     }
-    case E_ACTION_DETECT_RECT:
+    case E_ACTION_DETECT_RECT: //选择特征区域
     {
         ui->pushButton->setEnabled(false);
-//        ui->pushButton_2->setEnabled(false);
         ui->pushButton_3->setEnabled(false);
+        if(current_channel_id == 0)
+        {
+            ui->pushButton_detect_area2->setEnabled(false);
+        }
+        else
+        {
+            ui->pushButton_5->setEnabled(false);
+        }
     }
     default:
         break;
     }
-//    if(!ui->pushButton->isEnabled())
-//    {
-//        ui->pushButton->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
-//    }
-//    if(!ui->pushButton_2->isEnabled())
-//    {
-//        ui->pushButton_2->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
-//    }
-//    if(!ui->pushButton_3->isEnabled())
-//    {
-//        ui->pushButton_3->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
-//    }
-//    if(!ui->pushButton_5->isEnabled())
-//    {
-//        ui->pushButton_5->setStyleSheet("QPushButton { background-color: #D8D8D8; }");
-//    }
 }
 // 开始采集 和 结束采集
 void MainWindow::on_pushButton_clicked()
@@ -360,6 +369,7 @@ void MainWindow::on_pushButton_clicked()
         // 停止采集数据
         manager_ptr_->saveDataToExcelFile();
         manager_ptr_->setSerialPause(true);
+        // 获取一次采集过程中的所有数据，如果数据量超过设置的阈值5000则需要从保存的文件中进行数据分析
         manager_ptr_->getSrcListData(list_draw_src_data_);
         ui->pushButton->setText("开始");
         setPushButtonEnable(E_ACTION_STOP);
@@ -370,6 +380,7 @@ void MainWindow::on_pushButton_clicked()
         list_draw_src_data_.clear();
         manager_ptr_->clearSrcListData();
         chartview_ptr_->resetSerials();
+        chartview_ptr_2_->resetSerials();
         source_view_ptr_->resetSerials();
         manager_ptr_->setSerialPause(false);
         ui->pushButton->setText("停止");
@@ -412,26 +423,39 @@ void MainWindow::on_pushButton_2_clicked()
     */
 }
 
-void MainWindow::on_getRectPoints()
+void MainWindow::on_getRectPoints(int channel_id)
 {
-    int start = chartview_ptr_->getDetectRect().left();
-    int end   = chartview_ptr_->getDetectRect().right();
+    int start = 0, end = 0;
+    if(channel_id == 0)
+    {
+        start = chartview_ptr_->getDetectRect().left();
+        end   = chartview_ptr_->getDetectRect().right();
+    }
+    else
+    {
+        start = chartview_ptr_2_->getDetectRect().left();
+        end   = chartview_ptr_2_->getDetectRect().right();
+    }
     if(list_draw_src_data_.size() < 2)
     {
         return;
     }
+    current_channel_id = channel_id;
+    // 边界处理
     start = std::max(start,list_draw_src_data_[0].index);
     end   = std::min(end,list_draw_src_data_.size());
     if(end > start)
     {
+        // 获取到当前特征区域的数据
         rect_data_list_.clear();
         for(int i = start; i < end; i++)
         {
             QPointF point;
             point.setX(list_draw_src_data_[i].index);
-            point.setY(list_draw_src_data_[i].mag_data.data[0]);
+            point.setY(list_draw_src_data_[i].mag_data.data[channel_id]);
             rect_data_list_.append(point);
         }
+        // 如果是标定获取特征区域，则通知标定捕获特征区域数据
         calibrate_view_->on_GetRectData(rect_data_list_);
     }
 }
@@ -450,7 +474,7 @@ void MainWindow::on_pushButton_3_clicked()
         QMessageBox::warning(this, "warning", "请先停止采集操作!");
         return;
     }
-    on_getRectPoints();
+    on_getRectPoints(current_channel_id);
     if(rect_data_list_.size() <= 4)
     {
         QMessageBox::warning(this, "warning", "请先选择一个特征区域");
@@ -458,22 +482,12 @@ void MainWindow::on_pushButton_3_clicked()
     }
     if(list_draw_src_data_.size() > 0)
     {
-//        if(chartview_ptr_)
-//        {
-//            chartview_ptr_->resetSerials();
-//            count_size_blk_ = 0;
-//            timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
-//        }
-//        if(source_view_ptr_)
-//        {
-//            source_view_ptr_->resetSerials();
-//        }
         if(!thread_calc_ptr_)
-        {
+        {//new thread
             thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
         }
-        if(thread_calc_ptr_)
-        {
+        else
+        {// thread 存在则启动,进入数据处理状态
             setPushButtonEnable(E_ACTION_DEAL_DATA);
             is_calc_start_ = true;
         }
@@ -520,16 +534,7 @@ void MainWindow::on_pushButton_4_clicked()
             chartview_ptr_->resetSerials();
             count_size_blk_ = 0;
             timer_draw_total_.start(SLEEP_TIMER_ON_DRAW);
-//            if(!thread_calc_ptr_)
-//            {
-//                thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
-//            }
-//            if(thread_calc_ptr_)
-//            {
-                action_state_ = E_ACTION_REVIEW;
-//                setPushButtonEnable();
-//                is_calc_start_ = true;
-//            }
+            action_state_ = E_ACTION_REVIEW;
         }
     }
     else
@@ -547,8 +552,10 @@ void MainWindow::on_pushButton_5_clicked()
     }
     if(chartview_ptr_)
     {
+        current_channel_id = 0;
+        chartview_ptr_2_->resetSelectRect();
         QString curr = ui->pushButton_5->text();
-        if(curr == QString("特征区域"))
+        if(curr == QString("特征区域1"))
         {
             chartview_ptr_->setSelectSwitch(true);
             ui->pushButton_5->setText("取消");
@@ -557,12 +564,37 @@ void MainWindow::on_pushButton_5_clicked()
         else if(curr == QString("取消"))
         {
             chartview_ptr_->setSelectSwitch(false);
-            ui->pushButton_5->setText("特征区域");
+            ui->pushButton_5->setText("特征区域1");
             setPushButtonEnable(E_ACTION_STOP);
         }
     }
 }
-
+void MainWindow::on_pushButton_detect_area2_clicked()
+{
+    if(action_state_ == E_ACTION_ST)
+    {
+        QMessageBox::warning(this, "warning", "请先停止采集操作!");
+        return;
+    }
+    if(chartview_ptr_2_)
+    {
+        current_channel_id = 1;
+        chartview_ptr_->resetSelectRect();
+        QString curr = ui->pushButton_detect_area2->text();
+        if(curr == QString("特征区域2"))
+        {
+            chartview_ptr_2_->setSelectSwitch(true);
+            ui->pushButton_detect_area2->setText("取消");
+            setPushButtonEnable(E_ACTION_DETECT_RECT);
+        }
+        else if(curr == QString("取消"))
+        {
+            chartview_ptr_2_->setSelectSwitch(false);
+            ui->pushButton_detect_area2->setText("特征区域2");
+            setPushButtonEnable(E_ACTION_STOP);
+        }
+    }
+}
 void MainWindow::drawFileView()
 {
     const int copy_size = 500;
@@ -573,6 +605,10 @@ void MainWindow::drawFileView()
         timer_draw_total_.stop();
         chartview_ptr_->updateChinnelView(draw_list);
         chartview_ptr_->setViewChinnelRange();
+
+        chartview_ptr_2_->updateChinnelView(draw_list);
+        chartview_ptr_2_->setViewChinnelRange();
+
         //if(action_state_ == E_ACTION_REVIEW)
         {
             source_view_ptr_->updateButterflyView(draw_list);
@@ -584,6 +620,7 @@ void MainWindow::drawFileView()
     {
         draw_list = list_draw_src_data_.mid(count_size_blk_*copy_size,copy_size);
         chartview_ptr_->updateChinnelView(draw_list);
+        chartview_ptr_2_->updateChinnelView(draw_list);
         //if(action_state_ == E_ACTION_REVIEW)
         {
             source_view_ptr_->updateButterflyView(draw_list);
@@ -616,16 +653,6 @@ void MainWindow::onSerialState(int state)
     else
     {
         ui->pushButton_connect_state->setIcon(QIcon(":/source/serial_close.png"));
-    }
-}
-
-// 保存文件的标签值变化触发读标签
-void MainWindow::on_lineEdit_textChanged(const QString &arg1)
-{
-    if(data_manager_ptr_)
-    {
-//        qDebug()<<"save as label:"<<ui->lineEdit->text();
-//        data_manager_ptr_->setLabel(ui->lineEdit->text());
     }
 }
 
@@ -744,7 +771,7 @@ void MainWindow::on_action_inside_triggered()
         calibrate_view_->showNormal();
     }
 }
-
+//文件另存为
 void MainWindow::on_action_filesave_triggered()
 {
     if(action_state_ == E_ACTION_ST)
@@ -850,19 +877,6 @@ void MainWindow::on_butterfly_Filter(int more,int less,int axes)
     }
 }
 
-void MainWindow::on_lineEdit_2_textChanged(const QString &arg1)
-{
-
-}
-
-
-void MainWindow::on_pushButton_filter_clicked()
-{
-    if(chartview_ptr_)
-    {
-//        chartview_ptr_.get
-    }
-}
 
 void MainWindow::on_update_inside_detection_list(QMap<QString,InsideDetectParam>& inside_list)
 {
@@ -906,4 +920,3 @@ void MainWindow::on_action_magstimulate_triggered()
     mag_widget_ptr_->showNormal();
 #endif
 }
-

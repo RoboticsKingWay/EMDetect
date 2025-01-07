@@ -1,4 +1,4 @@
-#ifndef SERIALPORTMANAGER_H
+﻿#ifndef SERIALPORTMANAGER_H
 #define SERIALPORTMANAGER_H
 
 #include <QSerialPort>
@@ -141,7 +141,7 @@ public:
         }
     }
 #if 0
-// 学校探头 data:数据格式
+// 非正则表达数据解析
     void readData(const QByteArray &data)
     {
         if(m_serialPort->isOpen())
@@ -208,16 +208,16 @@ public:
     }
 
 #else
-    //我的探头的数据格式
+    //正则解析读取数据
     void readData(const QByteArray &data)
     {
         if(m_serialPort->isOpen())
         {
             static QByteArray last_str = "";
             last_str += data;
-#if 0    //我的探头
+#ifdef MY_PROBE    //我的探头
             QRegularExpression regex("\\[(.*?)\\]"); // 匹配以 '[' 开头，以 ']' 结尾的字符串
-#else    //学校探头数据格式
+#else               //学校探头数据格式
             QRegularExpression regex("\\DATA:(.*?)\\r\\n");//以 'DATA:' 开头，后跟任意数量的非换行字符，以 '\r\n' 结尾
 #endif
             QRegularExpressionMatchIterator iter = regex.globalMatch(last_str);
@@ -246,15 +246,13 @@ public:
                     }
                     lastPosition = match.capturedEnd(); // 更新最后一个字符串 A 出现的位置
                     if(data_src_list_.size() >= src_max_size_)
-                    {
+                    {// data_src_list_.size() >= 5000设定的值，存满暂存的缓存 保存到execl表格中
                         qDebug()<<"size >= "<<src_max_size_;
                         saveDataToExcelFile();
-                        //emit clearRealTimeSerial();
-//                        count_index_ = 0;
-                        data_src_list_.clear();
+                        data_src_list_.clear();// 重置清零
                     }
                     if(count_index_ % draw_add_size_ == 0)
-                    {
+                    {//设置每次绘图的长度，从串口读取上来的数据刚好等于需要绘制的长度则保存到队列中
                         setDrawData();
                     }
                 }
@@ -263,6 +261,7 @@ public:
         }
     }
 #endif
+    // 将串口数据进行入列暂存
     void setDrawData()
     {
         if(data_src_list_.size() >= draw_add_size_ && data_src_list_.size()%draw_add_size_ == 0)
@@ -289,6 +288,7 @@ public:
         }
     }
 
+    // ui线程将串口数据进行出列并绘制图像显示
     QVector<ChinnelData> getDrawData()
     {
         QVector<ChinnelData> temp;
@@ -492,7 +492,7 @@ private:
     QString str_data_;
     QVector<ChinnelData> data_src_list_;
     int draw_add_size_ {20};
-    int src_max_size_ {12000};
+    int src_max_size_ {5000};
     SafeQueue<QVector<ChinnelData>> draw_queue_;
     DynamicFilter* filter_ptr_;
 };

@@ -1,4 +1,4 @@
-#ifndef REALTIMECHARTVIEW_H
+﻿#ifndef REALTIMECHARTVIEW_H
 #define REALTIMECHARTVIEW_H
 
 #include "UnitData.h"
@@ -8,10 +8,11 @@ class RealTimeChartView : public BaseView
 {
     Q_OBJECT
 public:
-    explicit RealTimeChartView(QWidget *parent = nullptr)
+    explicit RealTimeChartView(int channel_id,QWidget *parent = nullptr)
         : BaseView(parent)
     {
         ZOOM_NUM = DetectSettings::instance().zoom_real_time_view();
+        channel_id_ = channel_id;
     }
     virtual ~RealTimeChartView()
     {
@@ -70,19 +71,19 @@ public:
 
         axisY_->setRange(downline_start_ - 1000, upline_start_ + 1000);
         axisY_->setTitleText("磁场强度nT");
-        axisY_->setTickCount(4);
+        axisY_->setTickCount(2);
         axisY_->setMinorTickCount(2);
         axisX_->setLabelFormat("%d"); // X轴不显示小数点后的数据
         axisY_->setLabelFormat("%d"); // Y轴不显示小数点后的数据
         //创建折线序列
-        for(int i = 0; i < CH_NUM; i++)
+        for(int i = 0; i < 1/*CH_NUM*/; i++)
         {
             seriess_[i] = new QtCharts::QLineSeries();
-            seriess_[i]->setName(QString("通道%1").arg(i+1));
-            seriess_[i]->setPointLabelsColor(Qt::yellow);
-            seriess_[i]->setColor(serial_color_list[i]);
-            seriess_[i]->setVisible(false);
-            QPen pen(serial_color_list[i]);
+            seriess_[i]->setName(QString("通道%1").arg(channel_id_+1));
+            seriess_[i]->setPointLabelsColor(serial_color_list[channel_id_]);
+            seriess_[i]->setColor(serial_color_list[channel_id_]);
+            // seriess_[i]->setVisible(false);
+            QPen pen(serial_color_list[channel_id_]);
             pen.setWidth(2);
             seriess_[i]->setPen(pen);
 
@@ -252,46 +253,23 @@ public:
     {
 //        count_points_ = draw_list[0].index;
 //        int x = draw_list[0].index;
-        for(int i = 0; i < CH_NUM; i++)
+        for(int i = 0; i < 1/*CH_NUM*/; i++)
         {
 
             if (seriess_[i]->count() > DetectSettings::instance().max_points_count())
             {
                 seriess_[i]->removePoints(0,draw_list.size());
             }
-
             foreach (auto drawItem, draw_list)
             {
-                seriess_[i]->append(/*x++*/drawItem.index, (qreal)drawItem.mag_data.data[i]);
-                ymin_[i] = std::min((int)ymin_[i], drawItem.mag_data.data[i]);
-                ymax_[i] = std::max((int)ymax_[i], drawItem.mag_data.data[i]);
-            }
-//            qreal ymin = seriess_[ch_num]->at(0).y();
-//            qreal ymax = seriess_[ch_num]->at(0).y();
-//            int count = seriess_[ch_num]->count();
-//            for(int i = 0; i < seriess_[ch_num]->count(); i++)
-//            {
-//                ymin = std::min(ymin, seriess_[ch_num]->at(i).y());
-//                ymax = std::max(ymax, seriess_[ch_num]->at(i).y());
-//            }
-//            int start = seriess_[ch_num]->count() - draw_list.size();
-#if 0
-            qreal ymin = 1000000;
-            qreal ymax = -1000000;
-            int start = seriess_[ch_num]->count() - draw_list.size();
-            if(seriess_[ch_num]->count() > 60)
-            {
-                start = seriess_[ch_num]->count() - 60;
+                seriess_[i]->append(/*x++*/drawItem.index, (qreal)drawItem.mag_data.data[channel_id_]);
+                ymin_[i] = std::min((int)ymin_[i], drawItem.mag_data.data[channel_id_]);
+                ymax_[i] = std::max((int)ymax_[i], drawItem.mag_data.data[channel_id_]);
+                // seriess_[i]->append(/*x++*/drawItem.index, (qreal)drawItem.mag_data.data[i]);
+                // ymin_[i] = std::min((int)ymin_[i], drawItem.mag_data.data[i]);
+                // ymax_[i] = std::max((int)ymax_[i], drawItem.mag_data.data[i]);
             }
 
-            for(int i = start; i < seriess_[ch_num]->count(); i++)
-            {
-                ymin = std::min(ymin, seriess_[ch_num]->at(i).y());
-                ymax = std::max(ymax, seriess_[ch_num]->at(i).y());
-            }
-            ymin_[ch_num] = ymin;
-            ymax_[ch_num] = ymax;
-#endif
         }
     }
 
@@ -329,7 +307,7 @@ public:
 
         ymin = 1000000.0;
         ymax = -1000000.0;
-        for(int i = 0; i < CH_NUM; i++)
+        for(int i = 0; i < 1/*CH_NUM*/; i++)
         {
             ymin = std::min(ymin_[i],ymin);
             ymax = std::max(ymax_[i],ymax);
@@ -444,11 +422,13 @@ public slots:
             rect.append(end);
             rect.append(QPoint(start.x(),end.y()));
             rect.append(start);
+            // 绘制选择框折线图
             detect_rect_serials_->append(rect);
             chart_->update();
+            // 保存选择框起始点
             detect_rect_ = QRectF(start,end);
-            QVector<QPointF> rect_data;
-            emit rect_Data();
+            // 发送信号给MainWindow
+            emit rect_Data(channel_id_);
         }
     }
     void resetSelectRect()
@@ -466,7 +446,7 @@ public slots:
         BaseView::resetSerials();
     }
 signals:
-    void rect_Data();
+    void rect_Data(int channel_id);
 private:
     int count_points_ = 0;
     QtCharts::QLineSeries* threshold_serials_[2] = {nullptr};
@@ -483,6 +463,7 @@ private:
     double ymin_value_{20000};
     QRectF detect_rect_;
     double ZOOM_NUM;
+    int channel_id_{0};
 };
 
 #endif // REALTIMECHARTVIEW_H

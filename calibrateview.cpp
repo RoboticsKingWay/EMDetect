@@ -1,4 +1,4 @@
-#include "calibrateview.h"
+﻿#include "calibrateview.h"
 #include "ui_calibrateview.h"
 #include "UnitCalc.h"
 #include "DetectSettings.h"
@@ -175,7 +175,7 @@ bool CalibrateView::importSetting(QString dir,bool isOutside)
     }
     return false;
 }
-
+//标定保存
 bool CalibrateView::saveSetting(QString dir,bool isOutside)
 {
     QString config_dir = dir;
@@ -299,11 +299,11 @@ void CalibrateView::on_GetRectData(QVector<QPointF>& points)
         calcMaxMin(data,max,min);
         QString text = QString::number(max - min);
         if(this->currentIndex() == 1)
-        {
+        {//内部缺陷幅值
             ui->lineEdit_inside_write->setText(text);
         }
         else
-        {
+        {//外部缺陷幅值
             ui->lineEdit_outside_db_set->setText(text);
         }
     }
