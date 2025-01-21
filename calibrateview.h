@@ -36,6 +36,7 @@ public:
     }
     void initView(/*std::function<void(QVector<QPointF>&)> getDetectRectData_Func*/);
 public slots:
+    // 显示当前窗口时候表示为标定捕获，则捕获当前特征区域幅值
     void on_GetRectData(QVector<QPointF>& points);
 private slots:
     void on_comboBox_outside_list_currentIndexChanged(int index);
@@ -49,15 +50,15 @@ private slots:
     void on_pushButton_inside_add_clicked();
 
     void on_pushButton_inside_del_clicked();
-
+    //外部缺陷标定结果计算
     void on_pushButton_outside_stand_clicked();
-
+    // 外部缺陷标定保存
     void on_pushButton_outside_stand_save_clicked();
-
+    // 内部缺陷结果保存
     void on_pushButton_inside_stand_save_clicked();
-
+    // 内部缺陷结果导入
     void on_pushButton_inside_import_clicked();
-
+    // 外部缺陷结果保存
     void on_pushButton_outside_import_clicked();
 
 signals:
@@ -73,7 +74,9 @@ private:
     Ui::CalibrateView *ui;
     QMap<QString,OutsideDetectParam> cfg_detection_outside_list_;
     QMap<QString,InsideDetectParam> cfg_detection_inside_list_; // 内部缺陷直接用当前标定当量表示
-    std::pair<double, double> result_param_{0,0};//标定结果的线性函数：y=ax+b,result_param_.first=x,result_param_.second=y
+    std::pair<double, double> result_param_{0,0};
+    //标定结果的线性函数：y=ax+b,result_param_.first=x,result_param_.second=y
+    // x表示深宽比 ，y 表示幅值
 //    std::function<void(QVector<QPointF>&)> getDetectRectData_Func_;
 };
 

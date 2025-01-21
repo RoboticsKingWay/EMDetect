@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -237,10 +237,10 @@
    </property>
    <property name="styleSheet">
     <string notr="true">QWidget{
-background-color:white
+background-color:#FAFAFF
 }</string>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QWidget" name="widget_up" native="true">
       <property name="minimumSize">
@@ -276,8 +276,8 @@ background-color:white
        </item>
        <item>
         <widget class="QWidget" name="widget_real_upright" native="true">
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
            <widget class="QWidget" name="widget_upright" native="true">
             <property name="minimumSize">
              <size>
@@ -287,7 +287,7 @@ background-color:white
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item>
            <widget class="QWidget" name="widget_down" native="true">
             <property name="minimumSize">
              <size>
@@ -316,8 +316,8 @@ background-color:white
                <colorrole role="Button">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -343,8 +343,8 @@ background-color:white
                <colorrole role="Base">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -352,8 +352,8 @@ background-color:white
                <colorrole role="Window">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -381,8 +381,8 @@ background-color:white
                <colorrole role="Button">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -408,8 +408,8 @@ background-color:white
                <colorrole role="Base">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -417,8 +417,8 @@ background-color:white
                <colorrole role="Window">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -446,8 +446,8 @@ background-color:white
                <colorrole role="Button">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -473,8 +473,8 @@ background-color:white
                <colorrole role="Base">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -482,8 +482,8 @@ background-color:white
                <colorrole role="Window">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
+                  <red>250</red>
+                  <green>250</green>
                   <blue>255</blue>
                  </color>
                 </brush>
@@ -501,10 +501,12 @@ background-color:white
              </palette>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">QWidget{
+		color: black
+}</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
               <widget class="QGroupBox" name="groupBox_2">
                <property name="minimumSize">
                 <size>
@@ -514,15 +516,69 @@ background-color:white
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>3600</width>
-                 <height>1200</height>
+                 <width>600</width>
+                 <height>66</height>
                 </size>
                </property>
                <property name="title">
                 <string/>
                </property>
-               <layout class="QGridLayout" name="gridLayout_2">
-                <item row="1" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QPushButton" name="pushButton_connect_state">
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string>串口状态</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/source/serial_close.png</normaloff>:/source/serial_close.png</iconset>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton">
+                  <property name="font">
+                   <font>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+        border: 3px outset gray;
+        background-color: #D8D8D8;
+         color: black;
+        }
+ QPushButton:disabled {
+         background-color: #F1F1F1;
+         color: white;
+        }
+ QPushButton:pressed {
+        border: 1px inset gray;
+         background-color: #11FF11;
+         color: white;
+        }
+    QPushButton:hover {
+         background-color: #13B3B3;
+        }</string>
+                  </property>
+                  <property name="text">
+                   <string>开始</string>
+                  </property>
+                  <property name="autoDefault">
+                   <bool>true</bool>
+                  </property>
+                  <property name="default">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="pushButton_5">
                   <property name="font">
                    <font>
@@ -562,92 +618,7 @@ background-color:white
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QPushButton" name="pushButton_3">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">QPushButton {
-        border: 3px outset gray;
-        background-color: #D8D8D8;
-         color: black;
-        }
- QPushButton:disabled {
-         background-color: #F1F1F1;
-         color: white;
-        }
- QPushButton:pressed {
-        border: 1px inset gray;
-         background-color: #11FF11;
-         color: white;
-        }
-    QPushButton:hover {
-         background-color: #13B3B3;
-        }</string>
-                  </property>
-                  <property name="text">
-                   <string>数据处理</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QPushButton" name="pushButton">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">QPushButton {
-        border: 3px outset gray;
-        background-color: #D8D8D8;
-         color: black;
-        }
- QPushButton:disabled {
-         background-color: #F1F1F1;
-         color: white;
-        }
- QPushButton:pressed {
-        border: 1px inset gray;
-         background-color: #11FF11;
-         color: white;
-        }
-    QPushButton:hover {
-         background-color: #13B3B3;
-        }</string>
-                  </property>
-                  <property name="text">
-                   <string>开始</string>
-                  </property>
-                  <property name="autoDefault">
-                   <bool>true</bool>
-                  </property>
-                  <property name="default">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QPushButton" name="pushButton_connect_state">
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>串口状态</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resource.qrc">
-                    <normaloff>:/source/serial_close.png</normaloff>:/source/serial_close.png</iconset>
-                  </property>
-                  <property name="flat">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
+                <item>
                  <widget class="QPushButton" name="pushButton_detect_area2">
                   <property name="font">
                    <font>
@@ -681,22 +652,13 @@ background-color:white
                </layout>
               </widget>
              </item>
-             <item row="0" column="1">
-              <widget class="QGroupBox" name="groupBox">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
+             <item>
+              <widget class="QGroupBox" name="groupBox_result_outside">
                <property name="title">
                 <string/>
+               </property>
+               <property name="flat">
+                <bool>false</bool>
                </property>
                <layout class="QGridLayout" name="gridLayout">
                 <item row="0" column="0">
@@ -711,7 +673,7 @@ background-color:white
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
+                <item row="0" column="1" colspan="2">
                  <widget class="QLineEdit" name="lineEdit_scan_length">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -724,8 +686,46 @@ background-color:white
                   </property>
                  </widget>
                 </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>mm</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4">
+                 <widget class="QPushButton" name="pushButton_3">
+                  <property name="font">
+                   <font>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+        border: 3px outset gray;
+        background-color: #D8D8D8;
+         color: black;
+        }
+ QPushButton:disabled {
+         background-color: #F1F1F1;
+         color: white;
+        }
+ QPushButton:pressed {
+        border: 1px inset gray;
+         background-color: #11FF11;
+         color: white;
+        }
+    QPushButton:hover {
+         background-color: #13B3B3;
+        }</string>
+                  </property>
+                  <property name="text">
+                   <string>数据处理</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="label_3">
+                 <widget class="QLabel" name="label_detect_type">
                   <property name="font">
                    <font>
                     <pointsize>12</pointsize>
@@ -736,27 +736,12 @@ background-color:white
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
+                <item row="1" column="1" colspan="2">
                  <widget class="QComboBox" name="comboBox">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
                   <property name="font">
                    <font>
                     <pointsize>12</pointsize>
                    </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true"/>
                   </property>
                   <item>
                    <property name="text">
@@ -770,139 +755,80 @@ background-color:white
                   </item>
                  </widget>
                 </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QGroupBox" name="groupBox_result_outside">
-               <property name="title">
-                <string>外部缺陷</string>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_4">
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_standar_function">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_7">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>缺陷宽深比：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLabel" name="label_detection_xy">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QLabel" name="label_6">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>缺陷宽度：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="3">
-                 <widget class="QLabel" name="label_detection_length">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0" colspan="3">
-                 <widget class="QLabel" name="label_func">
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>线性拟合函数：</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QGroupBox" name="groupBox_result_inside">
-               <property name="font">
-                <font>
-                 <pointsize>9</pointsize>
-                </font>
-               </property>
-               <property name="autoFillBackground">
-                <bool>false</bool>
-               </property>
-               <property name="title">
-                <string>内部缺陷</string>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_3">
-                <item row="0" column="0">
+                <item row="1" column="4">
                  <widget class="QComboBox" name="comboBox_2">
                   <property name="font">
                    <font>
                     <pointsize>12</pointsize>
                    </font>
                   </property>
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
                   <item>
                    <property name="text">
-                    <string>-请选择</string>
+                    <string>内部缺陷等级</string>
                    </property>
                   </item>
                  </widget>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_9">
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_dynamic_content_1">
                   <property name="font">
                    <font>
                     <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="text">
-                   <string>缺陷当量：</string>
+                   <string>缺陷深度：</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="label_db_equal">
+                <item row="2" column="1">
+                 <widget class="QLabel" name="label_detection_deepth_and_db">
                   <property name="text">
                    <string/>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_8">
+                <item row="2" column="3">
+                 <widget class="QLabel" name="label_unit1_mm">
+                  <property name="text">
+                   <string>mm</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_dynamic_content_2">
                   <property name="font">
                    <font>
                     <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="text">
-                   <string>缺陷幅值：</string>
+                   <string>缺陷长度：</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
-                 <widget class="QLabel" name="label_detection_fuzhi">
+                <item row="3" column="3">
+                 <widget class="QLabel" name="label_unit2_mm">
+                  <property name="text">
+                   <string>mm</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0" colspan="5">
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>499</width>
+                    <height>18</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLabel" name="label_detection_length_and_amp">
                   <property name="text">
                    <string/>
                   </property>
@@ -929,7 +855,7 @@ background-color:white
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">
@@ -939,7 +865,7 @@ background-color:white
    </property>
    <property name="styleSheet">
     <string notr="true">QMenu{
-	color:black
+        color:black
 }</string>
    </property>
    <widget class="QMenu" name="menu_file">

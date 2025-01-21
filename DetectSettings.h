@@ -1,4 +1,4 @@
-#ifndef DETECTSETTINGS_H
+﻿#ifndef DETECTSETTINGS_H
 #define DETECTSETTINGS_H
 
 #include <QSettings>
@@ -31,7 +31,7 @@ protected:
     double save_scan_length_{100.1};
     double sensitivity_perview_{1.91};
     int time_out_ {20};
-
+    double detect_width_defaul_size_{0.1};
     int scan_speed_          = 40;
     int upline_              = 68000;
     int downline_            = 49000;
@@ -42,6 +42,10 @@ protected:
     double zoom_real_time_view_      = 1.05;
     int filter_size_         = 10;
 public:
+    const double detect_width_defaul_size()
+    {
+        return detect_width_defaul_size_;
+    }
     const int& filter_size()
     {
         return filter_size_;
@@ -193,8 +197,9 @@ public:
         try
         {
             QString list = settings.value("Settings/sensitivity").toString();
-            sensitivity_list_ = extractFloatsFromBracedString(list);
+            sensitivity_list_ = extractFloatsFromBracedString(list); 
             max_points_count_ = settings.value("Settings/max_points_count", 12000).toInt();
+            detect_width_defaul_size_ = settings.value("Settings/detect_width_defaul_size", 0.1).toDouble();
             max_draw_points_count_ = settings.value("Settings/max_draw_points_count", 300).toInt();
             add_point_count_ = settings.value("Settings/add_point_count", 20).toInt();
             real_time_rate_ = settings.value("Settings/real_time_rate", 5).toInt();

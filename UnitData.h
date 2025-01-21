@@ -64,6 +64,20 @@ struct InsideDetectParam
     QString label; // 缺陷编号
     double equivalent; // 缺陷幅值
 };
+struct DetectResultInfo
+{
+    DetectResultInfo()
+    {
+        amp = 0; // 选中缺陷幅值
+        db = 0; // 缺陷当量
+        length = 0; //缺陷长度
+        depth = 0; // 缺陷深度
+    }
+    double amp; // 选中缺陷幅值
+    double db; // 缺陷当量
+    double length; //缺陷长度
+    double depth; // 缺陷深度
+};
 
 struct ScanThreshold
 {

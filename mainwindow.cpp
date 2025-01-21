@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "setupwindow.h"
 #include "UnitCalc.h"
-
 #include <functional>
 
 int static current_channel_id = 0; // 切换为两个图像显示，用于区分哪个实时图的特征区域被选中
@@ -22,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     setup_win_ptr_  = new SetupWindow();
     calibrate_view_ = new CalibrateView();
     connect(manager_ptr_, &SerialPortManager::drawData, this, &MainWindow::onDrawData,Qt::QueuedConnection);
+    connect(manager_ptr_, &SerialPortManager::heartBeat,this, MainWindow::onSerialState,Qt::AutoConnection);
     if(ui->widget_upright)
     {
         source_view_ptr_ = new SourceView(ui->widget_upright);
@@ -87,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
       //ui->comboBox->addItem(QString::number(sensitive));
     }
     list_draw_src_data_.clear();
+    ui->comboBox_2->setEnabled(false);
     // ui->checkBox_3->hide();
     // ui->checkBox_upline->hide();
 }
@@ -203,22 +204,25 @@ void MainWindow::runThread()
         QPointF max(0,0),min(0,0);
         calcMaxMinPoint(rect_data_list_, max, min);
 
-        if(ui->comboBox->currentText() == "外部缺陷")
+        if(ui->comboBox->currentText() == QString("外部缺陷"))
         {
             // 3、读取标定结果
             std::pair<double,double> standar_param = calibrate_view_->getStandarParam();
             // 外部缺陷
             double y = max.y() - min.y(); // 缺陷幅值
-            y_max_am_ = y;
+            detect_result_info_.amp = y;
             double a = standar_param.first;
             double b = standar_param.second;
-            double x = (y - b) / a; // 缺陷宽深比
+            double x = (y - b) / a; // 缺陷深宽比
+            double default_width = DetectSettings::instance().detect_width_defaul_size();
+            double detect_deepth = x * default_width; // 缺陷深度=乘以默认缺陷宽度 0.1mm
             double rect_points  = rect_data_list_.size();//std::abs(max.x() - min.x()); // 选中数据点数
             double total_points = list_draw_src_data_.size(); // 所有扫描点数
-            double detec_length = scan_length * rect_points / total_points; // 缺陷的宽度
-            ui->label_detection_xy->setText(QString::number(x));
-            ui->label_detection_fuzhi->setText(QString::number(y));
-            ui->label_detection_length->setText(QString::number(detec_length));
+            double detect_length = scan_length * rect_points / total_points; // 缺陷的宽度
+            ui->label_detection_deepth_and_db->setText(QString::number(detect_deepth));
+            ui->label_detection_length_and_amp->setText(QString::number(detect_length));
+            detect_result_info_.depth  = detect_deepth;
+            detect_result_info_.length = detect_length;
         }
         else
         {
@@ -227,9 +231,9 @@ void MainWindow::runThread()
             auto it = list.find(ui->comboBox_2->currentText());
             if(it != list.end())
             {
-                double db = 10 * std::log10((max.y() - min.y()) / it->equivalent);
-                ui->label_db_equal->setText(QString::number(db));
-                ui->label_detection_fuzhi->setText(QString::number(y_max_am_));
+                detect_result_info_.db = 10 * std::log10((max.y() - min.y()) / it->equivalent);
+                ui->label_detection_deepth_and_db->setText(QString::number(detect_result_info_.db));
+                ui->label_detection_length_and_amp->setText(QString::number(detect_result_info_.amp));
             }
         }
 
@@ -268,11 +272,11 @@ void MainWindow::onDrawData(QVector<ChinnelData> draw_list)
         source_view_ptr_->updateChinnelView(draw_list);
         source_view_ptr_->setViewChinnelRange();
     }
-    if(manager_ptr_ && serial_state != manager_ptr_->getHeartbeatState())
-    {
-        serial_state = manager_ptr_->getHeartbeatState();
-        onSerialState(serial_state);
-    }
+    // if(manager_ptr_ && serial_state != manager_ptr_->getHeartbeatState())
+    // {
+    //     serial_state = manager_ptr_->getHeartbeatState();
+    //     onSerialState(serial_state);
+    // }
 }
 
 void MainWindow::updateData()
@@ -515,6 +519,7 @@ void MainWindow::on_pushButton_3_clicked()
         if(!thread_calc_ptr_)
         {//new thread
             thread_calc_ptr_ = std::make_shared<std::thread>(&MainWindow::drawImageViewThread,this);
+            is_calc_start_ = true;
         }
         else
         {// thread 存在则启动,进入数据处理状态
@@ -917,8 +922,8 @@ void MainWindow::on_update_inside_detection_list(QMap<QString,InsideDetectParam>
 
 void MainWindow::on_update_function_result(std::pair<double, double>& result_param)
 {
-    QString text = QString("y = %1x + %2").arg(result_param.first,0,'f',2).arg(result_param.second,0,'f',2);
-    ui->label_standar_function->setText(text);
+    // QString text = QString("y = %1x + %2").arg(result_param.first,0,'f',2).arg(result_param.second,0,'f',2);
+    // ui->label_standar_function->setText(text);
 }
 
 void MainWindow::on_update_outside_detection_list(QMap<QString,OutsideDetectParam>& out_list)
@@ -931,11 +936,11 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
 {
     QMap<QString,InsideDetectParam>& list = calibrate_view_->getInsideAmplitudeList();
     auto it = list.find(ui->comboBox_2->currentText());
-    if(it != list.end() && y_max_am_ > 1)
+    if(it != list.end() && detect_result_info_.amp > 1)
     {
-        double db = 10 * std::log10(y_max_am_ / it->equivalent);
-        ui->label_db_equal->setText(QString::number(db));
-        ui->label_detection_fuzhi->setText(QString::number(y_max_am_));
+        detect_result_info_.db = 10 * std::log10(detect_result_info_.amp / it->equivalent);
+        ui->label_detection_deepth_and_db->setText(QString::number(detect_result_info_.db));
+        ui->label_detection_length_and_amp->setText(QString::number(detect_result_info_.amp));
     }
 }
 
@@ -950,3 +955,29 @@ void MainWindow::on_action_magstimulate_triggered()
     mag_widget_ptr_->showNormal();
 #endif
 }
+
+
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    if(ui->comboBox->currentText()==QString("外部缺陷"))
+    {
+        ui->label_dynamic_content_1->setText("缺陷深度");
+        ui->label_dynamic_content_2->setText("缺陷长度");
+        ui->label_detection_deepth_and_db->setText(QString::number(detect_result_info_.depth));
+        ui->label_detection_length_and_amp->setText(QString::number(detect_result_info_.length));
+        ui->label_unit1_mm->setText("mm");
+        ui->label_unit2_mm->setText("mm");
+        ui->comboBox_2->setEnabled(false);
+    }
+    else
+    {
+        ui->label_dynamic_content_1->setText("缺陷当量");
+        ui->label_dynamic_content_2->setText("缺陷幅值");
+        ui->label_detection_deepth_and_db->setText(QString::number(detect_result_info_.db));
+        ui->label_detection_length_and_amp->setText(QString::number(detect_result_info_.amp));
+        ui->label_unit1_mm->setText("db");
+        ui->label_unit2_mm->setText("nT");
+        ui->comboBox_2->setEnabled(true);
+    }
+}
+

@@ -23,8 +23,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[51];
-    char stringdata0[1005];
+    QByteArrayData data[52];
+    char stringdata0[1037];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -83,7 +83,8 @@ QT_MOC_LITERAL(46, 929, 5), // "index"
 QT_MOC_LITERAL(47, 935, 32), // "on_action_magstimulate_triggered"
 QT_MOC_LITERAL(48, 968, 10), // "onDrawData"
 QT_MOC_LITERAL(49, 979, 20), // "QVector<ChinnelData>"
-QT_MOC_LITERAL(50, 1000, 4) // "data"
+QT_MOC_LITERAL(50, 1000, 4), // "data"
+QT_MOC_LITERAL(51, 1005, 31) // "on_comboBox_currentIndexChanged"
 
     },
     "MainWindow\0on_auto_FitDirect\0\0rad\0"
@@ -115,7 +116,8 @@ QT_MOC_LITERAL(50, 1000, 4) // "data"
     "std::pair<double,double>&\0result_param\0"
     "on_comboBox_2_currentIndexChanged\0"
     "index\0on_action_magstimulate_triggered\0"
-    "onDrawData\0QVector<ChinnelData>\0data"
+    "onDrawData\0QVector<ChinnelData>\0data\0"
+    "on_comboBox_currentIndexChanged"
 };
 #undef QT_MOC_LITERAL
 
@@ -125,7 +127,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      30,   14, // methods
+      31,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -133,36 +135,37 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  164,    2, 0x0a /* Public */,
-       4,    2,  167,    2, 0x0a /* Public */,
-       6,    1,  172,    2, 0x0a /* Public */,
-       8,    3,  175,    2, 0x0a /* Public */,
-      12,    1,  182,    2, 0x0a /* Public */,
-      15,    1,  185,    2, 0x0a /* Public */,
-      17,    1,  188,    2, 0x0a /* Public */,
-      19,    1,  191,    2, 0x0a /* Public */,
-      20,    0,  194,    2, 0x0a /* Public */,
-      21,    0,  195,    2, 0x0a /* Public */,
-      22,    0,  196,    2, 0x0a /* Public */,
-      23,    0,  197,    2, 0x0a /* Public */,
-      24,    1,  198,    2, 0x0a /* Public */,
-      25,    1,  201,    2, 0x0a /* Public */,
-      26,    0,  204,    2, 0x0a /* Public */,
-      27,    0,  205,    2, 0x0a /* Public */,
-      28,    0,  206,    2, 0x0a /* Public */,
-      29,    0,  207,    2, 0x0a /* Public */,
-      30,    0,  208,    2, 0x0a /* Public */,
-      31,    0,  209,    2, 0x0a /* Public */,
-      32,    0,  210,    2, 0x0a /* Public */,
-      33,    0,  211,    2, 0x0a /* Public */,
-      34,    0,  212,    2, 0x0a /* Public */,
-      35,    0,  213,    2, 0x0a /* Public */,
-      36,    1,  214,    2, 0x0a /* Public */,
-      39,    1,  217,    2, 0x0a /* Public */,
-      42,    1,  220,    2, 0x0a /* Public */,
-      45,    1,  223,    2, 0x0a /* Public */,
-      47,    0,  226,    2, 0x0a /* Public */,
-      48,    1,  227,    2, 0x0a /* Public */,
+       1,    1,  169,    2, 0x0a /* Public */,
+       4,    2,  172,    2, 0x0a /* Public */,
+       6,    1,  177,    2, 0x0a /* Public */,
+       8,    3,  180,    2, 0x0a /* Public */,
+      12,    1,  187,    2, 0x0a /* Public */,
+      15,    1,  190,    2, 0x0a /* Public */,
+      17,    1,  193,    2, 0x0a /* Public */,
+      19,    1,  196,    2, 0x0a /* Public */,
+      20,    0,  199,    2, 0x0a /* Public */,
+      21,    0,  200,    2, 0x0a /* Public */,
+      22,    0,  201,    2, 0x0a /* Public */,
+      23,    0,  202,    2, 0x0a /* Public */,
+      24,    1,  203,    2, 0x0a /* Public */,
+      25,    1,  206,    2, 0x0a /* Public */,
+      26,    0,  209,    2, 0x0a /* Public */,
+      27,    0,  210,    2, 0x0a /* Public */,
+      28,    0,  211,    2, 0x0a /* Public */,
+      29,    0,  212,    2, 0x0a /* Public */,
+      30,    0,  213,    2, 0x0a /* Public */,
+      31,    0,  214,    2, 0x0a /* Public */,
+      32,    0,  215,    2, 0x0a /* Public */,
+      33,    0,  216,    2, 0x0a /* Public */,
+      34,    0,  217,    2, 0x0a /* Public */,
+      35,    0,  218,    2, 0x0a /* Public */,
+      36,    1,  219,    2, 0x0a /* Public */,
+      39,    1,  222,    2, 0x0a /* Public */,
+      42,    1,  225,    2, 0x0a /* Public */,
+      45,    1,  228,    2, 0x0a /* Public */,
+      47,    0,  231,    2, 0x0a /* Public */,
+      48,    1,  232,    2, 0x0a /* Public */,
+      51,    1,  235,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Double,    3,
@@ -195,6 +198,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Int,   46,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 49,   50,
+    QMetaType::Void, QMetaType::Int,   46,
 
        0        // eod
 };
@@ -235,6 +239,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 27: _t->on_comboBox_2_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 28: _t->on_action_magstimulate_triggered(); break;
         case 29: _t->onDrawData((*reinterpret_cast< QVector<ChinnelData>(*)>(_a[1]))); break;
+        case 30: _t->on_comboBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -280,13 +285,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 30)
+        if (_id < 31)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 30;
+        _id -= 31;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 30)
+        if (_id < 31)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 30;
+        _id -= 31;
     }
     return _id;
 }

@@ -415,11 +415,13 @@ public slots:
             closeConnectSerial();
         }
         heart_beat_state_ = (isPortOpened()== true ? E_SERIAL_CONNECT:E_SERIAL_CLOSE);
+        emit heartBeat(heart_beat_state_);
     }
 signals:
     void SendData(QVector<ChinnelData> list);
     void clearRealTimeSerial();
     void drawData(QVector<ChinnelData> data);
+    void heartBeat(int state);
 private:
     void startThread()
     {
@@ -470,6 +472,7 @@ private:
                 {
                     serial_time_out_ = DetectSettings::instance().get_time_out();
                     heart_beat_state_ = E_SERIAL_CLOSE;
+                    emit heartBeat(heart_beat_state_);
                     // closePort();
                     // QMessageBox::critical(nullptr, "Error", "串口已断开,请检查重连");
                 }

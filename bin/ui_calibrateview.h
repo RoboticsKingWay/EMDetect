@@ -96,10 +96,10 @@ public:
     QGridLayout *gridLayout_6;
     QLabel *label_12;
     QLineEdit *lineEdit_inside_add_num;
-    QLabel *label_9;
     QPushButton *pushButton_inside_add;
     QLineEdit *lineEdit_inside_write;
     QSpacerItem *horizontalSpacer_7;
+    QLabel *label_9;
     QWidget *widget_7;
     QGridLayout *gridLayout_5;
     QComboBox *comboBox_inside_del;
@@ -387,11 +387,6 @@ public:
 
         gridLayout_6->addWidget(lineEdit_inside_add_num, 0, 2, 1, 2);
 
-        label_9 = new QLabel(widget_6);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
-
-        gridLayout_6->addWidget(label_9, 1, 0, 1, 1);
-
         pushButton_inside_add = new QPushButton(widget_6);
         pushButton_inside_add->setObjectName(QString::fromUtf8("pushButton_inside_add"));
 
@@ -406,6 +401,11 @@ public:
         horizontalSpacer_7 = new QSpacerItem(123, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout_6->addItem(horizontalSpacer_7, 2, 0, 1, 2);
+
+        label_9 = new QLabel(widget_6);
+        label_9->setObjectName(QString::fromUtf8("label_9"));
+
+        gridLayout_6->addWidget(label_9, 1, 0, 1, 2);
 
 
         horizontalLayout_6->addWidget(widget_6);
@@ -495,8 +495,8 @@ public:
         label_inside_am->setText(QString());
         label_14->setText(QCoreApplication::translate("CalibrateView", "-----------------------------------------------------------------------------------", nullptr));
         label_12->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
-        label_9->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\271\205\345\200\274", nullptr));
         pushButton_inside_add->setText(QCoreApplication::translate("CalibrateView", "\346\226\260\345\242\236\347\274\272\351\231\267", nullptr));
+        label_9->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\345\271\205\345\200\274", nullptr));
         pushButton_inside_del->setText(QCoreApplication::translate("CalibrateView", "\345\210\240\351\231\244\347\274\272\351\231\267", nullptr));
         label_10->setText(QCoreApplication::translate("CalibrateView", "\347\274\272\351\231\267\347\274\226\345\217\267", nullptr));
         groupBox_2->setTitle(QString());

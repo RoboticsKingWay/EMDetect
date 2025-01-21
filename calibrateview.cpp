@@ -16,6 +16,8 @@ CalibrateView::CalibrateView(QWidget *parent) :
     ui->comboBox_inside_del->clear();
     ui->comboBox_outside_list->clear();
     ui->comboBox_outside_del->clear();
+    double default_width = DetectSettings::instance().detect_width_defaul_size();
+    ui->lineEdit_width_set->setText(QString::number(default_width));
 }
 
 CalibrateView::~CalibrateView()
@@ -383,8 +385,8 @@ void CalibrateView::on_pushButton_outside_stand_clicked()
 //        if(item.dete_type == EMDETECTION_TYPE::E_DETECTION_OUTER)
         {
             std::pair<double, double> point;
-            point.first   = item.depth/item.length;
-            point.second  = item.equivalent;
+            point.first   = item.depth/item.length;// 深宽比
+            point.second  = item.equivalent; // 缺陷幅值
             points.push_back(point);
         }
     }

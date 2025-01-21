@@ -14,6 +14,23 @@ public:
         ZOOM_NUM = DetectSettings::instance().zoom_real_time_view();
         channel_id_ = channel_id;
     }
+    QChart* getChartPtr()
+    {
+        if(chart_)
+        {
+            return chart_;
+        }
+        return nullptr;
+    }
+    QLineSeries* getSeriesPtr()
+    {
+        for (int i = 0; i < CH_NUM; i++) {
+            if(seriess_[i]){
+                return seriess_[i];
+            }
+        }
+        return nullptr;
+    }
     virtual ~RealTimeChartView()
     {
         if(threshold_serials_)
@@ -42,6 +59,7 @@ public:
     {
         chart_ = new QChart();
         chart_->setBackgroundBrush(QBrush(Qt::black));
+        chart_->setMargins(QMargins(0,0,0,0));
 //        chart_->setTitle(QStringLiteral("实时曲线"));
         //创建图表
         chart_view_ = new ZoomableChartView(chart_);
@@ -57,6 +75,10 @@ public:
         // 将ChartView添加到布局中，并设置填充和居中
         layout_->addWidget(chart_view_);
         layout_->setAlignment(Qt::AlignCenter);
+        // layout_->addWidget();
+        layout_->setMargin(2);
+        layout_->setSpacing(2);
+        // chart_view_->setContentsMargins(QMargins(2,2,2,2));
         parent_view_ptr_->setLayout(layout_);
         //创建坐标轴
         axisX_ = new QValueAxis;
