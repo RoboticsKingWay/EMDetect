@@ -7,6 +7,9 @@
 
 int main(int argc, char *argv[])
 {
+    //自动适应高分辨率
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
     QApplication a(argc, argv);
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
