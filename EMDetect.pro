@@ -12,7 +12,7 @@ CONFIG += c++17
 #磁激励宏开关 注释掉该行磁激励功能关闭
 DEFINES += magstimulate_enable
 #使用学校的探头数据格式注释掉该行
-DEFINES += MY_PROBE
+#DEFINES += MY_PROBE
 
 include(./src/xlsx/qtxlsx.pri)
 SOURCES += \
